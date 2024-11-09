@@ -2,10 +2,9 @@
   description = "Matthew Tapps NixOS Configuration";
 
   inputs = {
-    # nixpkgs.url = "nixpkgs/nixpkgs-unstable";
-
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
@@ -22,7 +21,7 @@
     #   "github:nix-community/impermanence/63f4d0443e32b0dd7189001ee1894066765d18a5";
   };
 
-  outputs = { nixpkgs, nixos, home-manager, ... }@inputs:
+  outputs = { nixpkgs, nixos, home-manager, nixos-wsl, ... }@inputs:
     let
       overlays = [ inputs.neovim-nightly-overlay.overlays.default ];
 
@@ -180,6 +179,27 @@
             }
           ];
         };
+
+	thinkpad = nixpkgs.lib.nixosSystem {
+	  system = "x86_64-linux";
+	  pkgs = nixosPackages;
+	  modules = [
+	    ./nixos/thinkpad.nix
+	    nixos-wsl.nixosModules.default
+	    { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
+	    home-manager.nixosModules.home-manager
+	    inputs.nix-colors.homeManagerModules.default
+	    {
+	      home-manager.extraSpecialArgs = {
+	        pkgs = x86Pkgs;
+		inherit inputs theme;
+	      };
+	      home-manager.users.matt =
+	        import ./home/users/matt/matt_thinkpad.nix;
+	      home-manager.backupFileExtension = "backup";
+	    }
+	  ];
+	};
       };
 
       devShell.x86_64-linux = x86Pkgs.mkShell {

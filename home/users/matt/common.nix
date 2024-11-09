@@ -25,22 +25,6 @@
 
     nixpkgs-fmt
 
-    rofi-wayland
-    swww
-    brightnessctl
-    dart-sass
-    matugen
-    fd
-    dconf
-    hyprlock
-    hyprpaper
-    hyprshot
-    playerctl
-    pavucontrol
-    overskride
-    gtk-engine-murrine
-    gnome-themes-extra
-
     lsof
     clipman
     wl-clipboard

@@ -14,9 +14,7 @@
     ./user.nix
     ./fonts.nix
     ./locale.nix
-    ./thunar.nix
     ./nix-options.nix
     ./linux-kernel.nix
-    ./networkmanager.nix
   ];
 }
