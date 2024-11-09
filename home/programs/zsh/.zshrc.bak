@@ -1,0 +1,180 @@
+# Powerlevel10k instant prompt
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Colours
+local lightgrey='#a89984'
+local grey='#928374'
+local red='#ea6962'
+local yellow='#d8a657'
+local blue='#7daea3'
+local magenta='#d3869b'
+local aqua='#89b482'
+local white='#ddc7a1'
+local green='#a9b665'
+local orange='#e78a4e'
+
+bindkey -v # Enables vi mode for zsh
+
+# General
+export TERM="xterm-256color"
+export EDITOR="nvim"
+export VISUAL="nvim"
+export LANG=en_AU.UTF-8
+export ZSHPLUGINS=$HOME/.config/zsh/plugins
+
+# Zsh plugins
+source $ZSHPLUGINS/F-Sy-H/F-Sy-H.plugin.zsh
+source $ZSHPLUGINS/powerlevel10k/powerlevel10k.zsh-theme
+source $ZSHPLUGINS/powerlevel10k/.p10k.zsh
+source $ZSHPLUGINS/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+source $ZSHPLUGINS/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $ZSHPLUGINS/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source $ZSHPLUGINS/zsh-nix-shell/nix-shell.plugin.zsh
+
+# Nix Home Manager
+source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
+
+# Standard Zsh completion configuration
+zmodload zsh/complist
+autoload -U compinit; compinit
+
+_comp_options+=(globdots)
+
+zstyle ':completion:*' completer _extensions _complete _approximate 
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$HOME/zsh/.zcompcache"
+zstyle ':completion:*' menu select
+
+zstyle ':completion:*:*:*:*:descriptions' format "%F{green}-- %d --%f"
+zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
+zstyle ':completion:*:*:*:*:messages' format '%F{purple}-- %d --%f'
+zstyle ':completion:*:*:*:*:warnings' format '%F{red}-- no matches found --%f'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' keep-prefix
+zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions commands
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':autocomplete:*' add_space '*'
+zstyle ':autocomplete:*' delay 0.5
+
+setopt AUTO_LIST
+setopt COMPLETE_IN_WORD
+setopt MENU_COMPLETE
+unsetopt PATH_DIRS
+
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'j' vi-down-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+bindkey '^I' menu-select
+bindkey "$terminfo[kcbt]" menu-select
+bindkey -M menuselect '^I' menu-complete
+bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
+bindkey -M menuselect '^[[D' .backward-char '^[OD' .backward-char
+bindkey -M menuselect '^[[C' .forward-char '^[OC' .forward-char
+bindkey -M menuselect '^M' .accept-line
+bindkey '^H' backward-delete-word
+bindkey -M menuselect '^?' backward-delete-line
+
+# Zsh autosuggestions plugin
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=$lightgrey"
+bindkey '^ ' autosuggest-accept
+ZSH_AUTOSUGGEST_STRATEGY=(history)
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(menu-select menu-complete reverse-menu-complete backward-delete-word backward-delete-char vi-backward-char vi-forward-char vi-up-line-or-history vi-down-line-or-history)
+ZSH_AUTOSUGGEST_COMPLETION_IGNORE="cd *|la|la|v *"
+ZSH_AUTOSUGGEST_HISTORY_IGNORE="cd *|la|la|v *"
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZER=20
+
+# Zsh vi mode plugin configuration
+ZVM_VI_INSERT_ESCAPE_BINDKEY=jj
+ZVM_INIT_MODE=sourcing
+ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+
+# Git completion
+fpath=(~/.zsh $fpath)
+
+# History config
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000000
+SAVEHIST=10000000
+HISTORY_IGNORE="(ls|cd|pwd|exit|cd|la|v)*"
+HIST_STAMPS="yyyy-mm-dd"
+setopt EXTENDED_HISTORY      # Write the history file in the ':start:elapsed;command' format.
+setopt INC_APPEND_HISTORY    # Write to the history file immediately, not when the shell exits.
+setopt SHARE_HISTORY         # Share history between all sessions.
+setopt HIST_IGNORE_DUPS      # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS  # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_IGNORE_SPACE     # Do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS     # Do not write a duplicate event to the history file.
+setopt HIST_VERIFY           # Do not execute immediately upon history expansion.
+setopt APPEND_HISTORY        # append to history file (Default)
+setopt HIST_NO_STORE         # Don't store history commands
+setopt HIST_REDUCE_BLANKS    # Remove superfluous blanks from each command line being added to the history.
+
+# SSH Agent
+if [ "$SSH_AUTH_SOCK" = "" -a -x /usr/bin/ssh-agent ]; then
+                eval `/usr/bin/ssh-agent`
+fi
+
+# Gcloud CLI
+# source $HOME/google-cloud-sdk/path.zsh.inc
+# source $HOME/google-cloud-sdk/completion.zsh.inc
+
+# Man pages
+export MANPAGER="nvim +Man!"
+
+# Aliases
+alias v="nvim"                                                         # v         = nvim
+alias zc="v $HOME/.zshrc"                                              # zc        = zshconfig
+alias hc="v $HOME/.config/home-manager/home.nix"                       # hc        = home-manager config
+alias hs="home-manager switch"                                         # hs        = home-manager switch
+alias nixc="sudo -E -s & v /etc/nixos"                                 # nixc      = NixOS system config
+alias nixswitch="sudo nixos-rebuild switch"                            # nixswitch = NixOS system switch
+alias ns="nix-shell"                                                   # ns        = nix shell
+alias nsc="v shell.nix"                                                # nsc       = nix shell config
+alias la="ls -a --color=auto"                                          # la        = list all
+alias ls="ls --color=auto"                                             # ls        = list
+alias vk="v $HOME/.config/nvim/lua/config/keymaps.lua"                 # vk        = vim keybinds
+alias vp="v $HOME/.config/nvim/lua/plugins/customise_lazy.lua"         # vp        = vim plugins
+alias zshstyle="v $HOME/.config/zsh/plugins/powerlevel10k/.p10k.zsh"   # zshstyle  = zsh style
+alias quicktest="yarn run test --testPathIgnorePatterns '(?<!mocked-)integration|agnostic|manual'"
+alias aliases="cat ~/.zshrc | grep ^alias"                             # aliases
+
+# Custom scripts
+export PATH=$PATH:$HOME/.local/scripts
+export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/bin
+export PATH=$PATH:/opt/nvim-linux64/bin
+export PATH=$PATH:$HOME/google-cloud-sdk/bin
+export PATH=$PATH:/opt/lua-language-server/bin
+export PATH=$PATH:$HOME/.cargo/bin
+
+# Golang and goenv
+# export GOENV_ROOT="$HOME/.goenv"
+# export PATH="$GOENV_ROOT/bin:$PATH"
+# eval "$(goenv init -)"
+# export PATH="$GOROOT/bin:$PATH"
+# export PATH="$PATH:$GOPATH/bin"
+
+# Pyenv
+# export PYENV_ROOT="$HOME/.pyenv"
+# export PATH="$PYENV_ROOT/bin:$PATH"
+
+# FZF
+export FZF_DEFAULT_COMMAND='ag --hidden -g""'
+
+# NVM
+# NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# complete -o nospace -C /usr/bin/terraform terraform
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# SDKMan (must be at end according to SDKman)
+# export SDKMAN_DIR="$HOME/.sdkman"
+# [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
