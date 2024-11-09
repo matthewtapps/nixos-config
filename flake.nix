@@ -188,11 +188,11 @@
 	    nixos-wsl.nixosModules.default
 	    { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
 	    home-manager.nixosModules.home-manager
-	    inputs.nix-colors.homeManagerModules.default
+#            inputs.nix-colors.homeManagerModules.default
 	    {
 	      home-manager.extraSpecialArgs = {
 	        pkgs = x86Pkgs;
-		inherit inputs theme;
+                inherit inputs;# theme;
 	      };
 	      home-manager.users.matt =
 	        import ./home/users/matt/matt_thinkpad.nix;

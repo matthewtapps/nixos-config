@@ -1,8 +1,13 @@
 { pkgs, ... }: {
   imports = [
     ./common.nix
-    ./theme.nix
+#    ./theme.nix
     ];
+    
+#   home.packages = with pkgs; [
+#     fd
+#     dconf
+#   ];
 
     home.stateVersion = "24.05";
     

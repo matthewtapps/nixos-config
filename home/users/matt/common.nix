@@ -35,7 +35,7 @@
   ];
 
   imports = [
-    ./theme.nix
+#    ./theme.nix
     ../../programs/zsh/default.nix
     ../../programs/neovim/default.nix
     ../../programs/git.nix
