@@ -1,13 +1,16 @@
-{ config, lib, pkgs, nixos-wsl, ... }:
+{
+  pkgs,
+  ...
+}:
 {
   imports = [
-    # include NixOS-WSL modules
     ./modules/common.nix
   ];
 
   wsl.enable = true;
   wsl.defaultUser = "matt";
-  
+  wsl.docker-desktop.enable = true;
+
   programs = {
     zsh = {
       enable = true;
@@ -21,10 +24,12 @@
   };
 
   environment = {
-    sessionVariables = { NIXOS_OZONE_WL = "1"; };
-    systemPackages = with pkgs; [ openssl xfce.thunar bun gcc ];
+    systemPackages = with pkgs; [
+      openssl
+      bun
+      gcc
+    ];
   };
-  
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
