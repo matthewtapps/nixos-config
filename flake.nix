@@ -171,6 +171,7 @@
             {
               home-manager.extraSpecialArgs = {
                 pkgs = x86Pkgs;
+                device = "desktop";
                 inherit inputs theme;
               };
               home-manager.users.matt =
@@ -180,26 +181,26 @@
           ];
         };
 
-	thinkpad = nixpkgs.lib.nixosSystem {
-	  system = "x86_64-linux";
-	  pkgs = nixosPackages;
-	  modules = [
-	    ./nixos/thinkpad.nix
-	    nixos-wsl.nixosModules.default
-	    { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
-	    home-manager.nixosModules.home-manager
-#            inputs.nix-colors.homeManagerModules.default
-	    {
-	      home-manager.extraSpecialArgs = {
-	        pkgs = x86Pkgs;
-                inherit inputs;# theme;
-	      };
-	      home-manager.users.matt =
-	        import ./home/users/matt/matt_thinkpad.nix;
-	      home-manager.backupFileExtension = "backup";
-	    }
-	  ];
-	};
+        thinkpad = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          pkgs = nixosPackages;
+          modules = [
+            ./nixos/thinkpad.nix
+            nixos-wsl.nixosModules.default
+            { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
+                pkgs = x86Pkgs;
+                device = "thinkpad";
+                inherit inputs;
+              };
+              home-manager.users.matt =
+                import ./home/users/matt/matt_thinkpad.nix;
+              home-manager.backupFileExtension = "backup";
+            }
+          ];
+        };
       };
 
       devShell.x86_64-linux = x86Pkgs.mkShell {

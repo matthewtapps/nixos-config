@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ pkgs, device, ... }: {
   # home.file.".zshrc" = {
   #   source = ./.zshrc;
   # };
@@ -176,7 +176,7 @@
 
       alias v="nvim"                                                                                       # v         = nvim
       alias nixc="; cd /etc/nixos; sudo -E -s"                                                             # nixc      = NixOS system config
-      alias nixswitch="sudo nixos-rebuild switch --flake /etc/nixos#desktop"                               # nixswitch = NixOS system switch
+      alias nixswitch="sudo nixos-rebuild switch --flake /etc/nixos#${device}"                             # nixswitch = NixOS system switch
       alias ns="nix-shell"                                                                                 # ns        = nix shell
       alias nsc="v shell.nix"                                                                              # nsc       = nix shell config
       alias la="ls -a --color=auto"                                                                        # la        = list all
