@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }:
+{
   imports = [
     ./common.nix
     ./theme.nix
@@ -44,11 +45,16 @@
     overskride
     gtk-engine-murrine
     gnome-themes-extra
+    inputs.zen-browser.packages.${system}.default
 
   ];
 
-  home.file = { ".hushlogin".text = ""; };
+  home.file = {
+    ".hushlogin".text = "";
+  };
   services.ssh-agent.enable = true;
 
-  programs.ssh = { enable = true; };
+  programs.ssh = {
+    enable = true;
+  };
 }

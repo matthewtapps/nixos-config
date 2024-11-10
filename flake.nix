@@ -14,6 +14,8 @@
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
+    zen-browser.url = "github:MarceColl/zen-browser-flake";
+
     # darwin.inputs.nixpkgs.follows = "nixpkgs";
     # darwin.url = "github:lnl7/nix-darwin/master";
 
@@ -21,11 +23,20 @@
     #   "github:nix-community/impermanence/63f4d0443e32b0dd7189001ee1894066765d18a5";
   };
 
-  outputs = { nixpkgs, nixos, home-manager, nixos-wsl, ... }@inputs:
+  outputs =
+    {
+      nixpkgs,
+      nixos,
+      home-manager,
+      nixos-wsl,
+      ...
+    }@inputs:
     let
       overlays = [ inputs.neovim-nightly-overlay.overlays.default ];
 
-      config = { allowUnfree = true; };
+      config = {
+        allowUnfree = true;
+      };
 
       nixosPackages = import nixos {
         system = "x86_64-linux";
@@ -68,22 +79,14 @@
           foreground2Hex = palette.base06;
           foreground1Hex = palette.base07;
 
-          background1RGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base00;
-          background2RGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base01;
-          background3RGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base02;
-          background4RGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base03;
-          foreground4RGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base04;
-          foreground3RGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base05;
-          foreground2RGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base06;
-          foreground1RGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base07;
+          background1RGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base00;
+          background2RGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base01;
+          background3RGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base02;
+          background4RGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base03;
+          foreground4RGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base04;
+          foreground3RGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base05;
+          foreground2RGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base06;
+          foreground1RGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base07;
 
           redHex = palette.base08;
           orangeHex = palette.base09;
@@ -94,22 +97,14 @@
           magentaHex = palette.base0E;
           brownHex = palette.base0F;
 
-          redRGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base08;
-          orangeRGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base09;
-          yellowRGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0A;
-          greenRGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0B;
-          cyanRGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0C;
-          blueRGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0D;
-          magentaRGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0E;
-          brownRGB =
-            inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0F;
+          redRGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base08;
+          orangeRGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base09;
+          yellowRGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0A;
+          greenRGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0B;
+          cyanRGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0C;
+          blueRGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0D;
+          magentaRGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0E;
+          brownRGB = inputs.nix-colors.lib.conversions.hexToRGBString "," palette.base0F;
 
           accentHex = theme.colorScheme.cyanHex;
           secondaryAccentHex = theme.colorScheme.greenHex;
@@ -157,7 +152,8 @@
         qtStyleName = "Everforest-Dark-BL-LB";
       };
 
-    in {
+    in
+    {
 
       nixosConfigurations = {
         desktop = nixpkgs.lib.nixosSystem {
@@ -174,8 +170,7 @@
                 device = "desktop";
                 inherit inputs theme;
               };
-              home-manager.users.matt =
-                import ./home/users/matt/matt_desktop.nix;
+              home-manager.users.matt = import ./home/users/matt/matt_desktop.nix;
               home-manager.backupFileExtension = "backup";
             }
           ];
@@ -195,8 +190,7 @@
                 device = "thinkpad";
                 inherit inputs;
               };
-              home-manager.users.matt =
-                import ./home/users/matt/matt_thinkpad.nix;
+              home-manager.users.matt = import ./home/users/matt/matt_thinkpad.nix;
               home-manager.backupFileExtension = "backup";
             }
           ];
@@ -205,7 +199,10 @@
 
       devShell.x86_64-linux = x86Pkgs.mkShell {
         nativeBuildInputs = [ x86Pkgs.bashInteractive ];
-        buildInputs = with x86Pkgs; [ nil nixpkgs-fmt ];
+        buildInputs = with x86Pkgs; [
+          nil
+          nixpkgs-fmt
+        ];
       };
     };
 }
