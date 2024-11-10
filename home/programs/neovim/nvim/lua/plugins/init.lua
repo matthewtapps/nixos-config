@@ -7,12 +7,7 @@ return {
     config = function()
       vim.cmd([[colorscheme everforest]])
       require("everforest").setup({
-        on_highlights = function(hl, palette)
-          hl.NeoTreeNormal = { fg = palette.fg, bg = palette.bg1 }
-          hl.NeoTreeNormalNC = { fg = palette.fg, bg = palette.bg1 }
-          hl.LazyDir = { fg = palette.fg, bg = palette.bg1 }
-          hl.LazyNormal = { fg = palette.fg, bg = palette.bg1 }
-        end
+        background = "soft",
       })
     end,
   },
