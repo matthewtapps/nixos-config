@@ -6,7 +6,7 @@
 
   environment = {
     variables = { EDITOR = "nvim"; };
-    systemPackages = with pkgs; [ neovim wget git gh chezmoi curl ];
+    systemPackages = with pkgs; [ neovim wget git gh chezmoi curl lazygit ];
   };
 
   imports = [
