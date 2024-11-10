@@ -1,7 +1,8 @@
 { pkgs, ... }:
 
 {
-  imports = [ # Include the results of the hardware scan.
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware/desktop.nix
     # ./modules/impermanence/desktop.nix
     ./modules/common.nix
@@ -41,13 +42,25 @@
   };
 
   environment = {
-    sessionVariables = { NIXOS_OZONE_WL = "1"; };
-    systemPackages = with pkgs; [ openssl xfce.thunar bun gcc ];
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+    };
+    systemPackages = with pkgs; [
+      openssl
+      xfce.thunar
+      bun
+      gcc
+    ];
   };
 
-  hardware = { bluetooth.enable = true; };
+  hardware = {
+    bluetooth.enable = true;
+  };
+
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="on"
+  '';
 
   # Don't delete
   system.stateVersion = "24.05";
 }
-
