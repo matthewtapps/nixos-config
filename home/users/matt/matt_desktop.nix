@@ -34,7 +34,7 @@
     swww
     brightnessctl
     dart-sass
-    matugen
+    inputs.matugen.packages.${system}.default
     fd
     dconf
     hyprlock
@@ -45,7 +45,7 @@
     overskride
     gtk-engine-murrine
     gnome-themes-extra
-    inputs.zen-browser.packages.${system}.default
+    inputs.zen-browser.packages.${system}.generic
 
   ];
 

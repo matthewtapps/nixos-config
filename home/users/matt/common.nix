@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   programs.home-manager.enable = true;
 
   home.activation.report-changes = config.lib.dag.entryAnywhere ''

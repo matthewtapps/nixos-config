@@ -14,7 +14,9 @@
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
-    zen-browser.url = "github:MarceColl/zen-browser-flake";
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+
+    matugen.url = "github:InioX/matugen?ref=v2.2.0";
 
     # darwin.inputs.nixpkgs.follows = "nixpkgs";
     # darwin.url = "github:lnl7/nix-darwin/master";
@@ -29,6 +31,7 @@
       nixos,
       home-manager,
       nixos-wsl,
+      zen-browser,
       ...
     }@inputs:
     let
@@ -40,12 +43,12 @@
 
       nixosPackages = import nixos {
         system = "x86_64-linux";
-        inherit config overlays;
+        inherit config zen-browser overlays;
       };
 
       x86Pkgs = import nixpkgs {
         system = "x86_64-linux";
-        inherit config overlays;
+        inherit config zen-browser overlays;
       };
 
       # armPkgs = import nixpkgs {
