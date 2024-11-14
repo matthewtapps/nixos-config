@@ -12,6 +12,7 @@
     ./modules/audio.nix
     ./modules/thunar.nix
     ./modules/networkmanager.nix
+    ./modules/cloudflare-warp.nix
   ];
 
   boot.loader = {
