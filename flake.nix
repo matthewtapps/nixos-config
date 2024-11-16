@@ -179,6 +179,26 @@
           ];
         };
 
+        nuc = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          pkgs = nixosPackages;
+          modules = [
+            ./nixos/nuc.nix
+            { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
+            home-manager.nixosModules.home-manager
+            inputs.nix-colors.homeManagerModules.default
+            {
+              home-manager.extraSpecialArgs = {
+                pkgs = x86Pkgs;
+                device = "desktop";
+                inherit inputs theme;
+              };
+              home-manager.users.matt = import ./home/users/matt/nuc.nix;
+              home-manager.backupFileExtension = "backup";
+            }
+          ];
+        };
+
         thinkpad = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           pkgs = nixosPackages;
