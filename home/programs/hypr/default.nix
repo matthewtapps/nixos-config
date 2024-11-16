@@ -1,4 +1,4 @@
-{ system }:
+{ device, ... }:
 let
   system = {
     "nuc" = [ (import ./nuc.nix) ];
@@ -10,7 +10,7 @@ let
   imports = [
     ./hyprpaper.nix
     ./hyprlock.nix
-  ] ++ (system.{system} or [ ]);
+  ] ++ (system.${device} or [ ]);
 
   home.file."./.config/hypr/bg3.jpg" = {
     source = ./bg3.jpg;

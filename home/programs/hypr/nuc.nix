@@ -8,7 +8,7 @@ _: {
 
       $mon1=desc:Samsung Electric Company SAMSUNG 0x01000E00
 
-      monitor=$mon1,2560x1440@59.95
+      monitor=$mon1,2560x1440@59.95Hz,0x0,2
 
       ###################
       ### MY PROGRAMS ###
@@ -217,7 +217,7 @@ _: {
       # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
       # See https://wiki.hyprland.org/Configuring/Workspace-Rules/ for workspace rules
 
-      workspace=1, monitor:$mon1, default:true, on-created-empty: exec slack
+      workspace=1, monitor:$mon1, default:true
       workspace=2, monitor:$mon1,
       workspace=3, monitor:$mon1,
       workspace=4, monitor:$mon1,
