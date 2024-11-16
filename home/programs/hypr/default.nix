@@ -3,13 +3,12 @@ let
   system = {
     "nuc" = [ (import ./nuc.nix) ];
     "desktop" = [ (import ./desktop.nix) ];
-    
-    };
-    in
+
+  };
+in
 {
   imports = [
     ./hyprpaper.nix
-    ./hyprlock.nix
   ] ++ (system.${device} or [ ]);
 
   home.file."./.config/hypr/bg3.jpg" = {
