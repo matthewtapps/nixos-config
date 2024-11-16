@@ -1,6 +1,10 @@
 return {
-  -- "folke/snacks.nvim",
-  -- keys = {
-  --   { "<c-/>", function() Snacks.terminal({ opts = { win = { position = "float" } } }) end, desc = "Toggle Terminal" },
-  -- }
+  "folke/snacks.nvim",
+  opts = {
+    terminal = {
+      win = {
+        position = "float",
+      }
+    }
+  }
 }
