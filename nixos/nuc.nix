@@ -6,7 +6,6 @@
     ./hardware/nuc.nix
     ./modules/common.nix
     ./modules/wayland.nix
-    ./modules/nvidia.nix
     ./modules/audio.nix
     ./modules/thunar.nix
     ./modules/networkmanager.nix
