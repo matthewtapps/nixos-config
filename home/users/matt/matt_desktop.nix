@@ -6,6 +6,7 @@
     ../../programs/ags/default.nix
     ../../programs/kitty/default.nix
     ../../programs/hypr/default.nix
+    ../../programs/lan-mouse.nix
   ];
 
   home.stateVersion = "24.05";
