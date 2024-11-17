@@ -18,6 +18,8 @@
 
     matugen.url = "github:InioX/matugen?ref=v2.2.0";
 
+    lan-mouse.url = "github:feschber/lan-mouse";
+
     # darwin.inputs.nixpkgs.follows = "nixpkgs";
     # darwin.url = "github:lnl7/nix-darwin/master";
 

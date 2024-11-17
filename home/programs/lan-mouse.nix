@@ -1,4 +1,4 @@
-{ device, ... }:
+{ inputs, device, ... }:
 let
   config = {
     "Matt-DESKTOP-NIXOS" = {
@@ -14,6 +14,7 @@ let
   };
 in
 {
+  imports = [ inputs.lan-mouse.homeManagerModules.default ];
   programs.lan-mouse = {
     enable = true;
     settings = (config.${device} or { });
