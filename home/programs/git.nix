@@ -1,8 +1,4 @@
-{ pkgs, ... }:
-
-{
-  home.packages = with pkgs; [ tig ];
-
+_: {
   programs.git = {
     enable = true;
     userName = "matthewtapps";

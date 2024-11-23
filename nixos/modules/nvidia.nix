@@ -2,11 +2,11 @@
 {
   boot = {
     extraModulePackages = [ config.boot.kernelPackages.nvidia_x11_beta ];
-    initrd.kernelModules = ["nvidia"];
+    initrd.kernelModules = [ "nvidia" ];
 
-    kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
+    kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
   };
- 
+
   environment.systemPackages = with pkgs; [
     linuxPackages.nvidia_x11
   ];
@@ -19,7 +19,7 @@
       package = config.boot.kernelPackages.nvidiaPackages.beta;
       powerManagement.enable = false;
     };
-  
+
     graphics = {
       enable = true;
     };
