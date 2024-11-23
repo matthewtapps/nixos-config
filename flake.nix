@@ -10,7 +10,7 @@
     home-manager.url = "github:nix-community/home-manager";
 
     nix-colors.url = "github:misterio77/nix-colors";
-    ags.url = "github:Aylur/ags";
+    ags.url = "github:Aylur/ags/v1";
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
