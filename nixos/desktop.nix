@@ -13,6 +13,7 @@
     ./modules/thunar.nix
     ./modules/networkmanager.nix
     ./modules/cloudflare-warp.nix
+    ./modules/steam.nix
   ];
 
   boot.loader = {
