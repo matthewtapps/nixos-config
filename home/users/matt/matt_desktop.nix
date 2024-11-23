@@ -7,6 +7,7 @@
     ../../programs/kitty/default.nix
     ../../programs/hypr/default.nix
     ../../programs/lan-mouse.nix
+    ../../programs/steam.nix
   ];
 
   home.stateVersion = "24.05";
@@ -26,7 +27,6 @@
     spotify-player
     xfce.thunar
     networkmanagerapplet
-    steam
     calibre
     qbittorrent
     zoom-us
