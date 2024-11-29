@@ -1,10 +1,21 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
+let
+  pkgs-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in
 {
   boot = {
     extraModulePackages = [ config.boot.kernelPackages.nvidia_x11_beta ];
     initrd.kernelModules = [ "nvidia" ];
 
-    kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
+    kernelParams = [
+      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+      "nvidia-drm.modeset=1"
+    ];
   };
 
   environment.systemPackages = with pkgs; [
@@ -22,11 +33,10 @@
 
     graphics = {
       enable = true;
-    };
+      package = pkgs-unstable.mesa.drivers;
 
-    system76 = {
-      enableAll = true;
-      kernel-modules.enable = true;
+      enable32Bit = true;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa.drivers;
     };
   };
 
