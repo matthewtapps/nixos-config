@@ -20,6 +20,8 @@
 
     lan-mouse.url = "github:feschber/lan-mouse";
 
+    hyprland.url = "github:hyprwm/Hyprland";
+
     # darwin.inputs.nixpkgs.follows = "nixpkgs";
     # darwin.url = "github:lnl7/nix-darwin/master";
 
@@ -164,6 +166,9 @@
         desktop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           pkgs = nixosPackages;
+          specialArgs = {
+            inherit inputs;
+          };
           modules = [
             ./nixos/desktop.nix
             { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
@@ -184,6 +189,9 @@
         nuc = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           pkgs = nixosPackages;
+          specialArgs = {
+            inherit inputs;
+          };
           modules = [
             ./nixos/nuc.nix
             { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
