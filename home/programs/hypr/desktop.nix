@@ -149,6 +149,7 @@ _: {
       bind = $mainMod, V, togglesplit, # dwindle
       bind = SUPER, L, exec, hyprlock
       bind = SUPER SHIFT, S, exec, hyprshot -m region
+      bind = SHIFT, Print, exec, hyprshot -m region
       bind = $mainMod SHIFT, R, exec, pkill ags && hyprctl dispatch exec ags
       bind = $mainMod, X, fullscreen
 
