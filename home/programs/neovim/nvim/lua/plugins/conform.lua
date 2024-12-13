@@ -17,6 +17,7 @@ return {
         sh = { "shfmt" },
         svelte = { "prettier" },
         typescript = { "prettier" },
+        rust = { "rustfmt" }
       },
     },
   },

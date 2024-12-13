@@ -27,6 +27,7 @@ return {
       })
       require("lspconfig").ts_ls.setup({})
       require("lspconfig").terraformls.setup({})
+      require("lspconfig").rust_analyzer.setup({})
     end,
   },
 }
