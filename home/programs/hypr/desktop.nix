@@ -10,8 +10,8 @@ _: {
       $mon2=desc:AOC Q27G2G3R3B 137P6HA011487
 
       # See https://wiki.hyprland.org/Configuring/Monitors/
-      monitor=$mon1,2560x1440@120.00Hz,0x0,1
-      monitor=$mon2,2560x1440@120.00Hz,2560x-250,1,transform,1
+      monitor=$mon1,2560x1440@144.00Hz,0x0,1
+      monitor=$mon2,2560x1440@143.91Hz,2560x-250,1,transform,1
 
 
       ###################
