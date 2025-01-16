@@ -17,7 +17,8 @@ return {
         sh = { "shfmt" },
         svelte = { "prettier" },
         typescript = { "prettier" },
-        rust = { "rustfmt" }
+        rust = { "rustfmt" },
+        go = { "go fmt" }
       },
     },
   },

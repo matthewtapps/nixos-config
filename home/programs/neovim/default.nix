@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   programs.neovim = {
     enable = true;
     package = pkgs.neovim;
@@ -7,7 +8,11 @@
     viAlias = true;
     coc.enable = false;
     withNodeJs = true;
-    extraLuaPackages = ps: [ ps.lua ps.luarocks-nix ps.magick ];
+    extraLuaPackages = ps: [
+      ps.lua
+      ps.luarocks-nix
+      ps.magick
+    ];
     extraPackages = with pkgs; [
       # Binaries
       ripgrep
@@ -24,6 +29,7 @@
       nixd
       nil
       typescript-language-server
+      gopls
 
       # Formatters
       nixfmt-rfc-style
