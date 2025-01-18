@@ -212,6 +212,9 @@
         thinkpad = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           pkgs = nixosPackages;
+          specialArgs = {
+            inherit inputs;
+          };
           modules = [
             ./nixos/thinkpad.nix
             nixos-wsl.nixosModules.default
