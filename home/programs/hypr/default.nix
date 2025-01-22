@@ -3,7 +3,7 @@ let
   system = {
     "nuc" = [ (import ./nuc.nix) ];
     "desktop" = [ (import ./desktop.nix) ];
-
+    "thinkpad" = [ (import ./thinkpad.nix) ];
   };
 in
 {

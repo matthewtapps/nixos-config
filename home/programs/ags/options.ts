@@ -65,7 +65,7 @@ const options = mkOptions(OPTIONS, {
   bar: {
     flatButtons: opt(true),
     position: opt<"top" | "bottom">("top"),
-    corners: opt(50),
+    corners: opt(0),
     transparent: opt(false),
     layout: {
       start: opt<Array<import("widget/bar/Bar").BarWidget>>([
@@ -195,7 +195,7 @@ const options = mkOptions(OPTIONS, {
       unit: opt<"metric" | "imperial" | "standard">("metric"),
       key: opt<string>(
         JSON.parse(Utils.readFile(`${App.configDir}/.weather`) || "{}")?.key ||
-          "",
+        "",
       ),
       cities: opt<Array<number>>(
         JSON.parse(Utils.readFile(`${App.configDir}/.weather`) || "{}")
