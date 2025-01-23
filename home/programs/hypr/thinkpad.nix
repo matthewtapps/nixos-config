@@ -8,7 +8,7 @@ _: {
 
       $mon1=desc:Samsung Display Corp. 0x4165
 
-      monitor=$mon1,3840x2400@60Hz,0x0,1.5
+      monitor=$mon1,3840x2400@60Hz,0x0,2
 
       ###################
       ### MY PROGRAMS ###
@@ -114,7 +114,7 @@ _: {
           kb_layout = us
           kb_variant =
           kb_model =
-          kb_options =
+          kb_options = ctrl:nocaps
           kb_rules =
 
           follow_mouse = 1
@@ -122,7 +122,8 @@ _: {
           sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
 
           touchpad {
-              natural_scroll = false
+              natural_scroll = true
+              scroll_factor = 0.7
           }
           accel_profile = flat
       }
@@ -155,6 +156,8 @@ _: {
       bindle= , xf86audioplay, exec, playerctl play-pause
       bindle= , XF86audionext, exec, playerctl next
       bindle= , xf86audioprevious, exec, playerctl previous
+      bindle= , xf86monbrightnessup, exec, brightnessctl set 5%+
+      bindle= , xf86monbrightnessdown, exec, brightnessctl set 5%-
 
       # Move focus with mainMod + arrow keys
       bind = $mainMod, left, movefocus, l

@@ -52,6 +52,8 @@
     bluetooth.enable = true;
   };
 
+  powerManagement.enable = true;
+
   # Don't delete
   system.stateVersion = "24.05";
 }
