@@ -46,7 +46,7 @@
     overskride
     gtk-engine-murrine
     gnome-themes-extra
-    inputs.zen-browser.packages.${system}.generic
+    inputs.zen-browser.packages.${system}.default
 
   ];
 
