@@ -10,7 +10,14 @@
     home-manager.url = "github:nix-community/home-manager";
 
     nix-colors.url = "github:misterio77/nix-colors";
-    ags.url = "github:Aylur/ags/v1";
+    astal = {
+      url = "github:aylur/astal";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    ags = {
+      url = "github:aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
@@ -36,6 +43,8 @@
       home-manager,
       nixos-wsl,
       zen-browser,
+      astal,
+      ags,
       ...
     }@inputs:
     let
@@ -178,7 +187,12 @@
               home-manager.extraSpecialArgs = {
                 pkgs = x86Pkgs;
                 device = "desktop";
-                inherit inputs theme;
+                inherit
+                  inputs
+                  theme
+                  ags
+                  astal
+                  ;
               };
               home-manager.users.matt = import ./home/users/matt/matt_desktop.nix;
               home-manager.backupFileExtension = "backup";
@@ -201,7 +215,12 @@
               home-manager.extraSpecialArgs = {
                 pkgs = x86Pkgs;
                 device = "nuc";
-                inherit inputs theme;
+                inherit
+                  inputs
+                  theme
+                  ags
+                  astal
+                  ;
               };
               home-manager.users.matt = import ./home/users/matt/nuc.nix;
               home-manager.backupFileExtension = "backup";
@@ -247,7 +266,12 @@
               home-manager.extraSpecialArgs = {
                 pkgs = x86Pkgs;
                 device = "thinkpad";
-                inherit inputs theme;
+                inherit
+                  inputs
+                  theme
+                  ags
+                  astal
+                  ;
               };
               home-manager.users.matt = import ./home/users/matt/matt_thinkpad.nix;
               home-manager.backupFileExtension = "backup";

@@ -1,19 +1,28 @@
-{ pkgs, inputs, ... }:
 {
+  pkgs,
+  ags,
+  astal,
+  ...
+}:
+{
+  pkgs."x86_64-linux".default = pkgs.stdenvNoCC.mkDerivation rec {
+    name = "my-shell";
+    src = ./.;
 
-  imports = [ inputs.ags.homeManagerModules.default ];
-  programs.ags = {
-    enable = true;
-    configDir = ./.;
-    extraPackages = with pkgs; [
-      gtksourceview
-      webkitgtk_6_0
-      accountsservice
+    nativeBuildInputs = [
+      ags.packages."x86_64-linux".default
+      pkgs.wrapGAppsHook
+      pkgs.gobject-introspection
     ];
-  };
 
-  # home.file."./.config/ags" = {
-  #   source = ./.;
-  #   recursive = true;
-  # };
+    buildInputs = with astal.packages."x86_64-linux"; [
+      astal3
+      io
+    ];
+
+    installPhase = ''
+      mkdir -p $out/bin
+      ags bundle app.ts $out/bin/${name}
+    '';
+  };
 }
