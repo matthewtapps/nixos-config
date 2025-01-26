@@ -28,7 +28,7 @@ _: {
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
       # Or execute your favorite apps at launch like this:
 
-      exec-once = hyprpaper & ags
+      exec-once = hyprpaper & ags run
       exec-once = wl-paste -p -t text --watch clipman store -P --histpath="~/.local/share/clipman-primary.json"
 
       #############################
@@ -272,7 +272,7 @@ _: {
     enable = true;
     extraConfig = ''
       $hypr = ~/.config/hypr
-      $mon1 = HDMI-A-2 
+      $mon1 = desc:Samsung Display Corp. 0x4165
 
       # GENERAL
       general {
