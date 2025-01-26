@@ -13,6 +13,7 @@
     ./modules/networkmanager.nix
     ./modules/cloudflare-warp.nix
     ./modules/steam.nix
+    ./modules/battery.nix
   ];
 
   boot.loader = {
