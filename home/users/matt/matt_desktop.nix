@@ -7,6 +7,7 @@
     ../../programs/kitty/default.nix
     ../../programs/hypr/default.nix
     ../../programs/lan-mouse.nix
+    ../../programs/rofi/default.nix
   ];
 
   home.stateVersion = "24.05";
