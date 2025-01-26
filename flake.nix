@@ -10,10 +10,6 @@
     home-manager.url = "github:nix-community/home-manager";
 
     nix-colors.url = "github:misterio77/nix-colors";
-    astal = {
-      url = "github:aylur/astal";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     ags = {
       url = "github:aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,8 +39,6 @@
       home-manager,
       nixos-wsl,
       zen-browser,
-      astal,
-      ags,
       ...
     }@inputs:
     let
@@ -190,8 +184,6 @@
                 inherit
                   inputs
                   theme
-                  ags
-                  astal
                   ;
               };
               home-manager.users.matt = import ./home/users/matt/matt_desktop.nix;
@@ -218,8 +210,6 @@
                 inherit
                   inputs
                   theme
-                  ags
-                  astal
                   ;
               };
               home-manager.users.matt = import ./home/users/matt/nuc.nix;
@@ -269,8 +259,6 @@
                 inherit
                   inputs
                   theme
-                  ags
-                  astal
                   ;
               };
               home-manager.users.matt = import ./home/users/matt/matt_thinkpad.nix;
