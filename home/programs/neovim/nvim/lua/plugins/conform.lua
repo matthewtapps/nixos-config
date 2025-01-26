@@ -18,7 +18,8 @@ return {
         svelte = { "prettier" },
         typescript = { "prettier" },
         rust = { "rustfmt" },
-        go = { "go fmt" }
+        go = { "go fmt" },
+        astro = { "prettier" }
       },
     },
   },

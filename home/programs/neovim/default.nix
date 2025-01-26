@@ -30,6 +30,7 @@
       nil
       typescript-language-server
       gopls
+      astro-language-server
 
       # Formatters
       nixfmt-rfc-style

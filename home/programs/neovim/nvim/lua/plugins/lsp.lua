@@ -28,6 +28,7 @@ return {
       require("lspconfig").terraformls.setup({})
       require("lspconfig").rust_analyzer.setup({})
       require("lspconfig").gopls.setup({})
+      require("lspconfig").astro.setup({})
     end,
   },
 }
