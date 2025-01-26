@@ -4,7 +4,22 @@
   all: unset;
   background-color: vars.$bg;
   color: vars.$fg;
-  padding: 4px 4px 4px 2px;
+  padding: 2px 2px 2px 1px;
+  border: none;
+  min-height: 25px;
+  min-width: 30px;
+  border-radius: 8px;
+}
+
+.iconButton:hover {
+  background-color: vars.$bgHover;
+}
+
+.activeWorkspace {
+  all: unset;
+  background-color: vars.$bg;
+  color: vars.$buttonPrimary;
+  padding: 2px 2px 2px 1px;
   border: none;
   min-height: 25px;
   min-width: 30px;
@@ -19,7 +34,7 @@
   all: unset;
   background-color: vars.$bg;
   color: vars.$warning;
-  padding: 4px 4px 4px 2px;
+  padding: 2px 2px 2px 1px;
   border: none;
   min-height: 25px;
   min-width: 30px;
@@ -35,7 +50,7 @@
   background-color: vars.$buttonPrimary;
   color: vars.$fg;
   border-radius: 8px;
-  padding: 4px 8px 4px 8px;
+  padding: 2px 4px 2px 4px;
 }
 
 .primaryButton:hover {
@@ -47,7 +62,7 @@
   background-color: transparent;
   color: vars.$fg;
   border-radius: 8px;
-  padding: 4px 8px 4px 8px;
+  padding: 2px 4px 2px 4px;
 }
 
 .transparentButton:hover {
