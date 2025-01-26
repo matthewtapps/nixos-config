@@ -12,63 +12,45 @@ import { SystemMenuWindowName } from "../systemMenu/SystemMenuWindow";
 import Bluetooth from "gi://AstalBluetooth"
 import { activeVpnConnections } from "../systemMenu/NetworkControls";
 import { isRecording } from "../screenshot/Screenshot";
-import Divider from "../common/Divider";
 
-function groupByProperty(
-  array: Hyprland.Workspace[],
-): Hyprland.Workspace[][] {
-  const map = new Map<Hyprland.Monitor, Hyprland.Workspace[]>();
-
-  array.forEach((item) => {
-    const key = item.monitor;
-    if (key === null) {
-      return
-    }
-    if (!map.has(key)) {
-      map.set(key, []);
-    }
-    map.get(key)!.unshift(item);
-  });
-
-  return Array.from(map.values()).sort((a, b) => {
-    return a[0].monitor.id - b[0].monitor.id
-  });
-}
-
-export function Workspaces({ vertical }: { vertical: boolean }) {
+export function Workspaces({ vertical, monitorId }: { vertical: boolean, monitorId: number }) {
   const hypr = Hyprland.get_default()
 
   return <box
     vertical={vertical}>
     {bind(hypr, "workspaces").as((workspaces) => {
-      const groupedWorkspaces = groupByProperty(workspaces)
-      return groupedWorkspaces.map((workspaceGroup, index) => {
+      workspaces.sort((a, b) => a.id - b.id);
+      return workspaces.map((workspace) => {
+        const workspaceVars = Variable.derive([
+          bind(workspace.monitor, "id"),
+          bind(workspace.monitor, "activeWorkspace")
+        ])
         return <box
+          visible={
+            workspaceVars(([id, _]) => id === monitorId)
+          }
           vertical={vertical}>
-          {index > 0 && index < groupedWorkspaces.length && <Divider />}
-          {workspaceGroup.sort((a, b) => {
-            return a.id - b.id
-          }).map((workspace) => {
-            return <button
-              label={workspace.id.toString()}
-              className={
-                bind(workspace.monitor, "activeWorkspace").as((activeWorkspace) =>
-                  activeWorkspace.id == workspace.id ? "activeWorkspace" : "iconButton"
-                )
-              }
-              onClicked={() => {
-                hypr.dispatch("workspace", `${workspace.id}`)
-              }}>
-            </button>
-          })}
+          <button
+            label={workspace.id.toString()}
+            className={
+              workspaceVars(([_, activeWorkspace]) => (
+                activeWorkspace.id === workspace.id
+                  ? "activeWorkspace"
+                  : "iconButton"
+              ))
+            }
+            onClicked={() => {
+              hypr.dispatch("workspace", `${workspace.id}`)
+            }}>
+          </button>
         </box>
       })
     })}
-  </box>
+  </box >
 }
 
 export function ClockButton({ css }: { css: string, singleLine: boolean }) {
-  const format = "%I:%M:%S"
+  const format = "%H:%M:%S"
 
   const time = Variable<string>("").poll(1000, () =>
     GLib.DateTime.new_now_local().format(format)!)
@@ -114,10 +96,12 @@ export function VolumeButton({ css }: { css: string }) {
     bind(defaultSpeaker, "mute")
   ])
 
-  return <label
-    css={css}
+  return <button
     className="iconButton"
-    label={speakerVar(() => getVolumeIcon(defaultSpeaker))} />
+    css={css}
+    label={speakerVar(() => getVolumeIcon(defaultSpeaker))}
+    onClicked={() => execAsync("pactl set-sink-mute @DEFAULT_SINK@ toggle")}
+  />
 }
 
 export function MicrophoneButton({ css }: { css: string }) {
