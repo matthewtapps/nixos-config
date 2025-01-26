@@ -1,7 +1,12 @@
 configuration {
-  modi: "window,drun,ssh,combi";
-  font: "CommitMono Nerd Font";
-  combi-modi: "window,drun,ssh";
-  show-icons: true;
-}
-  @theme "~/.config/rofi/everforest.rasi"
+    modi: "window,drun,ssh,combi";
+    font: "CommitMono Nerd Font";
+    combi-modi: "window,drun,ssh";
+    display-ssh:    "";
+    display-run:    "";
+    display-drun:   "";
+    display-window: "";
+    display-combi:  "";
+    show-icons:     true;
+  }
+@theme "~/.config/rofi/everforest.rasi"
