@@ -20,7 +20,12 @@ return {
         spell_foreground = false,
         inlay_hints_background = "dimmed",
         show_eob = false,
-        float_style = "bright"
+        float_style = "bright",
+        on_highlights = function(hl, palette)
+          hl.NeoTreeNormal = { bg = palette.bg1 }
+          hl.NeoTreeNormalNC = { bg = palette.bg1 }
+          hl.NeoTreeEndOfBuffer = { bg = palette.bg1 }
+        end
       })
     end,
   },

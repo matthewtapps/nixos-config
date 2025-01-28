@@ -35,7 +35,6 @@ require("lazy").setup({
     -- Same but for Neovim's news.txt
     neovim = false,
   },
-  install = { colorscheme = { "everforest" } },
   checker = { enabled = true, notify = false }, -- automatically check for plugin updates
   performance = {
     rtp = {
@@ -51,8 +50,5 @@ require("lazy").setup({
         "zipPlugin",
       },
     },
-  },
-  opts = {
-    colorscheme = "everforest"
   }
 })
