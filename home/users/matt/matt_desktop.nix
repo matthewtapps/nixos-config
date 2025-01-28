@@ -7,8 +7,6 @@
     ../../programs/hypr/default.nix
     ../../programs/lan-mouse.nix
     ../../programs/rofi/default.nix
-    ../../programs/kitty.nix
-    ../../programs/ghostty.nix
     ../../programs/wezterm.nix
   ];
 
