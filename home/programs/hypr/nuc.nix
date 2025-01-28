@@ -17,7 +17,7 @@ _: {
       # See https://wiki.hyprland.org/Configuring/Keywords/
 
       # Set programs that you use
-      $terminal = kitty
+      $terminal = wezterm
       $fileManager = thunar
       $menu = rofi -show drun
 
