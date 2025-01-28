@@ -15,7 +15,8 @@ return {
         "python",
         "svelte",
         "typescript",
-        "terraform"
+        "terraform",
+        "astro"
       },
     },
   },
