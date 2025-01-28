@@ -8,6 +8,7 @@
     ../../programs/hypr/default.nix
     ../../programs/lan-mouse.nix
     ../../programs/rofi/default.nix
+    ../../programs/ghostty.nix
   ];
 
   home.stateVersion = "24.05";
