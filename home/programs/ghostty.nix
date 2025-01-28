@@ -2,9 +2,9 @@ _: {
   programs.ghostty = {
     enable = true;
     enableZshIntegration = true;
-    theme = "Everforst Dark - Hard";
     settings = {
-      font-family = "CommitMono Nerd Font";
+      theme = "Everforest Dark - Hard";
+      font-family = "GeistMono Nerd Font";
       window-decoration = false;
     };
   };

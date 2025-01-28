@@ -4,11 +4,12 @@
     ./common.nix
     ./theme.nix
     ../../programs/ags/default.nix
-    ../../programs/kitty/default.nix
     ../../programs/hypr/default.nix
     ../../programs/lan-mouse.nix
     ../../programs/rofi/default.nix
+    ../../programs/kitty.nix
     ../../programs/ghostty.nix
+    ../../programs/wezterm.nix
   ];
 
   home.stateVersion = "24.05";
