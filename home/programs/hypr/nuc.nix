@@ -217,15 +217,15 @@ _: {
       # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
       # See https://wiki.hyprland.org/Configuring/Workspace-Rules/ for workspace rules
 
-      workspace=1, monitor:$mon1, default:true
+      workspace=1, monitor:$mon1, default:true, on-created-empty: exec slack
       workspace=2, monitor:$mon1,
       workspace=3, monitor:$mon1,
       workspace=4, monitor:$mon1,
-      workspace=5, monitor:$mon2, default:true, on-created-empty: chrome
+      workspace=5, monitor:$mon2, default:true
       workspace=6, monitor:$mon2,
       workspace=7, monitor:$mon2,
       workspace=8, monitor:$mon1,
-      workspace=9, monitor:$mon1, on-created-empty: kitty spotify_player
+      workspace=9, monitor:$mon1, on-created-empty: wezterm spotify_player
 
       # Example windowrule v1
       windowrule = float,title:^(Volume Control)$
@@ -240,9 +240,6 @@ _: {
       windowrule = size 1000 1200,title:overskride
       windowrule = move 4% 10%,title:overskride
 
-
-      # Example windowrule v2
-      # windowrulev2 = float,class:^(kitty)$,title:^(kitty)$
 
       windowrulev2 = suppressevent maximize, class:.* # You'll probably like this.
 
