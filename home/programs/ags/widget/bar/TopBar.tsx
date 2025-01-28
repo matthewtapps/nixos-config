@@ -3,6 +3,7 @@ import {
   BatteryButton,
   BluetoothButton,
   ClockButton,
+  MediaButton,
   MenuButton,
   MicrophoneButton,
   NetworkButton,
@@ -10,48 +11,45 @@ import {
   VolumeButton, VpnButton,
   Workspaces
 } from "./BarWidgets";
-import Hyprland from "gi://AstalHyprland"
 
-export default function() {
+export default function(monitorId: number) {
   let iconCss = ""
 
-  const hypr = Hyprland.get_default();
-
-  const monitors = hypr.get_monitors();
-
   return <>
-    {monitors.map(monitor => {
-      <window
-        css={`background: transparent;`}
-        monitor={monitor.get_id()}
-        exclusivity={Astal.Exclusivity.EXCLUSIVE}
-        anchor={Astal.WindowAnchor.TOP
-          | Astal.WindowAnchor.LEFT
-          | Astal.WindowAnchor.RIGHT}
-        application={App}>
-        <centerbox
-          className="window"
-          css={`
+    <window
+      css={`background: transparent;`}
+      monitor={monitorId}
+      exclusivity={Astal.Exclusivity.EXCLUSIVE}
+      name="topbar"
+      anchor={Astal.WindowAnchor.TOP
+        | Astal.WindowAnchor.LEFT
+        | Astal.WindowAnchor.RIGHT}
+      application={App}>
+      <centerbox
+        className="window"
+        css={`
                 min-height: 20px;
             `}>
-          <box halign={Gtk.Align.START}>
-            <MenuButton css={""} />
-            <Workspaces vertical={false} monitorId={monitor.get_id()} />
-          </box>
-          <box>
-            <ClockButton css={""} singleLine={true} />
-          </box>
-          <box halign={Gtk.Align.END}>
-            <ScreenRecordingButton css={iconCss} />
-            <VolumeButton css={iconCss} />
-            <MicrophoneButton css={iconCss} />
-            <BluetoothButton css={iconCss} />
-            <VpnButton css={iconCss} />
-            <NetworkButton css={iconCss} />
-            <BatteryButton css={iconCss} />
-          </box>
-        </centerbox>
-      </window>
-    })}
+        <box halign={Gtk.Align.START}>
+          <MenuButton css={""} />
+          <Workspaces vertical={false} monitorId={monitorId} />
+        </box>
+        <box halign={Gtk.Align.CENTER}>
+          <ClockButton css={""} singleLine={true} monitorId={monitorId} />
+        </box>
+        {/* <box> */}
+        {/*   <MediaButton css={""} /> */}
+        {/* </box> */}
+        <box halign={Gtk.Align.END}>
+          <ScreenRecordingButton css={iconCss} />
+          <VolumeButton css={iconCss} />
+          <MicrophoneButton css={iconCss} />
+          <BluetoothButton css={iconCss} />
+          <VpnButton css={iconCss} />
+          <NetworkButton css={iconCss} />
+          <BatteryButton css={iconCss} />
+        </box>
+      </centerbox>
+    </window>
   </>
 }

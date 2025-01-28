@@ -16,11 +16,12 @@ eventbox.Notification {
     border-radius: 8px;
     background-color: vars.$bg;
     margin: 5px;
-    border: 2px solid vars.$primary;
+    padding: 5px;
+    border: 1px solid vars.$bgHover;
   }
 
   &.critical>box {
-    border: 2px solid vars.$warning;
+    border: 1px solid vars.$warning;
 
     .header {
 
@@ -35,7 +36,7 @@ eventbox.Notification {
   }
 
   &.history>box {
-    margin: 5px 0 5px 0;
+    margin: 5px;
     min-width: 0;
     border: 2px solid vars.$bgHover;
   }

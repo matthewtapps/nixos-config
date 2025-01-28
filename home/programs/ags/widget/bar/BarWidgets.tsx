@@ -1,17 +1,20 @@
 import { bind, GLib, Variable } from "astal"
-import { App } from "astal/gtk3"
+import { App, Astal } from "astal/gtk3"
 import Hyprland from "gi://AstalHyprland"
-import { CalendarWindowName } from "../calendar/Calendar"
 import Wp from "gi://AstalWp"
 import Battery from "gi://AstalBattery"
-import { getMicrophoneIcon, getVolumeIcon } from "../utils/audio"
+import { getMicrophoneIcon, getVolumeIcon, toggleMuteEndpoint } from "../utils/audio"
 import { getNetworkIconBinding } from "../utils/network"
 import { getBatteryIcon } from "../utils/battery"
 import { execAsync } from "astal/process"
 import { SystemMenuWindowName } from "../systemMenu/SystemMenuWindow";
 import Bluetooth from "gi://AstalBluetooth"
-import { activeVpnConnections } from "../systemMenu/NetworkControls";
+import { activeVpnConnections } from "../networkMenu/NetworkControls"
 import { isRecording } from "../screenshot/Screenshot";
+import { NetworkMenuWindowName } from "../networkMenu/NetworkMenuWindow"
+import { BluetoothMenuWindowName } from "../bluetoothMenu/BluetoothMenuWindow"
+import Mpris from "gi://AstalMpris"
+import { MediaPlayerMenuWindowName } from "../mediaPlayerMenu/MediaPlayerMenuWindow"
 
 export function Workspaces({ vertical, monitorId }: { vertical: boolean, monitorId: number }) {
   const hypr = Hyprland.get_default()
@@ -49,21 +52,71 @@ export function Workspaces({ vertical, monitorId }: { vertical: boolean, monitor
   </box >
 }
 
-export function ClockButton({ css }: { css: string, singleLine: boolean }) {
-  const format = "%H:%M:%S"
+export function ClockButton({ css, monitorId }: { css: string, singleLine: boolean, monitorId: number }) {
+  const format = "%H:%M:%S - %A %e."
 
   const time = Variable<string>("").poll(1000, () =>
     GLib.DateTime.new_now_local().format(format)!)
+
+  const calendarWindowName = `calendarwindow${monitorId}`
 
   return <button
     className="iconButton"
     css={css}
     label={time()}
     onClicked={() => {
-      App.toggle_window(CalendarWindowName)
+      App.toggle_window(calendarWindowName)
     }}>
 
   </button>
+}
+
+export function MediaButton({ css }: { css: string }) {
+  const mpris = Mpris.get_default();
+  return <box>
+    {bind(mpris, "players").as(p => {
+      if (!p.length) return <label />;
+
+      const defaultPlayer = p[0];
+      if (!defaultPlayer) return <label />;
+
+      const title = bind(defaultPlayer, "title").as(t => t || "Unknown Track")
+      const artist = bind(defaultPlayer, "artist").as(a => a || "Unknown Artist")
+
+      const realPosition = Variable(defaultPlayer.position)
+      bind(defaultPlayer, "position").subscribe((position) => {
+        if (defaultPlayer.playbackStatus === Mpris.PlaybackStatus.PLAYING) {
+          realPosition.set(position)
+        }
+      })
+      const playIcon = bind(defaultPlayer, "playbackStatus").as(s =>
+        s === Mpris.PlaybackStatus.PLAYING
+          ? ""
+          : ""
+      )
+
+      return <button
+        className="iconButton"
+        css={css}
+        onClick={(_, e) => {
+          if (e.button === Astal.MouseButton.PRIMARY) {
+            App.toggle_window(MediaPlayerMenuWindowName);
+          }
+          if (e.button === Astal.MouseButton.SECONDARY) {
+            defaultPlayer.play_pause();
+          }
+        }}
+      >
+        <box >
+          <label label={playIcon} css="margin: 0px 5px 0px 10px" />
+          <label label={title} css="margin: 0px 10px 0px 5px" />
+          <label>-</label>
+          <box css="margin: 0px 5px 0px 10px" />
+          <label label={artist} />
+        </box>
+      </button>
+    })}
+  </box>
 }
 
 export function VpnButton({ css }: { css: string }) {
@@ -113,28 +166,41 @@ export function MicrophoneButton({ css }: { css: string }) {
     bind(defaultMicrophone, "mute")
   ])
 
-  return <label
+  const audio = Wp.get_default()!
+
+  return <button
     css={css}
     className="iconButton"
-    label={micVar(() => getMicrophoneIcon(defaultMicrophone))} />
+    label={micVar(() => getMicrophoneIcon(defaultMicrophone))}
+    onClicked={() => {
+      toggleMuteEndpoint(audio.default_microphone)
+    }}
+  />
 }
 
 export function BluetoothButton({ css }: { css: string }) {
   const bluetooth = Bluetooth.get_default()
-  return <label
+  return <button
     css={css}
     className="iconButton"
     label="󰂯"
     visible={bind(bluetooth, "isPowered").as((isPowered) => {
       return isPowered
-    })} />
+    })}
+    onClicked={() => {
+      App.toggle_window(BluetoothMenuWindowName)
+    }}
+  />
 }
 
 export function NetworkButton({ css }: { css: string }) {
-  return <label
+  return <button
     css={css}
     className="iconButton"
-    label={getNetworkIconBinding()} />
+    label={getNetworkIconBinding()}
+    onClicked={() => {
+      App.toggle_window(NetworkMenuWindowName)
+    }} />
 }
 
 export function BatteryButton({ css }: { css: string }) {
@@ -170,7 +236,7 @@ export function BatteryButton({ css }: { css: string }) {
         return "warningIconButton"
       }
     })}
-    label={batteryVar(() => getBatteryIcon(battery))}
+    label={`${batteryVar(() => getBatteryIcon(battery))} ${batteryVar(() => battery.percentage)}%`}
     visible={bind(battery, "isBattery")} />
 }
 

@@ -1,27 +1,19 @@
 import { App, Astal } from "astal/gtk3"
-import EndpointControls from "./EndpointControls";
-import Wp from "gi://AstalWp"
 import { bind } from "astal"
 import { Gtk, Gdk } from "astal/gtk3"
-import { getMicrophoneIcon, getVolumeIcon } from "../utils/audio";
-import PowerOptions from "./PowerOptions";
-import NotificationHistory from "./NotificationHistory";
-import Divider from "../common/Divider";
-import MediaPlayers from "../mediaPlayerMenu/MediaPlayers";
+import NetworkControls from "./NetworkControls"
 
-export const SystemMenuWindowName = "systemMenuWindow"
+export const NetworkMenuWindowName = "networkMenuWindow"
 
 export default function() {
-  const { audio } = Wp.get_default()!
-
   let window: Gtk.Window
 
   return <window
     exclusivity={Astal.Exclusivity.NORMAL}
-    anchor={Astal.WindowAnchor.TOP | Astal.WindowAnchor.LEFT | Astal.WindowAnchor.BOTTOM}
+    anchor={Astal.WindowAnchor.TOP | Astal.WindowAnchor.RIGHT | Astal.WindowAnchor.BOTTOM}
     layer={Astal.Layer.TOP}
     css={`background: transparent;`}
-    name={SystemMenuWindowName}
+    name={NetworkMenuWindowName}
     application={App}
     margin={5}
     keymode={Astal.Keymode.ON_DEMAND}
@@ -58,22 +50,8 @@ export default function() {
             css={`margin: 0 10px 0 10px;`}
             vertical={true}>
             <box css={"margin-top: 20px;"} />
-            <EndpointControls
-              defaultEndpoint={audio.default_speaker}
-              endpointsBinding={bind(audio, "speakers")}
-              getIcon={getVolumeIcon} />
-            <EndpointControls
-              defaultEndpoint={audio.default_microphone}
-              endpointsBinding={bind(audio, "microphones")}
-              getIcon={getMicrophoneIcon} />
-            {/*Disabling Media players since it seems to cause heavy lag when I use spotify-player (tui spotify)*/}
-            {/*Also requires gvfs package installed*/}
+            <NetworkControls />
             <box css={"margin-top: 20px;"} />
-            <Divider css={"margin: 0 60px 0 60px;"} />
-            <box css={"margin-top: 20px;"} />
-            <PowerOptions />
-            <box css={"margin-top: 20px;"} />
-            <NotificationHistory />
           </box>
         </scrollable>
       </box>
