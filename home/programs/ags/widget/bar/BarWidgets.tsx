@@ -236,7 +236,7 @@ export function BatteryButton({ css }: { css: string }) {
         return "warningIconButton"
       }
     })}
-    label={`${batteryVar(() => getBatteryIcon(battery))} ${batteryVar(() => battery.percentage)}%`}
+    label={batteryVar(() => getBatteryIcon(battery))}
     visible={bind(battery, "isBattery")} />
 }
 
