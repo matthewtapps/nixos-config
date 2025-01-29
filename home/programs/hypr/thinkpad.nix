@@ -269,7 +269,7 @@ _: {
     enable = true;
     extraConfig = ''
       $hypr = ~/.config/hypr
-      $mon1 = desc:Samsung Display Corp. 0x4165
+      $mon1=eDP-1
 
       # GENERAL
       general {

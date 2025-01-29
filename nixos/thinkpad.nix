@@ -53,7 +53,9 @@
     bluetooth.enable = true;
   };
 
+  boot.kernelParams = [ "amd_pstatguided" ];
   powerManagement.enable = true;
+  powerManagement.cpuFreqGovernor = "schedutil";
 
   # Don't delete
   system.stateVersion = "24.05";
