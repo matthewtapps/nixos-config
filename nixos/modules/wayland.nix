@@ -11,12 +11,13 @@
 
     greetd = {
       enable = true;
-      settings = {
-        default_session = {
+      settings = rec {
+        initial_session = {
           command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd Hyprland";
           user = "matt";
         };
-        terminal.vt = 2;
+        default_session = initial_session;
+        terminal.vt = 3;
         Type = "idle";
         StandardInput = "tty";
         StandardOutput = "tty";

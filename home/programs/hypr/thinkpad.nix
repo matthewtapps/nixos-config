@@ -281,6 +281,12 @@ _: {
         text_trim = true
       }
 
+      auth {
+        fingerprint:enabled = true
+        fingerprint:ready_message = "FINGER"
+        fingerprint:present_message = "SCANNING"
+      }
+
       #BACKGROUND
       background {
           monitor = 
@@ -297,7 +303,6 @@ _: {
           monitor = $mon1
           text = cmd[update:1000] echo -e "$(date +"%H")"
           color = rgba(255, 255, 255, 1)
-          shadow_pass = 2
           shadow_size = 3
           shadow_color = rgb(0,0,0)
           shadow_boost = 1.2
@@ -312,10 +317,8 @@ _: {
       label {
           monitor = $mon1
           text = cmd[update:1000] echo -e "$(date +"%M")"
-      #    color = 0xff$color0
           color = rgba(255, 255, 255, 1)
           font_size = 150
-      #    font_family = CommitMono Nerd Font ExtraBold
           font_family = AlfaSlabOne
           position = 0, -420
           halign = center
@@ -331,111 +334,6 @@ _: {
           font_family = CommitMono Nerd Font
           position = 0, -130
           halign = center
-          valign = center
-      }
-
-      # # LOCATION & WEATHER 
-      # label {
-      #     monitor =
-      #     text = cmd[update:1000] echo "$(bash ~/.config/hypr/bin/location.sh) $(bash ~/.config/hypr/bin/weather.sh)"
-      #     color = rgba(255, 255, 255, 1)
-      #     font_size = 10
-      #     font_family = CommitMono Nerd Font
-      #     position = 0, 465
-      #     halign = center
-      #     valign = center
-      # }
-
-
-      # Music
-      image {
-          monitor = $mon1
-          path = 
-          size = 60 # lesser side if not 1:1 ratio
-          rounding = 5 # negative values mean circle
-          border_size = 0
-          rotate = 0 # degrees, counter-clockwise
-          reload_time = 2
-          reload_cmd = ~/.config/hypr/bin/playerctlock.sh --arturl
-          position = -150, -300
-          halign = center
-          valign = center
-          opacity=0.5
-      }
-
-      # PLAYER TITTLE
-      label {
-          monitor = $mon1
-      #    text = cmd[update:1000] echo "$(playerctl metadata --format "{{ xesam:title }}" 2>/dev/null | cut -c1-25)"
-          text = cmd[update:1000] echo "$(~/.config/hypr/bin/playerctlock.sh --title)"
-          color = rgba(255, 255, 255, 0.8)
-          font_size = 12
-          font_family = CommitMono Nerd Font ExtraBold
-          position = 880, -290
-          halign = left
-          valign = center
-      }
-
-      # PLAYER Length
-      label {
-          monitor = $mon1
-      #    text= cmd[update:1000] echo "$(( $(playerctl metadata --format "{{ mpris:length }}" 2>/dev/null) / 60000000 ))m"
-          text = cmd[update:1000] echo "$(~/.config/hypr/bin/playerctlock.sh --length) "
-          color = rgba(255, 255, 255, 1)
-          font_size = 11
-          font_family = CommitMono Nerd Font 
-          position = -730, -310
-          halign = right
-          valign = center
-      }
-
-      # PLAYER STATUS
-      label {
-          monitor = $mon1
-      #    text= cmd[update:1000] echo "$(( $(playerctl metadata --format "{{ mpris:length }}" 2>/dev/null) / 60000000 ))m"
-          text = cmd[update:1000] echo "$(~/.config/hypr/bin/playerctlock.sh --status)"
-          color = rgba(255, 255, 255, 1)
-          font_size = 14
-          font_family = CommitMono Nerd Font 
-          position = -740, -290
-          halign = right
-          valign = center
-      }
-      # PLAYER SOURCE
-      label {
-          monitor = $mon1
-      #    text= cmd[update:1000] echo "$(playerctl metadata --format "{{ mpris:trackid }}" 2>/dev/null | grep -Eo "chromium|firefox|spotify")"
-          text = cmd[update:1000] echo "$(~/.config/hypr/bin/playerctlock.sh --source)"
-          color = rgba(255, 255, 255, 0.6)
-          font_size = 10
-          font_family = CommitMono Nerd Font 
-          position = -740, -330
-          halign = right
-          valign = center
-      }
-
-      # PLAYER ALBUM
-      label {
-          monitor = $mon1
-      #    text= cmd[update:1000] echo "$(~/.config/hypr/bin/album.sh)"
-          text = cmd[update:1000] echo "$(~/.config/hypr/bin/playerctlock.sh --album)"
-          color = rgba(255, 255, 255, 1)
-          font_size = 10 
-          font_family = CommitMono Nerd Font
-          position = 880, -330
-          halign = left
-          valign = center
-      }
-      # PLAYER Artist
-      label {
-          monitor = $mon1
-      #    text = cmd[update:1000] echo "$(playerctl metadata --format "{{ xesam:artist }}" 2>/dev/null | cut -c1-30)"
-          text = cmd[update:1000] echo "$(~/.config/hypr/bin/playerctlock.sh --artist)"
-          color = rgba(255, 255, 255, 0.8)
-          font_size = 10
-          font_family = CommitMono Nerd Font ExtraBold
-          position = 880, -310
-          halign = left
           valign = center
       }
 
