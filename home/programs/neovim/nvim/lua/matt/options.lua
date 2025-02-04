@@ -31,3 +31,5 @@ vim.opt.autoindent = true
 vim.opt.list = true
 vim.o.timeout = true
 vim.o.timeoutlen = 1000
+
+vim.g.snacks_animate = false
