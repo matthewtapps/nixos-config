@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 let
   fontPackage = pkgs.geist-font;
   fontName = "Geist";
@@ -26,19 +26,6 @@ in
     x11 = {
       enable = true;
       defaultCursor = "left_ptr";
-    };
-  };
-
-  xdg.userDirs = {
-    createDirectories = true;
-    documents = "${config.home.homeDirectory}/documents";
-    download = "${config.home.homeDirectory}/downloads";
-    music = "${config.home.homeDirectory}/music";
-    pictures = "${config.home.homeDirectory}/pictures";
-    videos = "${config.home.homeDirectory}/videos";
-    templates = "${config.home.homeDirectory}/templates";
-    extraConfig = {
-      XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/screenshots";
     };
   };
 

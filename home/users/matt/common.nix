@@ -11,7 +11,6 @@
 
   home.sessionVariables = {
     EDITOR = "nvim";
-    HYPRSHOT_DIR = "~/screenshots/";
   };
 
   home.packages = with pkgs; [
@@ -32,8 +31,20 @@
     xdg-desktop-portal-hyprland
     iproute2
     lm_sensors
-
   ];
+
+  xdg.userDirs = {
+    createDirectories = true;
+    documents = "${config.home.homeDirectory}/documents";
+    download = "${config.home.homeDirectory}/downloads";
+    music = "${config.home.homeDirectory}/music";
+    pictures = "${config.home.homeDirectory}/pictures";
+    videos = "${config.home.homeDirectory}/videos";
+    templates = "${config.home.homeDirectory}/templates";
+    extraConfig = {
+      XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/screenshots";
+    };
+  };
 
   imports = [
     #    ./theme.nix
