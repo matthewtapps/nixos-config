@@ -50,6 +50,7 @@ _: {
       env = HYPRCURSOR_THEME,Simp1e Cursors
       env = HYPRCURSOR_SIZE,16
       env = XCURSOR_SIZE,16
+      env = HYPRSHOT_DIR,screenshots/
 
       #####################
       ### LOOK AND FEEL ###
@@ -224,9 +225,9 @@ _: {
       workspace=2, monitor:$mon1,
       workspace=3, monitor:$mon1,
       workspace=4, monitor:$mon1,
-      workspace=5, monitor:$mon2, default:true
-      workspace=6, monitor:$mon2,
-      workspace=7, monitor:$mon2,
+      workspace=5, monitor:$mon1, default:true
+      workspace=6, monitor:$mon1,
+      workspace=7, monitor:$mon1,
       workspace=8, monitor:$mon1,
       workspace=9, monitor:$mon1, on-created-empty: wezterm spotify_player
 
@@ -234,9 +235,9 @@ _: {
       windowrule = float,title:^(Volume Control)$
 
       #Thunar
-      windowrule = float,title:Thunar
-      windowrule = size 1100 700,title:Thunar
-      windowrule = move 100%-w-100 100%-w-100,title:Thunar
+      windowrule = float,title:.*Thunar.*
+      windowrule = size 1100 700,title:.*Thunar.*
+      windowrule = move 100%-w-100 100%-w-100,title:.*Thunar.*
 
       #Overskride
       windowrule = float,title:overskride

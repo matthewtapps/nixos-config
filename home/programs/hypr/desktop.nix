@@ -18,9 +18,6 @@ _: {
       ### MY PROGRAMS ###
       ###################
 
-      # See https://wiki.hyprland.org/Configuring/Keywords/
-
-      # Set programs that you use
       $terminal = wezterm
       $fileManager = thunar
       $menu = rofi -show drun
@@ -54,6 +51,7 @@ _: {
       env = HYPRCURSOR_THEME,Simp1e Cursors
       env = HYPRCURSOR_SIZE,16
       env = XCURSOR_SIZE,16
+      env = HYPRSHOT_DIR,screenshots/
 
       #####################
       ### LOOK AND FEEL ###
@@ -230,15 +228,15 @@ _: {
       workspace=6, monitor:$mon2,
       workspace=7, monitor:$mon2,
       workspace=8, monitor:$mon1,
-      workspace=9, monitor:$mon1, on-created-empty: wezterm spotify_player
+      workspace=9, monitor:$mon1, on-created-empty: wezterm start spotify_player
 
       # Example windowrule v1
-      windowrule = float,title:^(Volume Control)$
+      windowrulev2 = float,title:^(Volume Control)$
 
       #Thunar
-      windowrule = float,title:Thunar
-      windowrule = size 1100 700,title:Thunar
-      windowrule = move 100%-w-100 100%-w-100,title:Thunar
+      windowrule = float, Thunar
+      windowrule = size 1100 700, Thunar
+      windowrule = move 100%-w-100 100%-w-100, Thunar
 
       #Overskride
       windowrule = float,title:overskride

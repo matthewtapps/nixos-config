@@ -50,6 +50,7 @@ _: {
       env = HYPRCURSOR_THEME,Simp1e Cursors
       env = HYPRCURSOR_SIZE,16
       env = XCURSOR_SIZE,16
+      env = HYPRSHOT_DIR,~/screenshots/
 
       #####################
       ### LOOK AND FEEL ###
