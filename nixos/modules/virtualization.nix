@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+_: {
   # environment.systemPackages = with pkgs; [ docker ];
 
   users.users.matt.extraGroups = [ "docker" ];
