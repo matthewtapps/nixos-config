@@ -104,6 +104,7 @@
                   ;
               };
               home-manager.users.matt = import ./home/users/matt/nuc.nix;
+              home-manager.users.anna = import ./home/users/anna/nuc.nix;
               home-manager.backupFileExtension = "backup";
             }
           ];
