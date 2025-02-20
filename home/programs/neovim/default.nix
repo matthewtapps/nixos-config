@@ -17,15 +17,11 @@
       # Binaries
       ripgrep
       fd
-      nodejs_22
-      cargo
-      rustc
       lazygit
       fzf
 
       # Language servers
       lua-language-server
-      rust-analyzer-unwrapped
       nixd
       nil
       typescript-language-server

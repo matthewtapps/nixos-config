@@ -16,7 +16,8 @@ return {
         "svelte",
         "typescript",
         "terraform",
-        "astro"
+        "astro",
+        "rust"
       },
     },
   },
