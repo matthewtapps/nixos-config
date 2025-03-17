@@ -47,6 +47,8 @@
     gtk-engine-murrine
     gnome-themes-extra
     inputs.zen-browser.packages.${system}.default
+
+    jmeter
   ];
 
   home.file = {
