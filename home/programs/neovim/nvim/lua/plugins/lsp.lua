@@ -29,6 +29,7 @@ return {
       require("lspconfig").rust_analyzer.setup({})
       require("lspconfig").gopls.setup({})
       require("lspconfig").astro.setup({})
+      require("lspconfig").ruby_lsp.setup({})
     end,
   },
 }

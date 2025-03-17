@@ -19,7 +19,8 @@ return {
         typescript = { "prettier" },
         rust = { "rustfmt" },
         go = { "go fmt" },
-        astro = { "prettier" }
+        astro = { "prettier" },
+        ruby = { "rufo" }
       },
     },
   },

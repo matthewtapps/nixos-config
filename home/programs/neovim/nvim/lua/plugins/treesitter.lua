@@ -17,7 +17,8 @@ return {
         "typescript",
         "terraform",
         "astro",
-        "rust"
+        "rust",
+        "ruby"
       },
     },
   },
