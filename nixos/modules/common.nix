@@ -1,13 +1,27 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   services = {
     printing.enable = true;
     geoclue2.enable = true;
   };
 
   environment = {
-    variables = { EDITOR = "nvim"; };
-    systemPackages = with pkgs; [ neovim wget git gh chezmoi curl lazygit ];
+    variables = {
+      EDITOR = "nvim";
+    };
+    systemPackages = with pkgs; [
+      neovim
+      wget
+      git
+      gh
+      chezmoi
+      curl
+      lazygit
+      bash
+    ];
   };
+
+  services.envfs.enable = true;
 
   imports = [
     ./ssh.nix
