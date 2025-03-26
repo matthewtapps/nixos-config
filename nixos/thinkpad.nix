@@ -84,6 +84,13 @@
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = false;
 
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 16 * 1024;
+    }
+  ];
+
   # Don't delete
   system.stateVersion = "24.05";
 }
