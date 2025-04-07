@@ -11,7 +11,8 @@
     ./modules/audio.nix
     ./modules/thunar.nix
     ./modules/networkmanager.nix
-    ./modules/cloudflare-warp.nix
+    # ./modules/cloudflare-warp.nix
+    ./modules/tailscale.nix
     ./modules/steam.nix
   ];
 
@@ -90,6 +91,12 @@
       size = 16 * 1024;
     }
   ];
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
 
   # Don't delete
   system.stateVersion = "24.05";
