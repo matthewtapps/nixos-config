@@ -12,8 +12,8 @@
     ./modules/audio.nix
     ./modules/thunar.nix
     ./modules/networkmanager.nix
-    ./modules/cloudflare-warp.nix
     ./modules/steam.nix
+    ./modules/tailscale.nix
   ];
 
   boot.loader = {
