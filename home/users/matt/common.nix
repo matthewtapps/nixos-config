@@ -31,7 +31,7 @@
     xdg-desktop-portal-hyprland
     iproute2
     lm_sensors
-    okular
+    kdePackages.okular
     gimp
 
     # Gurps

@@ -35,9 +35,6 @@
 
       # DAP
       vscode-js-debug
-
-      # Testing
-      vimPlugins.neotest-jest
     ];
 
   };
