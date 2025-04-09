@@ -16,9 +16,11 @@ return {
         "svelte",
         "typescript",
         "terraform",
+        "hcl",
         "astro",
         "rust",
-        "ruby"
+        "ruby",
+        "sql",
       },
     },
   },

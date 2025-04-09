@@ -20,7 +20,10 @@ return {
         rust = { "rustfmt" },
         go = { "go fmt" },
         astro = { "prettier" },
-        ruby = { "rufo" }
+        ruby = { "rufo" },
+        terraform = { "terraform_fmt" },
+        tf = { "terraform_fmt" },
+        sql = { "sqlfluff" }
       },
     },
   },
