@@ -1,15 +1,22 @@
-{ pkgs, ... }:
+{ mypkgs, ... }:
 
 {
   imports = [
     # Include the results of the hardware scan.
-    ./hardware/nuc.nix
-    ./modules/common.nix
-    ./modules/wayland.nix
-    ./modules/audio.nix
-    ./modules/thunar.nix
-    ./modules/networkmanager.nix
+    ../hardware/desktop.nix
+    # ./modules/impermanence/desktop.nix
+    ../modules/common.nix
+    ../modules/wayland.nix
+    ../modules/virtualization.nix
+    ../modules/nvidia.nix
+    ../modules/audio.nix
+    ../modules/thunar.nix
+    ../modules/networkmanager.nix
+    ../modules/steam.nix
+    ../modules/tailscale.nix
   ];
+
+  nixpkgs.pkgs = mypkgs;
 
   boot.loader = {
     efi.canTouchEfiVariables = true;
@@ -22,7 +29,7 @@
   };
 
   networking = {
-    hostName = "NUC-NIXOS";
+    hostName = "Matt-DESKTOP-NIXOS";
     firewall.enable = false;
   };
 
@@ -33,13 +40,15 @@
     };
     nix-ld = {
       enable = true;
-      libraries = with pkgs; [ stdenv.cc.cc ];
+      libraries = with mypkgs; [
+        stdenv.cc.cc
+      ];
     };
 
   };
 
   environment = {
-    systemPackages = with pkgs; [
+    systemPackages = with mypkgs; [
       openssl
       xfce.thunar
       bun

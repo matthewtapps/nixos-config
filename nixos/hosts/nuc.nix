@@ -3,17 +3,12 @@
 {
   imports = [
     # Include the results of the hardware scan.
-    ./hardware/desktop.nix
-    # ./modules/impermanence/desktop.nix
-    ./modules/common.nix
-    ./modules/wayland.nix
-    ./modules/virtualization.nix
-    ./modules/nvidia.nix
-    ./modules/audio.nix
-    ./modules/thunar.nix
-    ./modules/networkmanager.nix
-    ./modules/steam.nix
-    ./modules/tailscale.nix
+    ../hardware/nuc.nix
+    ../modules/common.nix
+    ../modules/wayland.nix
+    ../modules/audio.nix
+    ../modules/thunar.nix
+    ../modules/networkmanager.nix
   ];
 
   boot.loader = {
@@ -27,7 +22,7 @@
   };
 
   networking = {
-    hostName = "Matt-DESKTOP-NIXOS";
+    hostName = "NUC-NIXOS";
     firewall.enable = false;
   };
 
@@ -38,9 +33,7 @@
     };
     nix-ld = {
       enable = true;
-      libraries = with pkgs; [
-        stdenv.cc.cc
-      ];
+      libraries = with pkgs; [ stdenv.cc.cc ];
     };
 
   };

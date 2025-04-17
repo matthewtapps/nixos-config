@@ -4,7 +4,7 @@
 }:
 {
   imports = [
-    ./modules/common.nix
+    ../modules/common.nix
   ];
 
   wsl.enable = true;

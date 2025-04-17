@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixos.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -34,130 +33,123 @@
   outputs =
     {
       nixpkgs,
-      nixos,
       home-manager,
       nixos-wsl,
       zen-browser,
       ...
     }@inputs:
     let
-      overlays = [ inputs.neovim-nightly-overlay.overlays.default ];
+      overlays = [
+        inputs.neovim-nightly-overlay.overlays.default
+        (final: prev: {
+          zen-browser = inputs.zen-browser.packages.${final.system}.default;
+        })
+      ];
 
       config = {
         allowUnfree = true;
       };
 
-      nixosPackages = import nixos {
-        system = "x86_64-linux";
-        inherit config zen-browser overlays;
-      };
+      mkPkgs =
+        system:
+        import nixpkgs {
+          inherit system config overlays;
+        };
 
-      x86Pkgs = import nixpkgs {
-        system = "x86_64-linux";
-        inherit config zen-browser overlays;
-      };
-
+      hosts = [
+        {
+          name = "desktop";
+          system = "x86_64-linux";
+          device = "desktop";
+          users = {
+            matt = ./home/users/matt/matt_desktop.nix;
+          };
+          modules = [
+            ./nixos/hosts/desktop.nix
+          ];
+        }
+        {
+          name = "thinkpad";
+          system = "x86_64-linux";
+          device = "thinkpad";
+          users = {
+            matt = ./home/users/matt/matt_thinkpad.nix;
+          };
+          modules = [
+            ./nixos/hosts/thinkpad.nix
+          ];
+        }
+        {
+          name = "nuc";
+          system = "x86_64-linux";
+          device = "nuc";
+          users = {
+            matt = ./home/users/matt/nuc.nix;
+            anna = ./home/users/anna/nuc.nix;
+          };
+          modules = [
+            ./nixos/hosts/nuc.nix
+          ];
+        }
+        {
+          name = "thinkpad-wsl";
+          system = "x86_64-linux";
+          device = "thinkpad-wsl";
+          users = {
+            matt = ./home/users/matt/matt_thinkpad-wsl.nix;
+          };
+          modules = [
+            ./nixos/hosts/thinkpad-wsl.nix
+            nixos-wsl.nixosModules.default
+          ];
+        }
+      ];
     in
     {
-
-      nixosConfigurations = {
-        desktop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          pkgs = nixosPackages;
-          specialArgs = {
-            inherit inputs;
+      nixosConfigurations = builtins.listToAttrs (
+        map (host: {
+          name = host.name;
+          value = nixpkgs.lib.nixosSystem {
+            system = host.system;
+            specialArgs = {
+              inherit inputs host;
+              mypkgs = mkPkgs host.system;
+            };
+            modules = host.modules;
           };
-          modules = [
-            ./nixos/desktop.nix
-            { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                pkgs = x86Pkgs;
-                device = "desktop";
-                inherit
-                  inputs
-                  ;
-              };
-              home-manager.users.matt = import ./home/users/matt/matt_desktop.nix;
-              home-manager.backupFileExtension = "backup";
-            }
-          ];
-        };
 
-        nuc = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          pkgs = nixosPackages;
-          specialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./nixos/nuc.nix
-            { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                pkgs = x86Pkgs;
-                device = "nuc";
-                inherit
-                  inputs
-                  ;
-              };
-              home-manager.users.matt = import ./home/users/matt/nuc.nix;
-              home-manager.users.anna = import ./home/users/anna/nuc.nix;
-              home-manager.backupFileExtension = "backup";
-            }
-          ];
-        };
+        }) hosts
+      );
 
-        thinkpad-wsl = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          pkgs = nixosPackages;
-          specialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./nixos/thinkpad-wsl.nix
-            nixos-wsl.nixosModules.default
-            { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                pkgs = x86Pkgs;
-                device = "thinkpad-wsl";
-                inherit inputs;
-              };
-              home-manager.users.matt = import ./home/users/matt/matt_thinkpad-wsl.nix;
-              home-manager.backupFileExtension = "backup";
-            }
-          ];
-        };
+      homeConfigurations = builtins.listToAttrs (
+        builtins.concatLists (
+          map (
+            host:
+            let
+              pkgs = mkPkgs host.system;
+            in
+            builtins.attrValues (
+              builtins.mapAttrs (username: file: {
+                name = "${username}@${host.name}";
+                value = home-manager.lib.homeManagerConfiguration {
+                  inherit pkgs;
+                  extraSpecialArgs = {
+                    inherit inputs host;
+                    device = host.device;
+                  };
+                  modules = [
+                    file
+                    {
+                      home.homeDirectory = "/home/${username}";
+                      home.username = username;
+                    }
+                  ];
+                };
+              }) host.users
+            )
 
-        thinkpad = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          pkgs = nixosPackages;
-          specialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./nixos/thinkpad.nix
-            { nix.nixPath = [ "nixpkgs=flake:nixpkgs" ]; }
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.extraSpecialArgs = {
-                pkgs = x86Pkgs;
-                device = "thinkpad";
-                inherit
-                  inputs
-                  ;
-              };
-              home-manager.users.matt = import ./home/users/matt/matt_thinkpad.nix;
-              home-manager.backupFileExtension = "backup";
-            }
-          ];
-        };
-      };
-
-      };
+          ) hosts
+        )
+      );
     };
 }
