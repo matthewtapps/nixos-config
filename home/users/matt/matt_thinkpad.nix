@@ -13,24 +13,18 @@
   home.stateVersion = "24.05";
   home.packages = with pkgs; [
     libreoffice
-    firefox
-    google-chrome
     spotify
     slack
     btop
     neofetch
     obsidian
     discord
-    jetbrains.datagrip
     vscode
     signal-desktop
     spotify-player
     xfce.thunar
-    networkmanagerapplet
     calibre
     qbittorrent
-    zoom-us
-
     rofi-wayland
     swww
     brightnessctl
@@ -48,7 +42,7 @@
     gnome-themes-extra
     inputs.zen-browser.packages.${system}.default
 
-    jmeter
+    jetbrains.datagrip
   ];
 
   home.file = {

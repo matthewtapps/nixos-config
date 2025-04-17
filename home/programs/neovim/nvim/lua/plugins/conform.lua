@@ -21,7 +21,7 @@ return {
         go = { "go fmt" },
         astro = { "prettier" },
         ruby = { "rufo" },
-        terraform = { "terraform_fmt" },
+        terraform = { "terraform fmt" },
         tf = { "terraform_fmt" },
         sql = { "sqlfluff" }
       },

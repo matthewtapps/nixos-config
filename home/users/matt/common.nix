@@ -22,6 +22,7 @@
     iperf3
     dnsutils
     nmap
+    networkmanagerapplet
 
     nixpkgs-fmt
 
