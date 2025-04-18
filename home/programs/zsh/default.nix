@@ -1,4 +1,8 @@
-{ pkgs, device, ... }:
+{
+  pkgs,
+  device,
+  ...
+}:
 {
   # home.file.".zshrc" = {
   #   source = ./.zshrc;
@@ -168,6 +172,7 @@
       setopt APPEND_HISTORY        # append to history file (Default)
       setopt HIST_NO_STORE         # Don't store history commands
       setopt HIST_REDUCE_BLANKS    # Remove superfluous blanks from each command line being added to the history.
+      setopt PUSHDSILENT
 
       if [ "$SSH_AUTH_SOCK" = "" -a -x /usr/bin/ssh-agent ]; then
                       eval `/usr/bin/ssh-agent`
@@ -176,14 +181,11 @@
       export MANPAGER="nvim +Man!"
 
       alias v="nvim"                                                                                       # v         = nvim
-      alias nixc="cd /etc/nixos; sudo -E -s; cd"                                                           # nixc      = NixOS system config
-      alias nixswitch="sudo nixos-rebuild switch --flake /etc/nixos#${device}"                             # nixswitch = NixOS system switch
-      alias ns="nix-shell"                                                                                 # ns        = nix shell
-      alias nsc="v shell.nix"                                                                              # nsc       = nix shell config
+      alias nixc="pushd $HOME/nixos-config && nvim && popd"                                                # nixc      = NixOS system config
+      alias nixswitch="sudo nixos-rebuild switch --flake $HOME/nixos-config#${device}"                     # nixswitch = NixOS system switch
+      alias hmswitch="nix run $HOME/nixos-config#homeConfigurations.$USER@${device}.activationPackage"     # hmswitch  = User config switch
       alias la="ls -a --color=auto"                                                                        # la        = list all
       alias ls="ls --color=auto"                                                                           # ls        = list
-      alias zshstyle="v $HOME/.config/zsh/plugins/powerlevel10k/.p10k.zsh"                                 # zshstyle  = zsh style
-      alias quicktest="pnpm run test --testPathIgnorePatterns '(?<!mocked-)integration|agnostic|manual'"   # quicktest = run quick tests in autograb vehicle-matcher repo
       alias aliases="cat ~/.zshrc | grep ^alias"                                                           # aliases
 
       export PATH=$PATH:$HOME/.local/scripts
