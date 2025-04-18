@@ -62,7 +62,7 @@
           system = "x86_64-linux";
           device = "desktop";
           users = {
-            matt = ./home/users/matt/matt_desktop.nix;
+            matt = ./home/users/matt/desktop.nix;
           };
           modules = [
             ./nixos/hosts/desktop.nix
@@ -73,7 +73,7 @@
           system = "x86_64-linux";
           device = "thinkpad";
           users = {
-            matt = ./home/users/matt/matt_thinkpad.nix;
+            matt = ./home/users/matt/thinkpad.nix;
           };
           modules = [
             ./nixos/hosts/thinkpad.nix

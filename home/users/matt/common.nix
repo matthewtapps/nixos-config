@@ -2,6 +2,8 @@
 {
   programs.home-manager.enable = true;
 
+  home.stateVersion = "24.05";
+
   home.activation.report-changes = config.lib.dag.entryAnywhere ''
     ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff $oldGenPath $newGenPath
   '';
@@ -11,6 +13,16 @@
 
   home.sessionVariables = {
     EDITOR = "nvim";
+  };
+
+  home.file = {
+    ".hushlogin".text = "";
+  };
+
+  services.ssh-agent.enable = true;
+
+  programs.ssh = {
+    enable = true;
   };
 
   home.packages = with pkgs; [
@@ -37,6 +49,38 @@
 
     # Gurps
     gcs
+
+    libreoffice
+    spotify
+    slack
+    btop
+    neofetch
+    obsidian
+    discord
+    vscode
+    signal-desktop
+    spotify-player
+    xfce.thunar
+    calibre
+    qbittorrent
+    inputs.zen-browser.packages.${system}.default
+    rofi-wayland
+    swww
+    brightnessctl
+    dart-sass
+    inputs.matugen.packages.${system}.default
+    fd
+    dconf
+    hyprlock
+    hyprpaper
+    hyprshot
+    playerctl
+    pavucontrol
+    overskride
+    gtk-engine-murrine
+    gnome-themes-extra
+
+    jetbrains.datagrip
   ];
 
   xdg.userDirs = {
@@ -53,12 +97,9 @@
   };
 
   imports = [
-    #    ./theme.nix
     ../../programs/zsh/default.nix
     ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/direnv.nix
-    #   ../../programs/vscode.nix
   ];
-
 }
