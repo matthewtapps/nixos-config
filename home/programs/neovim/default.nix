@@ -24,17 +24,11 @@
       lua-language-server
       nixd
       nil
-      typescript-language-server
-      gopls
-      astro-language-server
 
       # Formatters
       nixfmt-rfc-style
       shfmt
       black
-
-      # DAP
-      vscode-js-debug
     ];
 
   };

@@ -21,6 +21,7 @@ return {
         "rust",
         "ruby",
         "sql",
+        "glimmer"
       },
     },
   },

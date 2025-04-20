@@ -23,7 +23,10 @@ return {
         ruby = { "rufo" },
         terraform = { "terraform fmt" },
         tf = { "terraform_fmt" },
-        sql = { "sqlfluff" }
+        sql = { "sqlfluff --dialect postgresql lint" },
+        html = { "djlint" },
+        ["handlebars.html"] = { "djlint" },
+        ["html.hbs"] = { "djlint" },
       },
     },
   },

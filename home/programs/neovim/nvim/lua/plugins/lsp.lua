@@ -31,6 +31,10 @@ return {
       require("lspconfig").astro.setup({})
       require("lspconfig").ruby_lsp.setup({})
       require("lspconfig").sqls.setup({})
+      require("lspconfig").htmx.setup({})
+      require("lspconfig").html.setup({
+        filetypes = { "html", "handlebars", "html.handlebars", "html.hbs"}
+      })
     end,
   },
 }

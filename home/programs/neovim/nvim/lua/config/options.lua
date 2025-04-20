@@ -33,3 +33,9 @@ vim.o.timeout = true
 vim.o.timeoutlen = 1000
 
 vim.g.snacks_animate = false
+
+vim.filetype.add({
+  pattern = {
+    [".*%.html%.hbs"] = "handlebars.html"
+  }
+})
