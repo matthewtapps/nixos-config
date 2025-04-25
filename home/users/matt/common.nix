@@ -63,7 +63,7 @@
     obsidian
     discord
     vscode
-    signal-desktop
+    signal-desktop-bin
     spotify-player
     xfce.thunar
     calibre
