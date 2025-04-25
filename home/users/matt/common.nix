@@ -49,8 +49,8 @@
     xdg-desktop-portal-hyprland
     iproute2
     lm_sensors
-    kdePackages.okular
     gimp
+    zathura
 
     # Gurps
     gcs
