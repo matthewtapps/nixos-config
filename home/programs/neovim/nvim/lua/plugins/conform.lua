@@ -23,11 +23,22 @@ return {
         ruby = { "rufo" },
         terraform = { "terraform fmt" },
         tf = { "terraform_fmt" },
-        sql = { "sqlfluff --dialect postgresql lint" },
+        sql = { "sqlfluff" },
+        pgsql = { "sqlfluff" },
         html = { "djlint" },
         ["handlebars.html"] = { "djlint" },
         ["html.hbs"] = { "djlint" },
       },
+formatters = {
+      sqlfluff = {
+        command = "sqlfluff",
+        args = { "format", "--dialect=postgres", "-" },
+        stdin = true,
+        cwd = function()
+          return vim.fn.getcwd()
+        end,
+      },
+    },
     },
   },
 }

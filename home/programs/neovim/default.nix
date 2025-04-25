@@ -29,6 +29,7 @@
       nixfmt-rfc-style
       shfmt
       black
+      stylua
     ];
 
   };
