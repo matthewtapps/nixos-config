@@ -1,7 +1,7 @@
 { inputs, pkgs, ... }:
 {
   services.foundryvtt = {
-    enable = false;
+    enable = true;
     hostName = "Matt-DESKTOP-NIXOS";
     minifyStaticFiles = true;
     package = inputs.foundryvtt.packages.${pkgs.system}.foundryvtt_12;

@@ -14,6 +14,7 @@
     ../modules/networkmanager.nix
     ../modules/steam.nix
     ../modules/tailscale.nix
+    ../modules/foundryvtt.nix
   ];
 
   nixpkgs.pkgs = mypkgs;

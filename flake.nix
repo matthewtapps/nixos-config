@@ -17,6 +17,8 @@
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
+    foundryvtt.url = "github:reckenrode/nix-foundryvtt";
+
     matugen.url = "github:InioX/matugen?ref=v2.2.0";
 
     lan-mouse.url = "github:feschber/lan-mouse";
@@ -36,6 +38,7 @@
       home-manager,
       nixos-wsl,
       zen-browser,
+      foundryvtt,
       ...
     }@inputs:
     let
@@ -66,6 +69,7 @@
           };
           modules = [
             ./nixos/hosts/desktop.nix
+            foundryvtt.nixosModules.foundryvtt
           ];
         }
         {
