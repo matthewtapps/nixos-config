@@ -1,23 +1,32 @@
 return {
-  "folke/snacks.nvim",
-  opts = {
-    terminal = {
-      win = {
-        position = "float",
-      }
-    },
-    scroll = {
-      enabled = false
-    },
-    notifier = {
-      top_down = false,
-    },
-    animate = {
-      enabled = false
-    },
-    dashboard = {
-      preset = {
-        header = [[
+	"folke/snacks.nvim",
+	opts = {
+		terminal = {
+			win = {
+				position = "float",
+			},
+		},
+		scroll = {
+			enabled = false,
+		},
+		notifier = {
+			top_down = false,
+		},
+		animate = {
+			enabled = false,
+		},
+		picker = {
+			hidden = true,
+			ignored = true,
+			sources = {
+				explorer = {
+					layout = { layout = { position = "right" } },
+				},
+			},
+		},
+		dashboard = {
+			preset = {
+				header = [[
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣠⣴⣶⣶⡾⠿⠿⠿⠛⠛⠛⠛⠛⣛⣛⣛⡛⠛⠛⠛⠻⠟⠟⠿⢿⠿⠿⣶⣶⣶⣤⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⢀⣤⣾⡿⠟⠛⠉⠀⣀⣀⣠⣤⣤⣤⣤⣦⣾⣿⡿⠿⠿⠿⠿⠿⠿⢿⣿⣿⣶⣤⣍⣉⣙⣛⠳⠭⡛⠻⢿⡶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -39,8 +48,8 @@ return {
 ⠀⠀⠀⠀⠀⠀⠈⠙⠾⣭⣙⠓⠛⠿⠧⣤⣤⣤⣌⣉⣉⣩⣻⣛⠛⠉⠉⠭⠭⠭⢭⣭⣿⣽⣯⣍⣁⣤⣤⣤⣤⡶⣶⣾⣿⣽⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠓⠶⠶⠤⣤⣀⣀⣀⣮⣍⣭⢭⣉⣉⣉⣉⣉⠉⣉⢉⢉⣉⣓⣀⣀⣹⣩⠭⠿⠷⠛⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ]]
-      }
-    }
-  }
+        ]],
+			},
+		},
+	},
 }
