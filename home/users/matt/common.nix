@@ -88,16 +88,50 @@
     jetbrains.datagrip
   ];
 
-  xdg.userDirs = {
-    createDirectories = true;
-    documents = "${config.home.homeDirectory}/documents";
-    download = "${config.home.homeDirectory}/downloads";
-    music = "${config.home.homeDirectory}/music";
-    pictures = "${config.home.homeDirectory}/pictures";
-    videos = "${config.home.homeDirectory}/videos";
-    templates = "${config.home.homeDirectory}/templates";
-    extraConfig = {
-      XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/screenshots";
+  xdg = {
+    userDirs = {
+      createDirectories = true;
+      documents = "${config.home.homeDirectory}/documents";
+      download = "${config.home.homeDirectory}/downloads";
+      music = "${config.home.homeDirectory}/music";
+      pictures = "${config.home.homeDirectory}/pictures";
+      videos = "${config.home.homeDirectory}/videos";
+      templates = "${config.home.homeDirectory}/templates";
+      extraConfig = {
+        XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/screenshots";
+      };
+    };
+    mime.enable = true;
+    mimeApps = {
+      enable = true;
+      associations.added = {
+        "inode/directory" = "thunar.desktop";
+        "application/pdf" = "org.pwmt.zathura-cb.desktop";
+        "x-scheme-handler/http" = "zen-beta.desktop";
+        "x-scheme-handler/https" = "zen-beta.desktop";
+        "x-scheme-handler/chrome" = "zen-beta.desktop";
+        "text/html" = "zen-beta.desktop";
+        "application/x-extension-htm" = "zen-beta.desktop";
+        "application/x-extension-html" = "zen-beta.desktop";
+        "application/x-extension-shtml" = "zen-beta.desktop";
+        "application/xhtml+xml" = "zen-beta.desktop";
+        "application/x-extension-xhtml" = "zen-beta.desktop";
+        "application/x-extension-xht" = "zen-beta.desktop";
+      };
+      defaultApplications = {
+        "inode/directory" = "thunar.desktop";
+        "application/pdf" = "org.pwmt.zathura-cb.desktop";
+        "x-scheme-handler/http" = "zen-beta.desktop";
+        "x-scheme-handler/https" = "zen-beta.desktop";
+        "x-scheme-handler/chrome" = "zen-beta.desktop";
+        "text/html" = "zen-beta.desktop";
+        "application/x-extension-htm" = "zen-beta.desktop";
+        "application/x-extension-html" = "zen-beta.desktop";
+        "application/x-extension-shtml" = "zen-beta.desktop";
+        "application/xhtml+xml" = "zen-beta.desktop";
+        "application/x-extension-xhtml" = "zen-beta.desktop";
+        "application/x-extension-xht" = "zen-beta.desktop";
+      };
     };
   };
 
