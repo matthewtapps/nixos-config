@@ -30,6 +30,7 @@
       shfmt
       black
       stylua
+      nodePackages_latest.prettier # Used for so many things
     ];
 
   };
