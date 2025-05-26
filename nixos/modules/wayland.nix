@@ -1,14 +1,6 @@
 { pkgs, inputs, ... }:
 {
   services = {
-    xserver = {
-      enable = true;
-      displayManager.gdm = {
-        enable = true;
-        wayland = true;
-      };
-    };
-
     greetd = {
       enable = true;
       settings = rec {
@@ -45,5 +37,6 @@
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     portalPackage =
       inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    xwayland.enable = true;
   };
 }
