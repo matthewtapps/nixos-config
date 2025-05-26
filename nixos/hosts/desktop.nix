@@ -2,9 +2,7 @@
 
 {
   imports = [
-    # Include the results of the hardware scan.
     ../hardware/desktop.nix
-    # ./modules/impermanence/desktop.nix
     ../modules/common.nix
     ../modules/wayland.nix
     ../modules/virtualization.nix
@@ -13,7 +11,6 @@
     ../modules/thunar.nix
     ../modules/networkmanager.nix
     ../modules/steam.nix
-    ../modules/tailscale.nix
     ../modules/foundryvtt.nix
   ];
 

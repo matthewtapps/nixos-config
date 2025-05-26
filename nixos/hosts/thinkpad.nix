@@ -2,17 +2,13 @@
 
 {
   imports = [
-    # Include the results of the hardware scan.
     ../hardware/thinkpad.nix
-    # ./modules/impermanence/desktop.nix
     ../modules/common.nix
     ../modules/wayland.nix
     ../modules/virtualization.nix
     ../modules/audio.nix
     ../modules/thunar.nix
     ../modules/networkmanager.nix
-    # ./modules/cloudflare-warp.nix
-    ../modules/tailscale.nix
     ../modules/steam.nix
   ];
 

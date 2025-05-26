@@ -2,7 +2,6 @@
 
 {
   imports = [
-    # Include the results of the hardware scan.
     ../hardware/nuc.nix
     ../modules/common.nix
     ../modules/wayland.nix
