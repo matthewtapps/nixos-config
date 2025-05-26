@@ -30,5 +30,6 @@
     ./locale.nix
     ./nix-options.nix
     ./linux-kernel.nix
+    ./cachix.nix
   ];
 }
