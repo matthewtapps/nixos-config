@@ -37,7 +37,6 @@
       nixpkgs,
       home-manager,
       nixos-wsl,
-      zen-browser,
       foundryvtt,
       ...
     }@inputs:
