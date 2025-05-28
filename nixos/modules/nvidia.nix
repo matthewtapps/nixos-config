@@ -9,9 +9,6 @@ let
 in
 {
   boot = {
-    extraModulePackages = [ config.boot.kernelPackages.nvidia_x11_beta ];
-    initrd.kernelModules = [ "nvidia" ];
-
     kernelParams = [
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       "nvidia-drm.modeset=1"
