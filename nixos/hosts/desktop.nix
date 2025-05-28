@@ -11,7 +11,7 @@
     ../modules/thunar.nix
     ../modules/networkmanager.nix
     ../modules/steam.nix
-    ../modules/foundryvtt.nix
+    # ../modules/foundryvtt.nix
   ];
 
   nixpkgs.pkgs = mypkgs;
