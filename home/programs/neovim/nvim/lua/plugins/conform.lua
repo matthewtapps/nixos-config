@@ -33,6 +33,7 @@ return {
 				jsx = { "prettier" },
 				js = { "prettier" },
 				ts = { "prettier" },
+				cs = { "csharpier" },
 			},
 			formatters = {
 				sqlfluff = {
@@ -42,6 +43,10 @@ return {
 					cwd = function()
 						return vim.fn.getcwd()
 					end,
+				},
+				csharpier = {
+					command = "dotnet-sharpier",
+					args = { "--write-stdout" },
 				},
 			},
 		},
