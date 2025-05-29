@@ -7,5 +7,6 @@ _: {
     ../../programs/lan-mouse.nix
     ../../programs/rofi/default.nix
     ../../programs/wezterm.nix
+    ../../programs/azure-vpn.nix
   ];
 }
