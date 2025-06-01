@@ -85,7 +85,9 @@
     gtk-engine-murrine
     gnome-themes-extra
 
-    jetbrains.datagrip
+    # jetbrains.datagrip
+
+    remmina
   ];
 
   xdg = {
