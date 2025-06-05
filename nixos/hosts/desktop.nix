@@ -12,6 +12,7 @@
     ../modules/networkmanager.nix
     ../modules/steam.nix
     ../modules/azure-vpn.nix
+    ../modules/octoprint.nix
     # ../modules/foundryvtt.nix
   ];
 
