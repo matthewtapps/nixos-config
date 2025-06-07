@@ -12,7 +12,7 @@
     ../modules/networkmanager.nix
     ../modules/steam.nix
     ../modules/azure-vpn.nix
-    ../modules/octoprint.nix
+    ../modules/3dprinting.nix
     # ../modules/foundryvtt.nix
   ];
 
