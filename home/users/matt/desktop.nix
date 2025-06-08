@@ -9,5 +9,6 @@ _: {
     ../../programs/wezterm.nix
     ../../programs/azure-vpn.nix
     ../../programs/orcaslicer.nix
+    ../../programs/mangohud.nix
   ];
 }
