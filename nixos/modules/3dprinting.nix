@@ -33,6 +33,23 @@
         ];
       };
     };
+
+  };
+
+  users.users.matt.extraGroups = [ "video" ];
+
+  systemd.services.mjpg-streamer = {
+    description = "MJPG Streamer for 3D Printer Camera";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      Type = "simple";
+      User = "matt";
+      Group = "video"; # Needed for camera access
+      ExecStart = "${pkgs.mjpg-streamer}/bin/mjpg_streamer -i 'input_uvc.so -d /dev/v4l/by-id/usb-DH-210326_CM200_01.00.00-video-index0 -r 1920x1080 -f 15' -o 'output_http.so -p 8081 -w ${pkgs.mjpg-streamer}/share/mjpg-streamer/www'";
+      Restart = "always";
+      RestartSec = "5";
+    };
   };
 
   systemd.services.fluidd-server = {
