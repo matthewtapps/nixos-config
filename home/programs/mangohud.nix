@@ -34,5 +34,6 @@
   # Optional: Add some monitoring tools to home packages
   home.packages = with pkgs; [
     goverlay # GUI for configuring MangoHud
+    mangohud
   ];
 }
