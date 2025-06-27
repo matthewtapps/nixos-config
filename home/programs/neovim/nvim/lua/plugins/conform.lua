@@ -34,6 +34,8 @@ return {
 				js = { "prettier" },
 				ts = { "prettier" },
 				cs = { "csharpier" },
+				vert = { "glsl_analyzer" },
+				frag = { "glsl_analyzer" },
 			},
 			formatters = {
 				sqlfluff = {

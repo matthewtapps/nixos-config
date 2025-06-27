@@ -23,6 +23,7 @@ return {
 				"sql",
 				"glimmer",
 				"c_sharp",
+				"glsl",
 			},
 		},
 	},

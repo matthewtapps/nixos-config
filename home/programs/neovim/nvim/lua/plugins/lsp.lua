@@ -56,6 +56,7 @@ return {
 					},
 				},
 			})
+			require("lspconfig").glsl_analyzer.setup({})
 		end,
 	},
 }
