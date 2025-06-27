@@ -58,6 +58,7 @@
 
     libreoffice
     spotify
+    vlc
     slack
     btop
     neofetch
