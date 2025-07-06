@@ -36,14 +36,6 @@ return {
 	{ "nvim-lua/plenary.nvim" },
 	{ "nvim-tree/nvim-web-devicons" },
 
-	-- Comments
-	{
-		"numToStr/Comment.nvim",
-		config = function()
-			require("Comment").setup()
-		end,
-	},
-
 	-- Autopairs
 	{
 		"windwp/nvim-autopairs",

@@ -6,6 +6,23 @@ return {
 		"VonHeikemen/lsp-zero.nvim",
 		branch = "v3.x",
 		config = function()
+
+      local lsp_zero = require('lsp-zero')
+      
+      lsp_zero.on_attach(function(client, bufnr)
+        -- Disable LSP formatting in favor of conform.nvim
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
+        
+        -- Set up buffer local keymaps
+        local opts = { buffer = bufnr }
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+        vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
+        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+      end)
+
 			-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 			require("lspconfig").lua_ls.setup({})
 			require("lspconfig").nil_ls.setup({})

@@ -1,4 +1,4 @@
-local config = {}
+local config = {
 config.color_scheme = "Everforest Dark Medium (Gogh)"
 config.font = wezterm.font("GeistMono Nerd Font")
 config.enable_tab_bar = true
@@ -12,7 +12,7 @@ enable_scroll_bar = false
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = false
 config.hide_tab_bar_if_only_one_tab = true
-config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
+config.leader = { key = " ", mods = "SHIFT", timeout_milliseconds = 1000 }
 config.keys = {
 	{ key = "h", mods = "CTRL", action = wezterm.action.ActivatePaneDirection("Left") },
 	{ key = "j", mods = "CTRL", action = wezterm.action.ActivatePaneDirection("Down") },
@@ -74,5 +74,6 @@ end
 config.scrollback_lines = 10000
 
 config.selection_word_boundary = " \t\n{}[]()\"'`,;:@"
+}
 
 return config

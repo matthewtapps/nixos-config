@@ -7,9 +7,6 @@ return {
 			default_file_explorer = true,
 			columns = {
 				"icon",
-				"permissions",
-				"size",
-				"mtime",
 			},
 			buf_options = {
 				buflisted = false,
@@ -17,8 +14,8 @@ return {
 			},
 			win_options = {
 				wrap = false,
-				signcolumn = "no",
-				cursorcolumn = false,
+				signcolumn = "yes",
+				cursorcolumn = true,
 				foldcolumn = "0",
 				spell = false,
 				list = false,
@@ -26,11 +23,13 @@ return {
 				concealcursor = "nvic",
 			},
 			delete_to_trash = false,
-			skip_confirm_for_simple_edits = false,
-			prompt_save_on_select_new_entry = true,
+			skip_confirm_for_simple_edits = true,
+			prompt_save_on_select_new_entry = false,
 			cleanup_delay_ms = 2000,
+			watch_for_changes = true,
 			keymaps = {
 				["g?"] = "actions.show_help",
+				["l"] = "actions.select",
 				["<CR>"] = "actions.select",
 				["<C-s>"] = "actions.select_vsplit",
 				["<C-h>"] = "actions.select_split",
@@ -57,6 +56,7 @@ return {
 				["<C-c>"] = "actions.close",
 				["<C-l>"] = "actions.refresh",
 				["-"] = "actions.parent",
+				["<BS>"] = "actions.parent",
 				["_"] = "actions.open_cwd",
 				["`"] = "actions.cd",
 				["~"] = "actions.tcd",
@@ -64,6 +64,7 @@ return {
 				["gx"] = "actions.open_external",
 				["g."] = "actions.toggle_hidden",
 				["g\\"] = "actions.toggle_trash",
+				["<leader>e"] = "actions.close",
 			},
 			use_default_keymaps = false,
 			view_options = {
@@ -81,7 +82,6 @@ return {
 			},
 		})
 
-		vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 		vim.keymap.set("n", "<leader>e", "<CMD>Oil<CR>", { desc = "Open file explorer" })
 	end,
 }

@@ -1,12 +1,24 @@
 return {
 	{
 		"stevearc/conform.nvim",
+		event = { "BufWritePre" },
+		cmd = { "ConformInfo" },
+		keys = {
+			{
+				"<leader>cf",
+				function()
+					require("conform").format({ async = true, lsp_fallback = true })
+				end,
+				mode = "",
+				desc = "Format buffer",
+			},
+		},
 		opts = {
 			formatters_by_ft = {
-				css = { "biome" },
-				html = { "biome" },
-				svg = { "biome" },
-				elixir = { "mix format" },
+				css = { "biome", "prettier" },
+				html = { "prettier" },
+				svg = { "prettier" },
+				elixir = { "mix" },
 				fish = { "fish_indent" },
 				javascript = { "prettier" },
 				json = { "prettier" },
@@ -18,14 +30,13 @@ return {
 				svelte = { "prettier" },
 				typescript = { "prettier" },
 				rust = { "rustfmt" },
-				go = { "go fmt" },
+				go = { "gofmt" },
 				astro = { "prettier" },
 				ruby = { "rufo" },
-				terraform = { "terraform fmt" },
+				terraform = { "terraform_fmt" },
 				tf = { "terraform_fmt" },
 				sql = { "sqlfluff" },
 				pgsql = { "sqlfluff" },
-				html = { "djlint" },
 				["handlebars.html"] = { "djlint" },
 				["html.hbs"] = { "djlint" },
 				yaml = { "prettier" },
@@ -34,8 +45,10 @@ return {
 				js = { "prettier" },
 				ts = { "prettier" },
 				cs = { "csharpier" },
-				vert = { "glsl_analyzer" },
-				frag = { "glsl_analyzer" },
+			},
+			format_on_save = {
+				timeout_ms = 500,
+				lsp_fallback = true,
 			},
 			formatters = {
 				sqlfluff = {
@@ -47,8 +60,13 @@ return {
 					end,
 				},
 				csharpier = {
-					command = "dotnet-sharpier",
+					command = "dotnet-csharpier",
 					args = { "--write-stdout" },
+				},
+				mix = {
+					command = "mix",
+					args = { "format", "-" },
+					stdin = true,
 				},
 			},
 		},
