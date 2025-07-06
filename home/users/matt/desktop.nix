@@ -6,7 +6,7 @@ _: {
     ../../programs/hypr/default.nix
     ../../programs/lan-mouse.nix
     ../../programs/rofi/default.nix
-    ../../programs/wezterm.nix
+    ../../programs/wezterm/default.nix
     ../../programs/azure-vpn.nix
     ../../programs/orcaslicer.nix
     ../../programs/mangohud.nix

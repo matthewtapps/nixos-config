@@ -9,14 +9,6 @@ vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 require("lazy").setup({
 	spec = {
-		-- add LazyVim and import its plugins
-		{ "LazyVim/LazyVim", import = "lazyvim.plugins" },
-		{ import = "lazyvim.plugins.extras.coding.mini-surround" },
-		{ import = "lazyvim.plugins.extras.editor.aerial" },
-		{ import = "lazyvim.plugins.extras.editor.dial" },
-		{ import = "lazyvim.plugins.extras.editor.harpoon2" },
-		{ import = "lazyvim.plugins.extras.editor.illuminate" },
-		{ import = "lazyvim.plugins.extras.editor.navic" },
 		{ import = "plugins" },
 	},
 	defaults = {
@@ -35,7 +27,7 @@ require("lazy").setup({
 		-- Same but for Neovim's news.txt
 		neovim = false,
 	},
-	checker = { enabled = true, notify = false }, -- automatically check for plugin updates
+	checker = { enabled = false, notify = false }, -- automatically check for plugin updates
 	performance = {
 		rtp = {
 			-- disable some rtp plugins
