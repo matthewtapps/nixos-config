@@ -98,3 +98,6 @@ vim.keymap.set("v", ">", ">gv")
 -- commenting
 vim.keymap.set("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
 vim.keymap.set("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
+
+-- Prevent conflict with manual code format
+vim.keymap.set("n", "d<Space>", "x", { desc = "Delete character" })

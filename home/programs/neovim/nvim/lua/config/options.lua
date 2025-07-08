@@ -65,3 +65,5 @@ vim.filetype.add({
 		[".*%.html%.hbs"] = "handlebars.html",
 	},
 })
+
+vim.diagnostic.config({ virtual_text = true })
