@@ -1,4 +1,6 @@
-local config = {
+local config = {}
+local wezterm = require("wezterm")
+
 config.color_scheme = "Everforest Dark Medium (Gogh)"
 config.font = wezterm.font("GeistMono Nerd Font")
 config.enable_tab_bar = true
@@ -13,6 +15,7 @@ config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = false
 config.hide_tab_bar_if_only_one_tab = true
 config.leader = { key = " ", mods = "SHIFT", timeout_milliseconds = 1000 }
+
 config.keys = {
 	{ key = "h", mods = "CTRL", action = wezterm.action.ActivatePaneDirection("Left") },
 	{ key = "j", mods = "CTRL", action = wezterm.action.ActivatePaneDirection("Down") },
@@ -28,10 +31,12 @@ config.keys = {
 	{ key = "-", mods = "LEADER", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
 
 	-- Close pane
-	{ key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
+	{ key = "q", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = false }) },
 
 	-- Create new tab
 	{ key = "c", mods = "LEADER", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
+
+	-- Close current tab
 	{ key = "d", mods = "LEADER", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
 
 	-- Rename tab
@@ -63,6 +68,7 @@ config.keys = {
 	-- Paste
 	{ key = "]", mods = "LEADER", action = wezterm.action.PasteFrom("Clipboard") },
 }
+
 for i = 1, 9 do
 	table.insert(config.keys, {
 		key = tostring(i),
@@ -74,6 +80,5 @@ end
 config.scrollback_lines = 10000
 
 config.selection_word_boundary = " \t\n{}[]()\"'`,;:@"
-}
 
 return config
