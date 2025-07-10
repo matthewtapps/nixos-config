@@ -35,11 +35,9 @@ export default function(monitorId: number) {
           <Workspaces vertical={false} monitorId={monitorId} />
         </box>
         <box halign={Gtk.Align.CENTER}>
+          <MediaButton css={""} />
           <ClockButton css={""} singleLine={true} monitorId={monitorId} />
         </box>
-        {/* <box> */}
-        {/*   <MediaButton css={""} /> */}
-        {/* </box> */}
         <box halign={Gtk.Align.END}>
           <ScreenRecordingButton css={iconCss} />
           <VolumeButton css={iconCss} />

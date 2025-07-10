@@ -246,6 +246,12 @@ declare module 'gi://Wp?version=0.5' {
             user_data?: any | null,
         ): GLib.LogWriterOutput;
         /**
+         * Gets the process information of a given PID.
+         * @param pid the PID to get the process information from
+         * @returns (transfer full): the process information of the given PID
+         */
+        function proc_utils_get_proc_info(pid: never): ProcInfo;
+        /**
          * Registers an additional WpSpaIdTable in the spa type system.
          *
          *
@@ -541,7 +547,17 @@ declare module 'gi://Wp?version=0.5' {
         enum SpaDeviceFeatures {
             ENABLED,
         }
-        module AsyncEventHook {
+        namespace AsyncEventHook {
+            // Signal signatures
+            interface SignalSignatures extends InterestEventHook.SignalSignatures {
+                'notify::execute-step': (pspec: GObject.ParamSpec) => void;
+                'notify::get-next-step': (pspec: GObject.ParamSpec) => void;
+                'notify::dispatcher': (pspec: GObject.ParamSpec) => void;
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::runs-after-hooks': (pspec: GObject.ParamSpec) => void;
+                'notify::runs-before-hooks': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends InterestEventHook.ConstructorProps {
@@ -565,6 +581,15 @@ declare module 'gi://Wp?version=0.5' {
             set get_next_step(val: GObject.Closure);
             set getNextStep(val: GObject.Closure);
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: AsyncEventHook.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<AsyncEventHook.ConstructorProps>, ...args: any[]);
@@ -578,9 +603,43 @@ declare module 'gi://Wp?version=0.5' {
                 get_next_step: GObject.Closure,
                 execute_step: GObject.Closure,
             ): AsyncEventHook;
+
+            // Signals
+
+            connect<K extends keyof AsyncEventHook.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, AsyncEventHook.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof AsyncEventHook.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, AsyncEventHook.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof AsyncEventHook.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<AsyncEventHook.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
         }
 
-        module Client {
+        namespace Client {
+            // Signal signatures
+            interface SignalSignatures extends GlobalProxy.SignalSignatures {
+                'notify::factory-name': (pspec: GObject.ParamSpec) => void;
+                'notify::global-properties': (pspec: GObject.ParamSpec) => void;
+                'notify::permissions': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+                'notify::native-info': (pspec: GObject.ParamSpec) => void;
+                'notify::param-info': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GlobalProxy.ConstructorProps, PipewireObject.ConstructorProps {}
@@ -592,11 +651,38 @@ declare module 'gi://Wp?version=0.5' {
         class Client extends GlobalProxy implements PipewireObject {
             static $gtype: GObject.GType<Client>;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Client.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Client.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof Client.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Client.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Client.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Client.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Client.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Client.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -692,7 +778,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -782,7 +868,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             vfunc_enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -848,7 +934,13 @@ declare module 'gi://Wp?version=0.5' {
             vfunc_pw_proxy_destroyed(): void;
         }
 
-        module Conf {
+        namespace Conf {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -868,6 +960,15 @@ declare module 'gi://Wp?version=0.5' {
             get name(): string;
             get properties(): Properties;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Conf.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Conf.ConstructorProps>, ...args: any[]);
@@ -877,6 +978,24 @@ declare module 'gi://Wp?version=0.5' {
             static ['new'](name: string, properties?: Properties | null): Conf;
 
             static new_open(name: string, properties?: Properties | null): Conf;
+
+            // Signals
+
+            connect<K extends keyof Conf.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Conf.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Conf.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Conf.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Conf.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Conf.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -919,15 +1038,20 @@ declare module 'gi://Wp?version=0.5' {
             section_update_props(section: string, props: Properties): number;
         }
 
-        module Core {
-            // Signal callback interfaces
-
-            interface Connected {
-                (): void;
-            }
-
-            interface Disconnected {
-                (): void;
+        namespace Core {
+            // Signal signatures
+            interface SignalSignatures extends Object.SignalSignatures {
+                connected: () => void;
+                disconnected: () => void;
+                'notify::conf': (pspec: GObject.ParamSpec) => void;
+                'notify::g-main-context': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-context': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-core': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -972,6 +1096,15 @@ declare module 'gi://Wp?version=0.5' {
             get pw_core(): any;
             get pwCore(): any;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Core.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Core.ConstructorProps>, ...args: any[]);
@@ -982,12 +1115,21 @@ declare module 'gi://Wp?version=0.5' {
 
             // Signals
 
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect_after(signal: 'connected', callback: (_source: this) => void): number;
-            emit(signal: 'connected'): void;
-            connect_after(signal: 'disconnected', callback: (_source: this) => void): number;
-            emit(signal: 'disconnected'): void;
+            connect<K extends keyof Core.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Core.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Core.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Core.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Core.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Core.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -1305,7 +1447,23 @@ declare module 'gi://Wp?version=0.5' {
             update_properties(updates: Properties): void;
         }
 
-        module Device {
+        namespace Device {
+            // Signal signatures
+            interface SignalSignatures extends GlobalProxy.SignalSignatures {
+                'notify::factory-name': (pspec: GObject.ParamSpec) => void;
+                'notify::global-properties': (pspec: GObject.ParamSpec) => void;
+                'notify::permissions': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+                'notify::native-info': (pspec: GObject.ParamSpec) => void;
+                'notify::param-info': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GlobalProxy.ConstructorProps, PipewireObject.ConstructorProps {}
@@ -1318,6 +1476,15 @@ declare module 'gi://Wp?version=0.5' {
         class Device extends GlobalProxy implements PipewireObject {
             static $gtype: GObject.GType<Device>;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Device.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Device.ConstructorProps>, ...args: any[]);
@@ -1325,6 +1492,24 @@ declare module 'gi://Wp?version=0.5' {
             _init(...args: any[]): void;
 
             static new_from_factory(core: Core, factory_name: string, properties?: Properties | null): Device;
+
+            // Signals
+
+            connect<K extends keyof Device.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Device.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Device.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Device.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Device.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Device.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Inherited properties
             get native_info(): any;
@@ -1402,7 +1587,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -1492,7 +1677,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             vfunc_enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -1558,7 +1743,10 @@ declare module 'gi://Wp?version=0.5' {
             vfunc_pw_proxy_destroyed(): void;
         }
 
-        module EventDispatcher {
+        namespace EventDispatcher {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {}
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -1570,11 +1758,40 @@ declare module 'gi://Wp?version=0.5' {
         class EventDispatcher extends GObject.Object {
             static $gtype: GObject.GType<EventDispatcher>;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: EventDispatcher.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<EventDispatcher.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof EventDispatcher.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, EventDispatcher.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof EventDispatcher.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, EventDispatcher.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof EventDispatcher.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<EventDispatcher.SignalSignatures[K]> extends [any, ...infer Q]
+                    ? Q
+                    : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -1611,7 +1828,15 @@ declare module 'gi://Wp?version=0.5' {
             unregister_hook(hook: EventHook): void;
         }
 
-        module EventHook {
+        namespace EventHook {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::dispatcher': (pspec: GObject.ParamSpec) => void;
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::runs-after-hooks': (pspec: GObject.ParamSpec) => void;
+                'notify::runs-before-hooks': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1639,11 +1864,38 @@ declare module 'gi://Wp?version=0.5' {
             get runs_before_hooks(): string[];
             get runsBeforeHooks(): string[];
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: EventHook.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<EventHook.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof EventHook.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, EventHook.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof EventHook.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, EventHook.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof EventHook.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<EventHook.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Virtual methods
 
@@ -1711,7 +1963,23 @@ declare module 'gi://Wp?version=0.5' {
             runs_for_event(event: Event): boolean;
         }
 
-        module Factory {
+        namespace Factory {
+            // Signal signatures
+            interface SignalSignatures extends GlobalProxy.SignalSignatures {
+                'notify::factory-name': (pspec: GObject.ParamSpec) => void;
+                'notify::global-properties': (pspec: GObject.ParamSpec) => void;
+                'notify::permissions': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+                'notify::native-info': (pspec: GObject.ParamSpec) => void;
+                'notify::param-info': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GlobalProxy.ConstructorProps, PipewireObject.ConstructorProps {}
@@ -1724,11 +1992,38 @@ declare module 'gi://Wp?version=0.5' {
         class Factory extends GlobalProxy implements PipewireObject {
             static $gtype: GObject.GType<Factory>;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Factory.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Factory.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof Factory.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Factory.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Factory.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Factory.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Factory.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Factory.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Inherited properties
             get native_info(): any;
@@ -1806,7 +2101,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -1896,7 +2191,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             vfunc_enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -1962,7 +2257,12 @@ declare module 'gi://Wp?version=0.5' {
             vfunc_pw_proxy_destroyed(): void;
         }
 
-        module FeatureActivationTransition {
+        namespace FeatureActivationTransition {
+            // Signal signatures
+            interface SignalSignatures extends Transition.SignalSignatures {
+                'notify::completed': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends Transition.ConstructorProps, Gio.AsyncResult.ConstructorProps {}
@@ -1974,11 +2274,43 @@ declare module 'gi://Wp?version=0.5' {
         class FeatureActivationTransition extends Transition implements Gio.AsyncResult {
             static $gtype: GObject.GType<FeatureActivationTransition>;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: FeatureActivationTransition.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<FeatureActivationTransition.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof FeatureActivationTransition.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, FeatureActivationTransition.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof FeatureActivationTransition.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, FeatureActivationTransition.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof FeatureActivationTransition.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<FeatureActivationTransition.SignalSignatures[K]> extends [
+                    any,
+                    ...infer Q,
+                ]
+                    ? Q
+                    : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -2153,7 +2485,21 @@ declare module 'gi://Wp?version=0.5' {
             get_data(key: string): any | null;
             // Conflicted with Wp.Transition.get_data
             get_data(...args: never[]): any;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -2283,7 +2629,12 @@ declare module 'gi://Wp?version=0.5' {
             set_data(key: string, data?: any | null): void;
             // Conflicted with Wp.Transition.set_data
             set_data(...args: never[]): any;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -2433,14 +2784,47 @@ declare module 'gi://Wp?version=0.5' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module GlobalProxy {
+        namespace GlobalProxy {
+            // Signal signatures
+            interface SignalSignatures extends Proxy.SignalSignatures {
+                'notify::factory-name': (pspec: GObject.ParamSpec) => void;
+                'notify::global-properties': (pspec: GObject.ParamSpec) => void;
+                'notify::permissions': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends Proxy.ConstructorProps {
@@ -2466,11 +2850,38 @@ declare module 'gi://Wp?version=0.5' {
             get globalProperties(): Properties;
             get permissions(): number;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: GlobalProxy.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<GlobalProxy.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof GlobalProxy.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, GlobalProxy.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof GlobalProxy.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, GlobalProxy.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof GlobalProxy.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<GlobalProxy.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -2503,7 +2914,22 @@ declare module 'gi://Wp?version=0.5' {
             request_destroy(): void;
         }
 
-        module ImplMetadata {
+        namespace ImplMetadata {
+            // Signal signatures
+            interface SignalSignatures extends Metadata.SignalSignatures {
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+                'notify::factory-name': (pspec: GObject.ParamSpec) => void;
+                'notify::global-properties': (pspec: GObject.ParamSpec) => void;
+                'notify::permissions': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends Metadata.ConstructorProps {
@@ -2524,6 +2950,15 @@ declare module 'gi://Wp?version=0.5' {
             get name(): string;
             get properties(): Properties;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: ImplMetadata.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<ImplMetadata.ConstructorProps>, ...args: any[]);
@@ -2533,9 +2968,36 @@ declare module 'gi://Wp?version=0.5' {
             static ['new'](core: Core): ImplMetadata;
 
             static new_full(core: Core, name?: string | null, properties?: Properties | null): ImplMetadata;
+
+            // Signals
+
+            connect<K extends keyof ImplMetadata.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, ImplMetadata.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof ImplMetadata.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, ImplMetadata.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof ImplMetadata.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<ImplMetadata.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
         }
 
-        module ImplModule {
+        namespace ImplModule {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::arguments': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-impl-module': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -2564,11 +3026,38 @@ declare module 'gi://Wp?version=0.5' {
             get pw_impl_module(): any;
             get pwImplModule(): any;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: ImplModule.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<ImplModule.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof ImplModule.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, ImplModule.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof ImplModule.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, ImplModule.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof ImplModule.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<ImplModule.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -2587,7 +3076,21 @@ declare module 'gi://Wp?version=0.5' {
             ): ImplModule | null;
         }
 
-        module ImplNode {
+        namespace ImplNode {
+            // Signal signatures
+            interface SignalSignatures extends Proxy.SignalSignatures {
+                'notify::pw-impl-node': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+                'notify::native-info': (pspec: GObject.ParamSpec) => void;
+                'notify::param-info': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends Proxy.ConstructorProps, PipewireObject.ConstructorProps {
@@ -2607,6 +3110,15 @@ declare module 'gi://Wp?version=0.5' {
             get pw_impl_node(): any;
             get pwImplNode(): any;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: ImplNode.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<ImplNode.ConstructorProps>, ...args: any[]);
@@ -2616,6 +3128,24 @@ declare module 'gi://Wp?version=0.5' {
             static new_from_pw_factory(core: Core, factory_name: string, properties?: Properties | null): ImplNode;
 
             static new_wrap(core: Core, node?: any | null): ImplNode;
+
+            // Signals
+
+            connect<K extends keyof ImplNode.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, ImplNode.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof ImplNode.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, ImplNode.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof ImplNode.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<ImplNode.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Inherited properties
             get native_info(): any;
@@ -2693,7 +3223,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -2783,7 +3313,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             vfunc_enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -2849,7 +3379,15 @@ declare module 'gi://Wp?version=0.5' {
             vfunc_pw_proxy_destroyed(): void;
         }
 
-        module InterestEventHook {
+        namespace InterestEventHook {
+            // Signal signatures
+            interface SignalSignatures extends EventHook.SignalSignatures {
+                'notify::dispatcher': (pspec: GObject.ParamSpec) => void;
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::runs-after-hooks': (pspec: GObject.ParamSpec) => void;
+                'notify::runs-before-hooks': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends EventHook.ConstructorProps {}
@@ -2861,22 +3399,63 @@ declare module 'gi://Wp?version=0.5' {
         abstract class InterestEventHook extends EventHook {
             static $gtype: GObject.GType<InterestEventHook>;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: InterestEventHook.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<InterestEventHook.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
 
+            // Signals
+
+            connect<K extends keyof InterestEventHook.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, InterestEventHook.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof InterestEventHook.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, InterestEventHook.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof InterestEventHook.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<InterestEventHook.SignalSignatures[K]> extends [any, ...infer Q]
+                    ? Q
+                    : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
+
             // Methods
 
             add_interest_full(interest: ObjectInterest): void;
         }
 
-        module Link {
-            // Signal callback interfaces
-
-            interface StateChanged {
-                (object: LinkState, p0: LinkState): void;
+        namespace Link {
+            // Signal signatures
+            interface SignalSignatures extends GlobalProxy.SignalSignatures {
+                'state-changed': (arg0: LinkState, arg1: LinkState) => void;
+                'notify::state': (pspec: GObject.ParamSpec) => void;
+                'notify::factory-name': (pspec: GObject.ParamSpec) => void;
+                'notify::global-properties': (pspec: GObject.ParamSpec) => void;
+                'notify::permissions': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+                'notify::native-info': (pspec: GObject.ParamSpec) => void;
+                'notify::param-info': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -2897,6 +3476,15 @@ declare module 'gi://Wp?version=0.5' {
 
             get state(): LinkState;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Link.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Link.ConstructorProps>, ...args: any[]);
@@ -2907,18 +3495,21 @@ declare module 'gi://Wp?version=0.5' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(
-                signal: 'state-changed',
-                callback: (_source: this, object: LinkState, p0: LinkState) => void,
+            connect<K extends keyof Link.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Link.SignalSignatures[K]>,
             ): number;
-            connect_after(
-                signal: 'state-changed',
-                callback: (_source: this, object: LinkState, p0: LinkState) => void,
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Link.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Link.SignalSignatures[K]>,
             ): number;
-            emit(signal: 'state-changed', object: LinkState, p0: LinkState): void;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Link.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Link.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -3011,7 +3602,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -3101,7 +3692,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             vfunc_enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -3167,11 +3758,19 @@ declare module 'gi://Wp?version=0.5' {
             vfunc_pw_proxy_destroyed(): void;
         }
 
-        module Metadata {
-            // Signal callback interfaces
-
-            interface Changed {
-                (object: number, p0: string, p1: string, p2: string): void;
+        namespace Metadata {
+            // Signal signatures
+            interface SignalSignatures extends GlobalProxy.SignalSignatures {
+                changed: (arg0: number, arg1: string, arg2: string, arg3: string) => void;
+                'notify::factory-name': (pspec: GObject.ParamSpec) => void;
+                'notify::global-properties': (pspec: GObject.ParamSpec) => void;
+                'notify::permissions': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -3186,6 +3785,15 @@ declare module 'gi://Wp?version=0.5' {
         class Metadata extends GlobalProxy {
             static $gtype: GObject.GType<Metadata>;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Metadata.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Metadata.ConstructorProps>, ...args: any[]);
@@ -3194,18 +3802,21 @@ declare module 'gi://Wp?version=0.5' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(
-                signal: 'changed',
-                callback: (_source: this, object: number, p0: string, p1: string, p2: string) => void,
+            connect<K extends keyof Metadata.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Metadata.SignalSignatures[K]>,
             ): number;
-            connect_after(
-                signal: 'changed',
-                callback: (_source: this, object: number, p0: string, p1: string, p2: string) => void,
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Metadata.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Metadata.SignalSignatures[K]>,
             ): number;
-            emit(signal: 'changed', object: number, p0: string, p1: string, p2: string): void;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Metadata.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Metadata.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -3242,15 +3853,28 @@ declare module 'gi://Wp?version=0.5' {
             set(...args: never[]): any;
         }
 
-        module Node {
-            // Signal callback interfaces
-
-            interface PortsChanged {
-                (): void;
-            }
-
-            interface StateChanged {
-                (object: NodeState, p0: NodeState): void;
+        namespace Node {
+            // Signal signatures
+            interface SignalSignatures extends GlobalProxy.SignalSignatures {
+                'ports-changed': () => void;
+                'state-changed': (arg0: NodeState, arg1: NodeState) => void;
+                'notify::max-input-ports': (pspec: GObject.ParamSpec) => void;
+                'notify::max-output-ports': (pspec: GObject.ParamSpec) => void;
+                'notify::n-input-ports': (pspec: GObject.ParamSpec) => void;
+                'notify::n-output-ports': (pspec: GObject.ParamSpec) => void;
+                'notify::state': (pspec: GObject.ParamSpec) => void;
+                'notify::factory-name': (pspec: GObject.ParamSpec) => void;
+                'notify::global-properties': (pspec: GObject.ParamSpec) => void;
+                'notify::permissions': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+                'notify::native-info': (pspec: GObject.ParamSpec) => void;
+                'notify::param-info': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -3287,6 +3911,15 @@ declare module 'gi://Wp?version=0.5' {
             get nOutputPorts(): number;
             get state(): NodeState;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Node.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Node.ConstructorProps>, ...args: any[]);
@@ -3297,21 +3930,21 @@ declare module 'gi://Wp?version=0.5' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(signal: 'ports-changed', callback: (_source: this) => void): number;
-            connect_after(signal: 'ports-changed', callback: (_source: this) => void): number;
-            emit(signal: 'ports-changed'): void;
-            connect(
-                signal: 'state-changed',
-                callback: (_source: this, object: NodeState, p0: NodeState) => void,
+            connect<K extends keyof Node.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Node.SignalSignatures[K]>,
             ): number;
-            connect_after(
-                signal: 'state-changed',
-                callback: (_source: this, object: NodeState, p0: NodeState) => void,
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Node.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Node.SignalSignatures[K]>,
             ): number;
-            emit(signal: 'state-changed', object: NodeState, p0: NodeState): void;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Node.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Node.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -3456,7 +4089,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -3546,7 +4179,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             vfunc_enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -3612,7 +4245,15 @@ declare module 'gi://Wp?version=0.5' {
             vfunc_pw_proxy_destroyed(): void;
         }
 
-        module Object {
+        namespace Object {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -3640,11 +4281,38 @@ declare module 'gi://Wp?version=0.5' {
             get supported_features(): number;
             get supportedFeatures(): number;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Object.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Object.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof Object.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Object.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Object.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Object.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Object.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Object.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Virtual methods
 
@@ -3781,23 +4449,14 @@ declare module 'gi://Wp?version=0.5' {
             update_features(activated: ObjectFeatures, deactivated: ObjectFeatures): void;
         }
 
-        module ObjectManager {
-            // Signal callback interfaces
-
-            interface Installed {
-                (): void;
-            }
-
-            interface ObjectAdded {
-                (object: GObject.Object): void;
-            }
-
-            interface ObjectRemoved {
-                (object: GObject.Object): void;
-            }
-
-            interface ObjectsChanged {
-                (): void;
+        namespace ObjectManager {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                installed: () => void;
+                'object-added': (arg0: GObject.Object) => void;
+                'object-removed': (arg0: GObject.Object) => void;
+                'objects-changed': () => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -3825,6 +4484,15 @@ declare module 'gi://Wp?version=0.5' {
 
             get core(): Core;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: ObjectManager.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<ObjectManager.ConstructorProps>, ...args: any[]);
@@ -3835,21 +4503,21 @@ declare module 'gi://Wp?version=0.5' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(signal: 'installed', callback: (_source: this) => void): number;
-            connect_after(signal: 'installed', callback: (_source: this) => void): number;
-            emit(signal: 'installed'): void;
-            connect(signal: 'object-added', callback: (_source: this, object: GObject.Object) => void): number;
-            connect_after(signal: 'object-added', callback: (_source: this, object: GObject.Object) => void): number;
-            emit(signal: 'object-added', object: GObject.Object): void;
-            connect(signal: 'object-removed', callback: (_source: this, object: GObject.Object) => void): number;
-            connect_after(signal: 'object-removed', callback: (_source: this, object: GObject.Object) => void): number;
-            emit(signal: 'object-removed', object: GObject.Object): void;
-            connect(signal: 'objects-changed', callback: (_source: this) => void): number;
-            connect_after(signal: 'objects-changed', callback: (_source: this) => void): number;
-            emit(signal: 'objects-changed'): void;
+            connect<K extends keyof ObjectManager.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, ObjectManager.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof ObjectManager.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, ObjectManager.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof ObjectManager.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<ObjectManager.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -3876,7 +4544,7 @@ declare module 'gi://Wp?version=0.5' {
              *
              *
              * If more than one objects match, only the first one is returned. To find multiple objects that match certain criteria, wp_object_manager_new_filtered_iterator() is more suitable.
-             * @param interest the interst
+             * @param interest the interest
              * @returns the first managed object that matches the lookup interest, or NULL if no object matches
              */
             lookup_full<T = GObject.Object>(interest: ObjectInterest): T;
@@ -3902,7 +4570,16 @@ declare module 'gi://Wp?version=0.5' {
             request_object_features(object_type: GObject.GType, wanted_features: ObjectFeatures): void;
         }
 
-        module Plugin {
+        namespace Plugin {
+            // Signal signatures
+            interface SignalSignatures extends Object.SignalSignatures {
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {
@@ -3922,11 +4599,38 @@ declare module 'gi://Wp?version=0.5' {
 
             get name(): string;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Plugin.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Plugin.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof Plugin.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Plugin.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Plugin.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Plugin.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Plugin.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Plugin.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -3945,13 +4649,29 @@ declare module 'gi://Wp?version=0.5' {
             // Methods
 
             /**
-             * Retreives the name of a plugin.
+             * Retrieves the name of a plugin.
              * @returns the name of this plugin
              */
             get_name(): string;
         }
 
-        module Port {
+        namespace Port {
+            // Signal signatures
+            interface SignalSignatures extends GlobalProxy.SignalSignatures {
+                'notify::factory-name': (pspec: GObject.ParamSpec) => void;
+                'notify::global-properties': (pspec: GObject.ParamSpec) => void;
+                'notify::permissions': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+                'notify::native-info': (pspec: GObject.ParamSpec) => void;
+                'notify::param-info': (pspec: GObject.ParamSpec) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GlobalProxy.ConstructorProps, PipewireObject.ConstructorProps {}
@@ -3964,11 +4684,38 @@ declare module 'gi://Wp?version=0.5' {
         class Port extends GlobalProxy implements PipewireObject {
             static $gtype: GObject.GType<Port>;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Port.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Port.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof Port.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Port.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Port.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Port.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Port.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Port.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -4057,7 +4804,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -4147,7 +4894,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             vfunc_enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -4213,23 +4960,19 @@ declare module 'gi://Wp?version=0.5' {
             vfunc_pw_proxy_destroyed(): void;
         }
 
-        module Proxy {
-            // Signal callback interfaces
-
-            interface Bound {
-                (object: number): void;
-            }
-
-            interface Error {
-                (object: number, p0: number, p1: string): void;
-            }
-
-            interface PwProxyCreated {
-                (object?: any | null): void;
-            }
-
-            interface PwProxyDestroyed {
-                (): void;
+        namespace Proxy {
+            // Signal signatures
+            interface SignalSignatures extends Object.SignalSignatures {
+                bound: (arg0: number) => void;
+                error: (arg0: number, arg1: number, arg2: string) => void;
+                'pw-proxy-created': (arg0: any | null) => void;
+                'pw-proxy-destroyed': () => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -4256,6 +4999,15 @@ declare module 'gi://Wp?version=0.5' {
             get pw_proxy(): any;
             get pwProxy(): any;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Proxy.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Proxy.ConstructorProps>, ...args: any[]);
@@ -4264,24 +5016,21 @@ declare module 'gi://Wp?version=0.5' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(signal: 'bound', callback: (_source: this, object: number) => void): number;
-            connect_after(signal: 'bound', callback: (_source: this, object: number) => void): number;
-            emit(signal: 'bound', object: number): void;
-            connect(signal: 'error', callback: (_source: this, object: number, p0: number, p1: string) => void): number;
-            connect_after(
-                signal: 'error',
-                callback: (_source: this, object: number, p0: number, p1: string) => void,
+            connect<K extends keyof Proxy.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Proxy.SignalSignatures[K]>,
             ): number;
-            emit(signal: 'error', object: number, p0: number, p1: string): void;
-            connect(signal: 'pw-proxy-created', callback: (_source: this, object: any | null) => void): number;
-            connect_after(signal: 'pw-proxy-created', callback: (_source: this, object: any | null) => void): number;
-            emit(signal: 'pw-proxy-created', object?: any | null): void;
-            connect(signal: 'pw-proxy-destroyed', callback: (_source: this) => void): number;
-            connect_after(signal: 'pw-proxy-destroyed', callback: (_source: this) => void): number;
-            emit(signal: 'pw-proxy-destroyed'): void;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Proxy.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Proxy.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Proxy.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Proxy.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Virtual methods
 
@@ -4321,7 +5070,16 @@ declare module 'gi://Wp?version=0.5' {
             set_pw_proxy(proxy?: any | null): void;
         }
 
-        module SessionItem {
+        namespace SessionItem {
+            // Signal signatures
+            interface SignalSignatures extends Object.SignalSignatures {
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {
@@ -4340,16 +5098,43 @@ declare module 'gi://Wp?version=0.5' {
 
             get properties(): Properties;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: SessionItem.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<SessionItem.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
 
+            // Signals
+
+            connect<K extends keyof SessionItem.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SessionItem.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof SessionItem.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SessionItem.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof SessionItem.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<SessionItem.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
+
             // Static methods
 
             /**
-             * Helper callback for sub-classes that deffers and unexports the session item.
+             * Helper callback for sub-classes that defers and unexports the session item.
              *
              *
              * Only meant to be used when the pipewire proxy destroyed signal is triggered.
@@ -4447,7 +5232,16 @@ declare module 'gi://Wp?version=0.5' {
             set_properties(props: Properties): void;
         }
 
-        module Settings {
+        namespace Settings {
+            // Signal signatures
+            interface SignalSignatures extends Object.SignalSignatures {
+                'notify::metadata-name': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {
@@ -4468,6 +5262,15 @@ declare module 'gi://Wp?version=0.5' {
             get metadata_name(): string;
             get metadataName(): string;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Settings.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Settings.ConstructorProps>, ...args: any[]);
@@ -4475,6 +5278,24 @@ declare module 'gi://Wp?version=0.5' {
             _init(...args: any[]): void;
 
             static ['new'](core: Core, metadata_name?: string | null): Settings;
+
+            // Signals
+
+            connect<K extends keyof Settings.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Settings.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Settings.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Settings.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Settings.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Settings.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -4571,7 +5392,12 @@ declare module 'gi://Wp?version=0.5' {
             unsubscribe(subscription_id: never): boolean;
         }
 
-        module SiFactory {
+        namespace SiFactory {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -4602,6 +5428,15 @@ declare module 'gi://Wp?version=0.5' {
 
             get name(): string;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: SiFactory.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<SiFactory.ConstructorProps>, ...args: any[]);
@@ -4609,6 +5444,24 @@ declare module 'gi://Wp?version=0.5' {
             _init(...args: any[]): void;
 
             static new_simple(factory_name: string, si_type: GObject.GType): SiFactory;
+
+            // Signals
+
+            connect<K extends keyof SiFactory.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SiFactory.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof SiFactory.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SiFactory.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof SiFactory.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<SiFactory.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -4642,7 +5495,16 @@ declare module 'gi://Wp?version=0.5' {
             get_name(): string;
         }
 
-        module SimpleEventHook {
+        namespace SimpleEventHook {
+            // Signal signatures
+            interface SignalSignatures extends InterestEventHook.SignalSignatures {
+                'notify::closure': (pspec: GObject.ParamSpec) => void;
+                'notify::dispatcher': (pspec: GObject.ParamSpec) => void;
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::runs-after-hooks': (pspec: GObject.ParamSpec) => void;
+                'notify::runs-before-hooks': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends InterestEventHook.ConstructorProps {
@@ -4660,6 +5522,15 @@ declare module 'gi://Wp?version=0.5' {
 
             set closure(val: GObject.Closure);
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: SimpleEventHook.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<SimpleEventHook.ConstructorProps>, ...args: any[]);
@@ -4667,17 +5538,41 @@ declare module 'gi://Wp?version=0.5' {
             _init(...args: any[]): void;
 
             static ['new'](name: string, before: string, after: string, closure: GObject.Closure): SimpleEventHook;
+
+            // Signals
+
+            connect<K extends keyof SimpleEventHook.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SimpleEventHook.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof SimpleEventHook.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SimpleEventHook.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof SimpleEventHook.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<SimpleEventHook.SignalSignatures[K]> extends [any, ...infer Q]
+                    ? Q
+                    : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
         }
 
-        module SpaDevice {
-            // Signal callback interfaces
-
-            interface CreateObject {
-                (object: number, p0: string, p1: string, p2: Properties): void;
-            }
-
-            interface ObjectRemoved {
-                (object: number): void;
+        namespace SpaDevice {
+            // Signal signatures
+            interface SignalSignatures extends Proxy.SignalSignatures {
+                'create-object': (arg0: number, arg1: string, arg2: string, arg3: Properties) => void;
+                'object-removed': (arg0: number) => void;
+                'notify::properties': (pspec: GObject.ParamSpec) => void;
+                'notify::spa-device-handle': (pspec: GObject.ParamSpec) => void;
+                'notify::bound-id': (pspec: GObject.ParamSpec) => void;
+                'notify::pw-proxy': (pspec: GObject.ParamSpec) => void;
+                'notify::active-features': (pspec: GObject.ParamSpec) => void;
+                'notify::core': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::supported-features': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -4703,6 +5598,15 @@ declare module 'gi://Wp?version=0.5' {
             get spa_device_handle(): any;
             get spaDeviceHandle(): any;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: SpaDevice.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<SpaDevice.ConstructorProps>, ...args: any[]);
@@ -4715,21 +5619,21 @@ declare module 'gi://Wp?version=0.5' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(
-                signal: 'create-object',
-                callback: (_source: this, object: number, p0: string, p1: string, p2: Properties) => void,
+            connect<K extends keyof SpaDevice.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SpaDevice.SignalSignatures[K]>,
             ): number;
-            connect_after(
-                signal: 'create-object',
-                callback: (_source: this, object: number, p0: string, p1: string, p2: Properties) => void,
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof SpaDevice.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SpaDevice.SignalSignatures[K]>,
             ): number;
-            emit(signal: 'create-object', object: number, p0: string, p1: string, p2: Properties): void;
-            connect(signal: 'object-removed', callback: (_source: this, object: number) => void): number;
-            connect_after(signal: 'object-removed', callback: (_source: this, object: number) => void): number;
-            emit(signal: 'object-removed', object: number): void;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof SpaDevice.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<SpaDevice.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -4750,11 +5654,25 @@ declare module 'gi://Wp?version=0.5' {
              */
             new_managed_object_iterator(): Iterator;
             /**
+             * Marks a managed object id pending.
+             *
+             *
+             * When an object id is pending, Props from received ObjectConfig events for the id are saved. When wp_spa_device_store_managed_object later sets an object for the id, the saved Props are immediately set on the object and pending status is cleared.
+             * If an object is already set for the id, this has no effect.
+             * @param id the (device-internal) id of the object
+             */
+            set_managed_pending(id: number): void;
+            /**
              * Stores or removes a managed object into/from a device.
              * @param id the (device-internal) id of the object
              * @param object the object to store or NULL to remove the managed object associated with @id
              */
             store_managed_object(id: number, object?: GObject.Object | null): void;
+        }
+
+        namespace SpaType {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {}
         }
 
         class SpaType {
@@ -4763,6 +5681,24 @@ declare module 'gi://Wp?version=0.5' {
             // Constructors
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof SpaType.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SpaType.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof SpaType.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, SpaType.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof SpaType.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<SpaType.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -4814,7 +5750,13 @@ declare module 'gi://Wp?version=0.5' {
             parent(): SpaType;
         }
 
-        module State {
+        namespace State {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::timeout': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -4835,6 +5777,15 @@ declare module 'gi://Wp?version=0.5' {
             get timeout(): number;
             set timeout(val: number);
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: State.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<State.ConstructorProps>, ...args: any[]);
@@ -4842,6 +5793,24 @@ declare module 'gi://Wp?version=0.5' {
             _init(...args: any[]): void;
 
             static ['new'](name: string): State;
+
+            // Signals
+
+            connect<K extends keyof State.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, State.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof State.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, State.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof State.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<State.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -4885,7 +5854,12 @@ declare module 'gi://Wp?version=0.5' {
             save_after_timeout(core: Core, props: Properties): void;
         }
 
-        module Transition {
+        namespace Transition {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::completed': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, Gio.AsyncResult.ConstructorProps {
@@ -4904,6 +5878,15 @@ declare module 'gi://Wp?version=0.5' {
             // Properties
 
             get completed(): boolean;
+
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Transition.SignalSignatures;
 
             // Constructors
 
@@ -4924,6 +5907,24 @@ declare module 'gi://Wp?version=0.5' {
                 cancellable?: Gio.Cancellable | null,
                 closure?: GObject.Closure | null,
             ): Transition;
+
+            // Signals
+
+            connect<K extends keyof Transition.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Transition.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Transition.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Transition.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Transition.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Transition.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -5165,7 +6166,21 @@ declare module 'gi://Wp?version=0.5' {
              * premature notification while the object is still being modified.
              */
             freeze_notify(): void;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -5278,7 +6293,12 @@ declare module 'gi://Wp?version=0.5' {
              * This function should only be called from object system implementations.
              */
             run_dispose(): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -5428,11 +6448,31 @@ declare module 'gi://Wp?version=0.5' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
         type AsyncEventHookClass = typeof AsyncEventHook;
@@ -5814,6 +6854,55 @@ declare module 'gi://Wp?version=0.5' {
         type PluginClass = typeof Plugin;
         type PortClass = typeof Port;
         /**
+         * WpProcInfo holds information of a process.
+         */
+        abstract class ProcInfo {
+            static $gtype: GObject.GType<ProcInfo>;
+
+            // Constructors
+
+            _init(...args: any[]): void;
+
+            // Methods
+
+            /**
+             * Gets the indexed arg of a process information object.
+             * @param index the index of the arg
+             * @returns the indexed arg of the process information object
+             */
+            get_arg(index: number): string;
+            /**
+             * Gets the systemd cgroup of a process information object.
+             * @returns the systemd cgroup of the process information object
+             */
+            get_cgroup(): string;
+            /**
+             * Gets the number of args of a process information object.
+             * @returns the number of args of the process information object
+             */
+            get_n_args(): number;
+            /**
+             * Gets the parent PID of a process information object.
+             * @returns the parent PID of the process information object
+             */
+            get_parent_pid(): never;
+            /**
+             * Gets the PID of a process information object.
+             * @returns the PID of the process information object
+             */
+            get_pid(): never;
+            /**
+             * Increases the reference count of a process information object.
+             * @returns @self with an additional reference count on it
+             */
+            ref(): ProcInfo;
+            /**
+             * Decreases the reference count on `self` and frees it when the ref count reaches zero.
+             */
+            unref(): void;
+        }
+
+        /**
          * WpProperties is a data structure that contains string key-value pairs, which are used to send/receive/attach arbitrary properties to PipeWire objects.
          * This could be thought of as a hash table with strings as both keys and values. However, the reason that this class exists instead of using GHashTable directly is that in reality it wraps the PipeWire native struct spa_dict and struct pw_properties and therefore it can be easily passed to PipeWire function calls that require a struct spa_dict * or a struct pw_properties * as arguments. Or alternatively, it can easily wrap a struct spa_dict * or a struct pw_properties * that was given from the PipeWire API without necessarily doing an expensive copy operation.
          * WpProperties normally wraps a struct pw_properties, unless it was created with wp_properties_new_wrap_dict(), in which case it wraps a struct spa_dict and it is immutable (you cannot add/remove/modify any key-value pair).
@@ -5905,7 +6994,7 @@ declare module 'gi://Wp?version=0.5' {
              *
              * If a property is contained in `other` and not in `self,` the result is not matched. If a property is contained in both sets, then the value of the property in `other` is interpreted as a glob-style pattern (using g_pattern_match_simple()) and the value in `self` is checked to see if it matches with this pattern.
              * @param other a set of properties to match
-             * @returns TRUE if all matches were successfull, FALSE if at least one property value did not match
+             * @returns TRUE if all matches were successful, FALSE if at least one property value did not match
              */
             matches(other: Properties): boolean;
             /**
@@ -6175,7 +7264,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             is_array(): boolean;
             /**
-             * Checks wether the spa json is of type boolean or not.
+             * Checks whether the spa json is of type boolean or not.
              * @returns TRUE if it is of type boolean, FALSE otherwise
              */
             is_boolean(): boolean;
@@ -6185,17 +7274,17 @@ declare module 'gi://Wp?version=0.5' {
              */
             is_container(): boolean;
             /**
-             * Checks wether the spa json is of type float or not.
+             * Checks whether the spa json is of type float or not.
              * @returns TRUE if it is of type float, FALSE otherwise
              */
             is_float(): boolean;
             /**
-             * Checks wether the spa json is of type int or not.
+             * Checks whether the spa json is of type int or not.
              * @returns TRUE if it is of type int, FALSE otherwise
              */
             is_int(): boolean;
             /**
-             * Checks wether the spa json is of type null or not.
+             * Checks whether the spa json is of type null or not.
              * @returns TRUE if it is of type null, FALSE otherwise
              */
             is_null(): boolean;
@@ -6205,7 +7294,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             is_object(): boolean;
             /**
-             * Checks wether the spa json is of type string or not.
+             * Checks whether the spa json is of type string or not.
              * @returns TRUE if it is of type string, FALSE otherwise
              */
             is_string(): boolean;
@@ -6552,102 +7641,102 @@ declare module 'gi://Wp?version=0.5' {
              */
             get_string(): [boolean, string];
             /**
-             * Checks wether the spa pod is of type array or not.
+             * Checks whether the spa pod is of type array or not.
              * @returns TRUE if it is of type array, FALSE otherwise
              */
             is_array(): boolean;
             /**
-             * Checks wether the spa pod is of type boolean or not.
+             * Checks whether the spa pod is of type boolean or not.
              * @returns TRUE if it is of type boolean, FALSE otherwise
              */
             is_boolean(): boolean;
             /**
-             * Checks wether the spa pod is of type bytes or not.
+             * Checks whether the spa pod is of type bytes or not.
              * @returns TRUE if it is of type bytes, FALSE otherwise
              */
             is_bytes(): boolean;
             /**
-             * Checks wether the spa pod is of type choice or not.
+             * Checks whether the spa pod is of type choice or not.
              * @returns TRUE if it is of type choice, FALSE otherwise
              */
             is_choice(): boolean;
             /**
-             * Checks wether the spa pod is of type control or not.
+             * Checks whether the spa pod is of type control or not.
              * @returns TRUE if it is of type control, FALSE otherwise
              */
             is_control(): boolean;
             /**
-             * Checks wether the spa pod is of type double or not.
+             * Checks whether the spa pod is of type double or not.
              * @returns TRUE if it is of type double, FALSE otherwise
              */
             is_double(): boolean;
             /**
-             * Checks wether the spa pod is of type Fd or not.
+             * Checks whether the spa pod is of type Fd or not.
              * @returns TRUE if it is of type Fd, FALSE otherwise
              */
             is_fd(): boolean;
             /**
-             * Checks wether the spa pod is of type float or not.
+             * Checks whether the spa pod is of type float or not.
              * @returns TRUE if it is of type float, FALSE otherwise
              */
             is_float(): boolean;
             /**
-             * Checks wether the spa pod is of type fraction or not.
+             * Checks whether the spa pod is of type fraction or not.
              * @returns TRUE if it is of type fraction, FALSE otherwise
              */
             is_fraction(): boolean;
             /**
-             * Checks wether the spa pod is of type Id or not.
+             * Checks whether the spa pod is of type Id or not.
              * @returns TRUE if it is of type Id, FALSE otherwise
              */
             is_id(): boolean;
             /**
-             * Checks wether the spa pod is of type int or not.
+             * Checks whether the spa pod is of type int or not.
              * @returns TRUE if it is of type int, FALSE otherwise
              */
             is_int(): boolean;
             /**
-             * Checks wether the spa pod is of type long or not.
+             * Checks whether the spa pod is of type long or not.
              * @returns TRUE if it is of type long, FALSE otherwise
              */
             is_long(): boolean;
             /**
-             * Checks wether the spa pod is of type none or not.
+             * Checks whether the spa pod is of type none or not.
              * @returns TRUE if it is of type none, FALSE otherwise
              */
             is_none(): boolean;
             /**
-             * Checks wether the spa pod is of type object or not.
+             * Checks whether the spa pod is of type object or not.
              * @returns TRUE if it is of type object, FALSE otherwise
              */
             is_object(): boolean;
             /**
-             * Checks wether the spa pod is of type pointer or not.
+             * Checks whether the spa pod is of type pointer or not.
              * @returns TRUE if it is of type pointer, FALSE otherwise
              */
             is_pointer(): boolean;
             /**
-             * Checks wether the spa pod is of type property or not.
+             * Checks whether the spa pod is of type property or not.
              * @returns TRUE if it is of type property, FALSE otherwise
              */
             is_property(): boolean;
             /**
-             * Checks wether the spa pod is of type rectangle or not.
+             * Checks whether the spa pod is of type rectangle or not.
              * @returns TRUE if it is of type rectangle, FALSE otherwise
              */
             is_rectangle(): boolean;
             /**
-             * Checks wether the spa pod is of type sequence or not.
+             * Checks whether the spa pod is of type sequence or not.
              * @returns TRUE if it is of type sequence, FALSE otherwise
              */
             is_sequence(): boolean;
             /**
-             * Checks wether the spa pod is of type string or not.
+             * Checks whether the spa pod is of type string or not.
              * @returns TRUE if it is of type string, FALSE otherwise
              */
             is_string(): boolean;
             /**
-             * Checks wether the spa pod is of type struct or not.
+             * Checks whether the spa pod is of type struct or not.
              * @returns TRUE if it is of type struct, FALSE otherwise
              */
             is_struct(): boolean;
@@ -6692,7 +7781,7 @@ declare module 'gi://Wp?version=0.5' {
             set_float(value: number): boolean;
             /**
              * Sets the numerator and denominator values of a fraction in the spa pod object.
-             * @param num the numerator value of the farction
+             * @param num the numerator value of the fraction
              * @param denom the denominator value of the fraction
              * @returns TRUE if the value could be set, FALSE othewrise.
              */
@@ -6826,7 +7915,7 @@ declare module 'gi://Wp?version=0.5' {
             /**
              * Adds a pointer value with its type name into the builder.
              * @param type_name the type name that the pointer points to
-             * @param value the pointer vaue
+             * @param value the pointer value
              */
             add_pointer(type_name: string, value?: any | null): void;
             /**
@@ -6962,7 +8051,7 @@ declare module 'gi://Wp?version=0.5' {
 
         type StateClass = typeof State;
         type TransitionClass = typeof Transition;
-        module ComponentLoader {
+        namespace ComponentLoader {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -6990,7 +8079,7 @@ declare module 'gi://Wp?version=0.5' {
             new (): ComponentLoader; // This allows `obj instanceof ComponentLoader`
         };
 
-        module PipewireObject {
+        namespace PipewireObject {
             // Constructor properties interface
 
             interface ConstructorProps extends Proxy.ConstructorProps {
@@ -7081,7 +8170,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -7174,7 +8263,7 @@ declare module 'gi://Wp?version=0.5' {
              */
             vfunc_enum_params_sync(id: string, filter?: SpaPod | null): Iterator | null;
             /**
-             * Retrieves the native infor structure of this object (pw_node_info, pw_port_info, etc...)
+             * Retrieves the native info structure of this object (pw_node_info, pw_port_info, etc...)
              *
              *
              * Requires WP_PIPEWIRE_OBJECT_FEATURE_INFO
@@ -7213,7 +8302,7 @@ declare module 'gi://Wp?version=0.5' {
             new (): PipewireObject; // This allows `obj instanceof PipewireObject`
         };
 
-        module SiAcquisition {
+        namespace SiAcquisition {
             // Constructor properties interface
 
             interface ConstructorProps extends SessionItem.ConstructorProps {}
@@ -7305,7 +8394,7 @@ declare module 'gi://Wp?version=0.5' {
             new (): SiAcquisition; // This allows `obj instanceof SiAcquisition`
         };
 
-        module SiAdapter {
+        namespace SiAdapter {
             // Constructor properties interface
 
             interface ConstructorProps extends SessionItem.ConstructorProps {}
@@ -7407,7 +8496,7 @@ declare module 'gi://Wp?version=0.5' {
             new (): SiAdapter; // This allows `obj instanceof SiAdapter`
         };
 
-        module SiLink {
+        namespace SiLink {
             // Constructor properties interface
 
             interface ConstructorProps extends SessionItem.ConstructorProps {}
@@ -7467,7 +8556,7 @@ declare module 'gi://Wp?version=0.5' {
             new (): SiLink; // This allows `obj instanceof SiLink`
         };
 
-        module SiLinkable {
+        namespace SiLinkable {
             // Constructor properties interface
 
             interface ConstructorProps extends SessionItem.ConstructorProps {}

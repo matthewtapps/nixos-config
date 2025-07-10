@@ -35,8 +35,6 @@ declare module 'gi://AstalCava?version=0.1' {
             ALSA,
             PULSE,
             SNDIO,
-            OSS,
-            JACK,
             SHMEM,
             WINSCAP,
         }
@@ -44,7 +42,24 @@ declare module 'gi://AstalCava?version=0.1' {
          * gets the default Cava object.
          */
         function get_default(): Cava | null;
-        module Cava {
+        namespace Cava {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::active': (pspec: GObject.ParamSpec) => void;
+                'notify::autosens': (pspec: GObject.ParamSpec) => void;
+                'notify::bars': (pspec: GObject.ParamSpec) => void;
+                'notify::channels': (pspec: GObject.ParamSpec) => void;
+                'notify::framerate': (pspec: GObject.ParamSpec) => void;
+                'notify::high-cutoff': (pspec: GObject.ParamSpec) => void;
+                'notify::input': (pspec: GObject.ParamSpec) => void;
+                'notify::low-cutoff': (pspec: GObject.ParamSpec) => void;
+                'notify::noise-reduction': (pspec: GObject.ParamSpec) => void;
+                'notify::samplerate': (pspec: GObject.ParamSpec) => void;
+                'notify::source': (pspec: GObject.ParamSpec) => void;
+                'notify::stereo': (pspec: GObject.ParamSpec) => void;
+                'notify::values': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -159,11 +174,38 @@ declare module 'gi://AstalCava?version=0.1' {
              */
             get values(): number[];
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Cava.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Cava.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof Cava.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Cava.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Cava.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Cava.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Cava.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Cava.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 

@@ -7,6 +7,25 @@ export const NetworkMenuWindowName = "networkMenuWindow"
 
 export default function() {
   let window: Gtk.Window
+  let dismissTimeout: any = null
+
+  const scheduleAutoDismiss = () => {
+    if (dismissTimeout) {
+      clearTimeout(dismissTimeout)
+    }
+    dismissTimeout = setTimeout(() => {
+      if (window.visible && !window.hasToplevelFocus) {
+        App.toggle_window(NetworkMenuWindowName)
+      }
+    }, 2000)
+  }
+
+  const cancelAutoDismiss = () => {
+    if (dismissTimeout) {
+      clearTimeout(dismissTimeout)
+      dismissTimeout = null
+    }
+  }
 
   return <window
     exclusivity={Astal.Exclusivity.NORMAL}
@@ -25,6 +44,20 @@ export default function() {
     }}
     setup={(self) => {
       window = self
+      
+      self.connect("notify::has-toplevel-focus", () => {
+        if (!self.hasToplevelFocus && self.visible) {
+          scheduleAutoDismiss()
+        } else {
+          cancelAutoDismiss()
+        }
+      })
+      
+      self.connect("notify::visible", () => {
+        if (!self.visible) {
+          cancelAutoDismiss()
+        }
+      })
     }}>
     <box
       vertical={true}>

@@ -1,8 +1,8 @@
-/// <reference path="./glib-2.0.d.ts" />
-/// <reference path="./gobject-2.0.d.ts" />
-/// <reference path="./nm-1.0.d.ts" />
 /// <reference path="./gio-2.0.d.ts" />
+/// <reference path="./gobject-2.0.d.ts" />
+/// <reference path="./glib-2.0.d.ts" />
 /// <reference path="./gmodule-2.0.d.ts" />
+/// <reference path="./nm-1.0.d.ts" />
 
 /**
  * Type Definitions for Gjs (https://gjs.guide/)
@@ -15,11 +15,11 @@
 
 declare module 'gi://AstalNetwork?version=0.1' {
     // Module dependencies
-    import type GLib from 'gi://GLib?version=2.0';
-    import type GObject from 'gi://GObject?version=2.0';
-    import type NM from 'gi://NM?version=1.0';
     import type Gio from 'gi://Gio?version=2.0';
+    import type GObject from 'gi://GObject?version=2.0';
+    import type GLib from 'gi://GLib?version=2.0';
     import type GModule from 'gi://GModule?version=2.0';
+    import type NM from 'gi://NM?version=1.0';
 
     export namespace AstalNetwork {
         /**
@@ -104,7 +104,160 @@ declare module 'gi://AstalNetwork?version=0.1' {
         function internet_from_device(device: NM.Device): Internet;
         function internet_to_string(): string;
         function get_default(): Network;
-        module Network {
+        namespace AccessPoint {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::bandwidth': (pspec: GObject.ParamSpec) => void;
+                'notify::bssid': (pspec: GObject.ParamSpec) => void;
+                'notify::frequency': (pspec: GObject.ParamSpec) => void;
+                'notify::last-seen': (pspec: GObject.ParamSpec) => void;
+                'notify::max-bitrate': (pspec: GObject.ParamSpec) => void;
+                'notify::strength': (pspec: GObject.ParamSpec) => void;
+                'notify::icon-name': (pspec: GObject.ParamSpec) => void;
+                'notify::mode': (pspec: GObject.ParamSpec) => void;
+                'notify::flags': (pspec: GObject.ParamSpec) => void;
+                'notify::rsn-flags': (pspec: GObject.ParamSpec) => void;
+                'notify::wpa-flags': (pspec: GObject.ParamSpec) => void;
+                'notify::requires-password': (pspec: GObject.ParamSpec) => void;
+                'notify::ssid': (pspec: GObject.ParamSpec) => void;
+            }
+
+            // Constructor properties interface
+
+            interface ConstructorProps extends GObject.Object.ConstructorProps {
+                bandwidth: number;
+                bssid: string;
+                frequency: number;
+                last_seen: number;
+                lastSeen: number;
+                max_bitrate: number;
+                maxBitrate: number;
+                strength: number;
+                icon_name: string;
+                iconName: string;
+                mode: NM.__80211Mode;
+                flags: NM.__80211ApFlags;
+                rsn_flags: NM.__80211ApSecurityFlags;
+                rsnFlags: NM.__80211ApSecurityFlags;
+                wpa_flags: NM.__80211ApSecurityFlags;
+                wpaFlags: NM.__80211ApSecurityFlags;
+                requires_password: boolean;
+                requiresPassword: boolean;
+                ssid: string;
+            }
+        }
+
+        class AccessPoint extends GObject.Object {
+            static $gtype: GObject.GType<AccessPoint>;
+
+            // Properties
+
+            get bandwidth(): number;
+            get bssid(): string;
+            get frequency(): number;
+            get last_seen(): number;
+            get lastSeen(): number;
+            get max_bitrate(): number;
+            get maxBitrate(): number;
+            get strength(): number;
+            get icon_name(): string;
+            set icon_name(val: string);
+            get iconName(): string;
+            set iconName(val: string);
+            get mode(): NM.__80211Mode;
+            get flags(): NM.__80211ApFlags;
+            get rsn_flags(): NM.__80211ApSecurityFlags;
+            get rsnFlags(): NM.__80211ApSecurityFlags;
+            get wpa_flags(): NM.__80211ApSecurityFlags;
+            get wpaFlags(): NM.__80211ApSecurityFlags;
+            get requires_password(): boolean;
+            get requiresPassword(): boolean;
+            get ssid(): string;
+
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: AccessPoint.SignalSignatures;
+
+            // Constructors
+
+            constructor(properties?: Partial<AccessPoint.ConstructorProps>, ...args: any[]);
+
+            _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof AccessPoint.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, AccessPoint.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof AccessPoint.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, AccessPoint.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof AccessPoint.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<AccessPoint.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
+
+            // Methods
+
+            get_connections(): NM.RemoteConnection[];
+            get_path(): string;
+            /**
+             * Activates the first connection associated with this AccessPoint or creates a new SimpleConnection using "wpa-psk" and activates it.
+             * Returns whether the connection is the new active connection.
+             * @param password
+             */
+            activate(password?: string | null): Promise<void>;
+            /**
+             * Activates the first connection associated with this AccessPoint or creates a new SimpleConnection using "wpa-psk" and activates it.
+             * Returns whether the connection is the new active connection.
+             * @param password
+             * @param _callback_
+             */
+            activate(password: string | null, _callback_: Gio.AsyncReadyCallback<this> | null): void;
+            /**
+             * Activates the first connection associated with this AccessPoint or creates a new SimpleConnection using "wpa-psk" and activates it.
+             * Returns whether the connection is the new active connection.
+             * @param password
+             * @param _callback_
+             */
+            activate(password?: string | null, _callback_?: Gio.AsyncReadyCallback<this> | null): Promise<void> | void;
+            activate_finish(_res_: Gio.AsyncResult): void;
+            get_bandwidth(): number;
+            get_bssid(): string;
+            get_frequency(): number;
+            get_last_seen(): number;
+            get_max_bitrate(): number;
+            get_strength(): number;
+            get_icon_name(): string;
+            get_mode(): NM.__80211Mode;
+            get_flags(): NM.__80211ApFlags;
+            get_rsn_flags(): NM.__80211ApSecurityFlags;
+            get_wpa_flags(): NM.__80211ApSecurityFlags;
+            get_requires_password(): boolean;
+            get_ssid(): string | null;
+        }
+
+        namespace Network {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::client': (pspec: GObject.ParamSpec) => void;
+                'notify::wifi': (pspec: GObject.ParamSpec) => void;
+                'notify::wired': (pspec: GObject.ParamSpec) => void;
+                'notify::primary': (pspec: GObject.ParamSpec) => void;
+                'notify::connectivity': (pspec: GObject.ParamSpec) => void;
+                'notify::state': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -133,6 +286,15 @@ declare module 'gi://AstalNetwork?version=0.1' {
             get connectivity(): Connectivity;
             get state(): State;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Network.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Network.ConstructorProps>, ...args: any[]);
@@ -140,6 +302,24 @@ declare module 'gi://AstalNetwork?version=0.1' {
             _init(...args: any[]): void;
 
             static ['new'](): Network;
+
+            // Signals
+
+            connect<K extends keyof Network.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Network.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Network.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Network.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Network.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Network.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -155,11 +335,24 @@ declare module 'gi://AstalNetwork?version=0.1' {
             get_state(): State;
         }
 
-        module Wifi {
-            // Signal callback interfaces
-
-            interface StateChanged {
-                (new_state: DeviceState, old_state: DeviceState, reaseon: NM.DeviceStateReason): void;
+        namespace Wifi {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'state-changed': (arg0: DeviceState, arg1: DeviceState, arg2: NM.DeviceStateReason) => void;
+                'notify::device': (pspec: GObject.ParamSpec) => void;
+                'notify::active-connection': (pspec: GObject.ParamSpec) => void;
+                'notify::active-access-point': (pspec: GObject.ParamSpec) => void;
+                'notify::access-points': (pspec: GObject.ParamSpec) => void;
+                'notify::enabled': (pspec: GObject.ParamSpec) => void;
+                'notify::internet': (pspec: GObject.ParamSpec) => void;
+                'notify::bandwidth': (pspec: GObject.ParamSpec) => void;
+                'notify::ssid': (pspec: GObject.ParamSpec) => void;
+                'notify::strength': (pspec: GObject.ParamSpec) => void;
+                'notify::frequency': (pspec: GObject.ParamSpec) => void;
+                'notify::state': (pspec: GObject.ParamSpec) => void;
+                'notify::icon-name': (pspec: GObject.ParamSpec) => void;
+                'notify::is-hotspot': (pspec: GObject.ParamSpec) => void;
+                'notify::scanning': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -229,6 +422,15 @@ declare module 'gi://AstalNetwork?version=0.1' {
             get scanning(): boolean;
             set scanning(val: boolean);
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Wifi.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Wifi.ConstructorProps>, ...args: any[]);
@@ -237,37 +439,29 @@ declare module 'gi://AstalNetwork?version=0.1' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(
-                signal: 'state-changed',
-                callback: (
-                    _source: this,
-                    new_state: DeviceState,
-                    old_state: DeviceState,
-                    reaseon: NM.DeviceStateReason,
-                ) => void,
+            connect<K extends keyof Wifi.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Wifi.SignalSignatures[K]>,
             ): number;
-            connect_after(
-                signal: 'state-changed',
-                callback: (
-                    _source: this,
-                    new_state: DeviceState,
-                    old_state: DeviceState,
-                    reaseon: NM.DeviceStateReason,
-                ) => void,
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Wifi.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Wifi.SignalSignatures[K]>,
             ): number;
-            emit(
-                signal: 'state-changed',
-                new_state: DeviceState,
-                old_state: DeviceState,
-                reaseon: NM.DeviceStateReason,
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Wifi.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Wifi.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
             ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
             scan(): void;
+            deactivate_connection(): Promise<void>;
+            deactivate_connection(_callback_: Gio.AsyncReadyCallback<this> | null): void;
+            deactivate_connection(_callback_?: Gio.AsyncReadyCallback<this> | null): Promise<void> | void;
+            deactivate_connection_finish(_res_: Gio.AsyncResult): void;
             get_device(): NM.DeviceWifi;
             set_device(value: NM.DeviceWifi): void;
             get_active_connection(): NM.ActiveConnection | null;
@@ -286,7 +480,16 @@ declare module 'gi://AstalNetwork?version=0.1' {
             get_scanning(): boolean;
         }
 
-        module Wired {
+        namespace Wired {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::device': (pspec: GObject.ParamSpec) => void;
+                'notify::speed': (pspec: GObject.ParamSpec) => void;
+                'notify::internet': (pspec: GObject.ParamSpec) => void;
+                'notify::state': (pspec: GObject.ParamSpec) => void;
+                'notify::icon-name': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -317,6 +520,15 @@ declare module 'gi://AstalNetwork?version=0.1' {
             get iconName(): string;
             set iconName(val: string);
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Wired.SignalSignatures;
+
             // Fields
 
             connection: NM.ActiveConnection;
@@ -326,6 +538,24 @@ declare module 'gi://AstalNetwork?version=0.1' {
             constructor(properties?: Partial<Wired.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof Wired.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Wired.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Wired.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Wired.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Wired.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Wired.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -337,75 +567,13 @@ declare module 'gi://AstalNetwork?version=0.1' {
             get_icon_name(): string;
         }
 
-        module AccessPoint {
-            // Constructor properties interface
-
-            interface ConstructorProps extends GObject.Object.ConstructorProps {
-                bandwidth: number;
-                bssid: string;
-                frequency: number;
-                last_seen: number;
-                lastSeen: number;
-                max_bitrate: number;
-                maxBitrate: number;
-                strength: number;
-                icon_name: string;
-                iconName: string;
-                mode: NM.__80211Mode;
-                flags: NM.__80211ApFlags;
-                rsn_flags: NM.__80211ApSecurityFlags;
-                rsnFlags: NM.__80211ApSecurityFlags;
-                wpa_flags: NM.__80211ApSecurityFlags;
-                wpaFlags: NM.__80211ApSecurityFlags;
-                ssid: string;
-            }
-        }
-
-        class AccessPoint extends GObject.Object {
-            static $gtype: GObject.GType<AccessPoint>;
-
-            // Properties
-
-            get bandwidth(): number;
-            get bssid(): string;
-            get frequency(): number;
-            get last_seen(): number;
-            get lastSeen(): number;
-            get max_bitrate(): number;
-            get maxBitrate(): number;
-            get strength(): number;
-            get icon_name(): string;
-            set icon_name(val: string);
-            get iconName(): string;
-            set iconName(val: string);
-            get mode(): NM.__80211Mode;
-            get flags(): NM.__80211ApFlags;
-            get rsn_flags(): NM.__80211ApSecurityFlags;
-            get rsnFlags(): NM.__80211ApSecurityFlags;
-            get wpa_flags(): NM.__80211ApSecurityFlags;
-            get wpaFlags(): NM.__80211ApSecurityFlags;
-            get ssid(): string;
+        type AccessPointClass = typeof AccessPoint;
+        abstract class AccessPointPrivate {
+            static $gtype: GObject.GType<AccessPointPrivate>;
 
             // Constructors
 
-            constructor(properties?: Partial<AccessPoint.ConstructorProps>, ...args: any[]);
-
             _init(...args: any[]): void;
-
-            // Methods
-
-            get_bandwidth(): number;
-            get_bssid(): string;
-            get_frequency(): number;
-            get_last_seen(): number;
-            get_max_bitrate(): number;
-            get_strength(): number;
-            get_icon_name(): string;
-            get_mode(): NM.__80211Mode;
-            get_flags(): NM.__80211ApFlags;
-            get_rsn_flags(): NM.__80211ApSecurityFlags;
-            get_wpa_flags(): NM.__80211ApSecurityFlags;
-            get_ssid(): string | null;
         }
 
         type NetworkClass = typeof Network;
@@ -429,15 +597,6 @@ declare module 'gi://AstalNetwork?version=0.1' {
         type WiredClass = typeof Wired;
         abstract class WiredPrivate {
             static $gtype: GObject.GType<WiredPrivate>;
-
-            // Constructors
-
-            _init(...args: any[]): void;
-        }
-
-        type AccessPointClass = typeof AccessPoint;
-        abstract class AccessPointPrivate {
-            static $gtype: GObject.GType<AccessPointPrivate>;
 
             // Constructors
 

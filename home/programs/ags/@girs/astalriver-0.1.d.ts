@@ -24,6 +24,20 @@ declare module 'gi://AstalRiver?version=0.1' {
          * AstalRiver-0.1
          */
 
+        export namespace Transform {
+            export const $gtype: GObject.GType<Transform>;
+        }
+
+        enum Transform {
+            NORMAL,
+            ROTATE_90,
+            ROTATE_180,
+            ROTATE_270,
+            FLIPPED,
+            FLIPPED_ROTATE_90,
+            FLIPPED_ROTATE_180,
+            FLIPPED_ROTATE_270,
+        }
         const MAJOR_VERSION: number;
         const MICRO_VERSION: number;
         const MINOR_VERSION: number;
@@ -32,28 +46,140 @@ declare module 'gi://AstalRiver?version=0.1' {
         interface CommandCallback {
             (success: boolean, msg: string): void;
         }
-        module Output {
-            // Signal callback interfaces
-
-            interface Changed {
-                (): void;
+        interface LayoutDemandCallback {
+            (self: Layout, output: Output, view_count: number, usable_width: number, usable_height: number): void;
+        }
+        namespace Layout {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'namespace-in-use': (arg0: Output) => void;
+                'user-command': (arg0: string, arg1: Output) => void;
+                'notify::namespace': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
+                namespace: string;
+            }
+        }
+
+        /**
+         * handles the layout of windows.
+         */
+        class Layout extends GObject.Object {
+            static $gtype: GObject.GType<Layout>;
+
+            // Properties
+
+            /**
+             * The namespace of this layout
+             */
+            get namespace(): string;
+
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Layout.SignalSignatures;
+
+            // Constructors
+
+            constructor(properties?: Partial<Layout.ConstructorProps>, ...args: any[]);
+
+            _init(...args: any[]): void;
+
+            // Signals
+
+            connect<K extends keyof Layout.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Layout.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Layout.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Layout.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Layout.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Layout.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
+
+            // Methods
+
+            /**
+             * the namespace of the layout
+             * @returns the namespace of the layout
+             */
+            get_namespace(): string | null;
+            /**
+             * Sets the callback to be called when a layout demand is made.
+             * @param callback the callback to be called when a layout demand is made
+             */
+            set_layout_demand_callback(callback: LayoutDemandCallback): void;
+        }
+
+        namespace Output {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                changed: () => void;
+                'notify::description': (pspec: GObject.ParamSpec) => void;
+                'notify::focused-tags': (pspec: GObject.ParamSpec) => void;
+                'notify::focused-view': (pspec: GObject.ParamSpec) => void;
+                'notify::height': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::layout-name': (pspec: GObject.ParamSpec) => void;
+                'notify::make': (pspec: GObject.ParamSpec) => void;
+                'notify::model': (pspec: GObject.ParamSpec) => void;
+                'notify::name': (pspec: GObject.ParamSpec) => void;
+                'notify::occupied-tags': (pspec: GObject.ParamSpec) => void;
+                'notify::physical-height': (pspec: GObject.ParamSpec) => void;
+                'notify::physical-width': (pspec: GObject.ParamSpec) => void;
+                'notify::refresh-rate': (pspec: GObject.ParamSpec) => void;
+                'notify::scale-factor': (pspec: GObject.ParamSpec) => void;
+                'notify::transform': (pspec: GObject.ParamSpec) => void;
+                'notify::urgent-tags': (pspec: GObject.ParamSpec) => void;
+                'notify::width': (pspec: GObject.ParamSpec) => void;
+                'notify::x': (pspec: GObject.ParamSpec) => void;
+                'notify::y': (pspec: GObject.ParamSpec) => void;
+            }
+
+            // Constructor properties interface
+
+            interface ConstructorProps extends GObject.Object.ConstructorProps {
+                description: string;
                 focused_tags: number;
                 focusedTags: number;
                 focused_view: string;
                 focusedView: string;
+                height: number;
                 id: number;
                 layout_name: string;
                 layoutName: string;
+                make: string;
+                model: string;
                 name: string;
                 occupied_tags: number;
                 occupiedTags: number;
+                physical_height: number;
+                physicalHeight: number;
+                physical_width: number;
+                physicalWidth: number;
+                refresh_rate: number;
+                refreshRate: number;
+                scale_factor: number;
+                scaleFactor: number;
+                transform: Transform;
                 urgent_tags: number;
                 urgentTags: number;
+                width: number;
+                x: number;
+                y: number;
             }
         }
 
@@ -65,6 +191,7 @@ declare module 'gi://AstalRiver?version=0.1' {
 
             // Properties
 
+            get description(): string;
             /**
              * The currently focused tags
              */
@@ -83,6 +210,7 @@ declare module 'gi://AstalRiver?version=0.1' {
              * The name of currently focused view
              */
             get focusedView(): string;
+            get height(): number;
             /**
              * The id of the underlying wl_output object
              */
@@ -95,6 +223,8 @@ declare module 'gi://AstalRiver?version=0.1' {
              * The name of active layout
              */
             get layoutName(): string;
+            get make(): string;
+            get model(): string;
             /**
              * The name of this output
              */
@@ -107,6 +237,15 @@ declare module 'gi://AstalRiver?version=0.1' {
              * The currently occupied tags
              */
             get occupiedTags(): number;
+            get physical_height(): number;
+            get physicalHeight(): number;
+            get physical_width(): number;
+            get physicalWidth(): number;
+            get refresh_rate(): number;
+            get refreshRate(): number;
+            get scale_factor(): number;
+            get scaleFactor(): number;
+            get transform(): Transform;
             /**
              * The currently tags marked as urgent
              */
@@ -115,6 +254,18 @@ declare module 'gi://AstalRiver?version=0.1' {
              * The currently tags marked as urgent
              */
             get urgentTags(): number;
+            get width(): number;
+            get x(): number;
+            get y(): number;
+
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Output.SignalSignatures;
 
             // Constructors
 
@@ -124,15 +275,28 @@ declare module 'gi://AstalRiver?version=0.1' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(signal: 'changed', callback: (_source: this) => void): number;
-            connect_after(signal: 'changed', callback: (_source: this) => void): number;
-            emit(signal: 'changed'): void;
+            connect<K extends keyof Output.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Output.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Output.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Output.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Output.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Output.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
+            /**
+             * the description of the output
+             */
+            get_description(): string | null;
             /**
              * the focused tags of the output
              * @returns the focused tags of the output
@@ -144,6 +308,10 @@ declare module 'gi://AstalRiver?version=0.1' {
              */
             get_focused_view(): string | null;
             /**
+             * the height of the output
+             */
+            get_height(): number;
+            /**
              * the id of the underlying wl_output object
              * @returns the id of the underlying wl_output object
              */
@@ -153,6 +321,14 @@ declare module 'gi://AstalRiver?version=0.1' {
              * @returns the currently used layout name of the output
              */
             get_layout_name(): string | null;
+            /**
+             * the make of the output
+             */
+            get_make(): string | null;
+            /**
+             * the model of the output
+             */
+            get_model(): string | null;
             /**
              * the name of the output
              * @returns the name of the output
@@ -164,10 +340,38 @@ declare module 'gi://AstalRiver?version=0.1' {
              */
             get_occupied_tags(): number;
             /**
+             * the physical height of the output
+             */
+            get_physical_height(): number;
+            /**
+             * the physical width of the output
+             */
+            get_physical_width(): number;
+            /**
+             * the refresh rate of the output
+             */
+            get_refresh_rate(): number;
+            /**
+             * the scale factor of the output
+             */
+            get_scale_factor(): number;
+            /**
              * the urgent tags of the output
              * @returns the urgent tags of the output
              */
             get_urgent_tags(): number;
+            /**
+             * the width of the output
+             */
+            get_width(): number;
+            /**
+             * the x coordinate of the outputs position
+             */
+            get_x(): number;
+            /**
+             * the y coordinate of the outputs position
+             */
+            get_y(): number;
             /**
              * sets the focused tags of the output
              * @param tags the tagmask to be focused
@@ -175,19 +379,16 @@ declare module 'gi://AstalRiver?version=0.1' {
             set_focused_tags(tags: number): void;
         }
 
-        module River {
-            // Signal callback interfaces
-
-            interface Changed {
-                (): void;
-            }
-
-            interface OutputAdded {
-                (output: string): void;
-            }
-
-            interface OutputRemoved {
-                (output: string): void;
+        namespace River {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                changed: () => void;
+                'output-added': (arg0: string) => void;
+                'output-removed': (arg0: string) => void;
+                'notify::focused-output': (pspec: GObject.ParamSpec) => void;
+                'notify::focused-view': (pspec: GObject.ParamSpec) => void;
+                'notify::mode': (pspec: GObject.ParamSpec) => void;
+                'notify::outputs': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -235,6 +436,15 @@ declare module 'gi://AstalRiver?version=0.1' {
              */
             get outputs(): Output[];
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: River.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<River.ConstructorProps>, ...args: any[]);
@@ -245,18 +455,21 @@ declare module 'gi://AstalRiver?version=0.1' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(signal: 'changed', callback: (_source: this) => void): number;
-            connect_after(signal: 'changed', callback: (_source: this) => void): number;
-            emit(signal: 'changed'): void;
-            connect(signal: 'output-added', callback: (_source: this, output: string) => void): number;
-            connect_after(signal: 'output-added', callback: (_source: this, output: string) => void): number;
-            emit(signal: 'output-added', output: string): void;
-            connect(signal: 'output-removed', callback: (_source: this, output: string) => void): number;
-            connect_after(signal: 'output-removed', callback: (_source: this, output: string) => void): number;
-            emit(signal: 'output-removed', output: string): void;
+            connect<K extends keyof River.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, River.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof River.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, River.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof River.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<River.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -294,6 +507,12 @@ declare module 'gi://AstalRiver?version=0.1' {
              */
             get_outputs(): Output[];
             /**
+             * creates a new [class`AstalRiver`.Layout] object for this river instance.
+             * @param namespace the namespace of the layout
+             * @returns a newly created AstalRiverLayout object
+             */
+            new_layout(namespace: string): Layout;
+            /**
              * Sends a given command to the compositor and calls the callback after it was executed.
              * @param cmd the command to execute
              * @param callback the callback to invoke.
@@ -320,7 +539,7 @@ declare module 'gi://AstalRiver?version=0.1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -363,7 +582,7 @@ declare module 'gi://AstalRiver?version=0.1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -503,7 +722,21 @@ declare module 'gi://AstalRiver?version=0.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -631,7 +864,12 @@ declare module 'gi://AstalRiver?version=0.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -781,13 +1019,72 @@ declare module 'gi://AstalRiver?version=0.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
+        class Geometry {
+            static $gtype: GObject.GType<Geometry>;
+
+            // Fields
+
+            x: number;
+            y: number;
+            width: number;
+            height: number;
+
+            // Constructors
+
+            constructor(
+                properties?: Partial<{
+                    x: number;
+                    y: number;
+                    width: number;
+                    height: number;
+                }>,
+            );
+            _init(...args: any[]): void;
+
+            static ['new'](x: number, y: number, width: number, height: number): Geometry;
+
+            static new_zero(): Geometry;
+
+            // Methods
+
+            /**
+             * Creates a copy of the given AstalRiverGeometry.
+             */
+            copy(): Geometry;
+            /**
+             * Frees the given AstalRiverGeometry.
+             */
+            free(): void;
+        }
+
+        type LayoutClass = typeof Layout;
         type OutputClass = typeof Output;
         type RiverClass = typeof River;
         /**

@@ -449,7 +449,12 @@ declare module 'gi://Json?version=1.0' {
         interface ObjectForeach {
             (object: Object, member_name: string, member_node: Node): void;
         }
-        module Builder {
+        namespace Builder {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::immutable': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -508,6 +513,15 @@ declare module 'gi://Json?version=1.0' {
              */
             get immutable(): boolean;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Builder.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Builder.ConstructorProps>, ...args: any[]);
@@ -517,6 +531,24 @@ declare module 'gi://Json?version=1.0' {
             static ['new'](): Builder;
 
             static new_immutable(): Builder;
+
+            // Signals
+
+            connect<K extends keyof Builder.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Builder.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Builder.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Builder.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Builder.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Builder.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -659,7 +691,15 @@ declare module 'gi://Json?version=1.0' {
             set_member_name(member_name: string): Builder | null;
         }
 
-        module Generator {
+        namespace Generator {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::indent': (pspec: GObject.ParamSpec) => void;
+                'notify::indent-char': (pspec: GObject.ParamSpec) => void;
+                'notify::pretty': (pspec: GObject.ParamSpec) => void;
+                'notify::root': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -712,6 +752,15 @@ declare module 'gi://Json?version=1.0' {
             get root(): Node;
             set root(val: Node);
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Generator.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Generator.ConstructorProps>, ...args: any[]);
@@ -719,6 +768,24 @@ declare module 'gi://Json?version=1.0' {
             _init(...args: any[]): void;
 
             static ['new'](): Generator;
+
+            // Signals
+
+            connect<K extends keyof Generator.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Generator.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Generator.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Generator.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Generator.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Generator.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -731,7 +798,7 @@ declare module 'gi://Json?version=1.0' {
              * Retrieves the value set using [method`Json`.Generator.set_indent_char].
              * @returns the character to be used when indenting
              */
-            get_indent_char(): number;
+            get_indent_char(): string;
             /**
              * Retrieves the value set using [method`Json`.Generator.set_pretty].
              * @returns `TRUE` if the generated JSON should be pretty-printed, and   `FALSE` otherwise
@@ -752,7 +819,7 @@ declare module 'gi://Json?version=1.0' {
              * Sets the character to be used when indenting.
              * @param indent_char a Unicode character to be used when indenting
              */
-            set_indent_char(indent_char: number): void;
+            set_indent_char(indent_char: string): void;
             /**
              * Sets whether the generated JSON should be pretty printed.
              *
@@ -810,43 +877,20 @@ declare module 'gi://Json?version=1.0' {
             to_stream(stream: Gio.OutputStream, cancellable?: Gio.Cancellable | null): boolean;
         }
 
-        module Parser {
-            // Signal callback interfaces
-
-            interface ArrayElement {
-                (array: Array, index_: number): void;
-            }
-
-            interface ArrayEnd {
-                (array: Array): void;
-            }
-
-            interface ArrayStart {
-                (): void;
-            }
-
-            interface Error {
-                (error?: any | null): void;
-            }
-
-            interface ObjectEnd {
-                (object: Object): void;
-            }
-
-            interface ObjectMember {
-                (object: Object, member_name: string): void;
-            }
-
-            interface ObjectStart {
-                (): void;
-            }
-
-            interface ParseEnd {
-                (): void;
-            }
-
-            interface ParseStart {
-                (): void;
+        namespace Parser {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'array-element': (arg0: Array, arg1: number) => void;
+                'array-end': (arg0: Array) => void;
+                'array-start': () => void;
+                error: (arg0: any | null) => void;
+                'object-end': (arg0: Object) => void;
+                'object-member': (arg0: Object, arg1: string) => void;
+                'object-start': () => void;
+                'parse-end': () => void;
+                'parse-start': () => void;
+                'notify::immutable': (pspec: GObject.ParamSpec) => void;
+                'notify::strict': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -915,6 +959,15 @@ declare module 'gi://Json?version=1.0' {
             get strict(): boolean;
             set strict(val: boolean);
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Parser.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Parser.ConstructorProps>, ...args: any[]);
@@ -927,45 +980,21 @@ declare module 'gi://Json?version=1.0' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(signal: 'array-element', callback: (_source: this, array: Array, index_: number) => void): number;
-            connect_after(
-                signal: 'array-element',
-                callback: (_source: this, array: Array, index_: number) => void,
+            connect<K extends keyof Parser.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Parser.SignalSignatures[K]>,
             ): number;
-            emit(signal: 'array-element', array: Array, index_: number): void;
-            connect(signal: 'array-end', callback: (_source: this, array: Array) => void): number;
-            connect_after(signal: 'array-end', callback: (_source: this, array: Array) => void): number;
-            emit(signal: 'array-end', array: Array): void;
-            connect(signal: 'array-start', callback: (_source: this) => void): number;
-            connect_after(signal: 'array-start', callback: (_source: this) => void): number;
-            emit(signal: 'array-start'): void;
-            connect(signal: 'error', callback: (_source: this, error: any | null) => void): number;
-            connect_after(signal: 'error', callback: (_source: this, error: any | null) => void): number;
-            emit(signal: 'error', error?: any | null): void;
-            connect(signal: 'object-end', callback: (_source: this, object: Object) => void): number;
-            connect_after(signal: 'object-end', callback: (_source: this, object: Object) => void): number;
-            emit(signal: 'object-end', object: Object): void;
-            connect(
-                signal: 'object-member',
-                callback: (_source: this, object: Object, member_name: string) => void,
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Parser.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Parser.SignalSignatures[K]>,
             ): number;
-            connect_after(
-                signal: 'object-member',
-                callback: (_source: this, object: Object, member_name: string) => void,
-            ): number;
-            emit(signal: 'object-member', object: Object, member_name: string): void;
-            connect(signal: 'object-start', callback: (_source: this) => void): number;
-            connect_after(signal: 'object-start', callback: (_source: this) => void): number;
-            emit(signal: 'object-start'): void;
-            connect(signal: 'parse-end', callback: (_source: this) => void): number;
-            connect_after(signal: 'parse-end', callback: (_source: this) => void): number;
-            emit(signal: 'parse-end'): void;
-            connect(signal: 'parse-start', callback: (_source: this) => void): number;
-            connect_after(signal: 'parse-start', callback: (_source: this) => void): number;
-            emit(signal: 'parse-start'): void;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Parser.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Parser.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Virtual methods
 
@@ -1187,7 +1216,10 @@ declare module 'gi://Json?version=1.0' {
             steal_root(): Node | null;
         }
 
-        module Path {
+        namespace Path {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {}
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -1325,6 +1357,15 @@ declare module 'gi://Json?version=1.0' {
         class Path extends GObject.Object {
             static $gtype: GObject.GType<Path>;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Path.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Path.ConstructorProps>, ...args: any[]);
@@ -1332,6 +1373,24 @@ declare module 'gi://Json?version=1.0' {
             _init(...args: any[]): void;
 
             static ['new'](): Path;
+
+            // Signals
+
+            connect<K extends keyof Path.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Path.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Path.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Path.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Path.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Path.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -1369,7 +1428,12 @@ declare module 'gi://Json?version=1.0' {
             match(root: Node): Node;
         }
 
-        module Reader {
+        namespace Reader {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                'notify::root': (pspec: GObject.ParamSpec) => void;
+            }
+
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1465,6 +1529,15 @@ declare module 'gi://Json?version=1.0' {
             get root(): Node;
             set root(val: Node);
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Reader.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Reader.ConstructorProps>, ...args: any[]);
@@ -1472,6 +1545,24 @@ declare module 'gi://Json?version=1.0' {
             _init(...args: any[]): void;
 
             static ['new'](node?: Node | null): Reader;
+
+            // Signals
+
+            connect<K extends keyof Reader.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Reader.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Reader.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Reader.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Reader.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Reader.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
@@ -2850,7 +2941,7 @@ declare module 'gi://Json?version=1.0' {
         }
 
         type SerializableIface = typeof Serializable;
-        module Serializable {
+        namespace Serializable {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}

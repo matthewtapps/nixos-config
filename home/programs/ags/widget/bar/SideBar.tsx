@@ -3,6 +3,7 @@ import {
   BatteryButton,
   BluetoothButton,
   ClockButton,
+  MediaButton,
   MenuButton,
   MicrophoneButton,
   NetworkButton,
@@ -34,7 +35,9 @@ export default function(monitorId: number) {
         <MenuButton css={"padding-top: 6px;"} />
         <Workspaces vertical={true} monitorId={monitorId} />
       </box>
-      <box />
+      <box vertical={true}>
+        <MediaButton css={iconCss} />
+      </box>
       <box
         vertical={true}
         valign={Gtk.Align.END}>

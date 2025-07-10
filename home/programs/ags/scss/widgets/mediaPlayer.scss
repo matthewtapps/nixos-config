@@ -50,3 +50,106 @@
     }
   }
 }
+
+// New enhanced media player styles
+.mediaControlButton {
+  all: unset;
+  background-color: transparent;
+  color: vars.$fg;
+  padding: 8px;
+  border-radius: 50%;
+  min-width: 40px;
+  min-height: 40px;
+  border: none;
+  transition: all 200ms ease;
+}
+
+.mediaControlButton:hover {
+  background-color: vars.$bgHover;
+}
+
+.mediaControlButtonPrimary {
+  all: unset;
+  background-color: vars.$buttonPrimary;
+  color: vars.$bg;
+  padding: 12px 16px;
+  border-radius: 50%;
+  min-width: 48px;
+  min-height: 48px;
+  border: none;
+  transition: all 200ms ease;
+  box-shadow: 0 4px 12px rgba(167, 192, 128, 0.3);
+}
+
+.mediaControlButtonPrimary:hover {
+  background-color: vars.$primary;
+  box-shadow: 0 6px 16px rgba(167, 192, 128, 0.4);
+}
+
+.mediaProgressSlider {
+  all: unset;
+  min-height: 6px;
+  margin: 4px 0;
+
+  trough {
+    all: unset;
+    background: vars.$sliderTrough;
+    min-height: 6px;
+    border-radius: 3px;
+    transition: all 200ms ease;
+  }
+
+  trough:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  trough slider {
+    all: unset;
+    min-width: 16px;
+    min-height: 16px;
+    border-radius: 50%;
+    background: vars.$buttonPrimary;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 200ms ease;
+    opacity: 0;
+  }
+
+  trough:hover slider {
+    opacity: 1;
+  }
+
+  trough highlight {
+    all: unset;
+    min-height: 6px;
+    border-radius: 3px;
+    background: vars.$buttonPrimary;
+  }
+}
+
+.volumeSlider {
+  all: unset;
+  min-height: 6px;
+
+  trough {
+    all: unset;
+    background: vars.$sliderTrough;
+    min-height: 6px;
+    border-radius: 3px;
+  }
+
+  trough slider {
+    all: unset;
+    min-width: 12px;
+    min-height: 12px;
+    border-radius: 50%;
+    background: vars.$fg;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  trough highlight {
+    all: unset;
+    min-height: 6px;
+    border-radius: 3px;
+    background: vars.$fg;
+  }
+}

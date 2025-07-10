@@ -73,48 +73,28 @@ export function ClockButton({ css, monitorId }: { css: string, singleLine: boole
 
 export function MediaButton({ css }: { css: string }) {
   const mpris = Mpris.get_default();
+  
   return <box>
-    {bind(mpris, "players").as(p => {
-      if (!p.length) return <label />;
+    {bind(mpris, "players").as(players => {
+      if (!players.length) return <box />;
 
-      const defaultPlayer = p[0];
-      if (!defaultPlayer) return <label />;
+      const defaultPlayer = players[0];
+      if (!defaultPlayer) return <box />;
 
-      const title = bind(defaultPlayer, "title").as(t => t || "Unknown Track")
-      const artist = bind(defaultPlayer, "artist").as(a => a || "Unknown Artist")
-
-      const realPosition = Variable(defaultPlayer.position)
-      bind(defaultPlayer, "position").subscribe((position) => {
-        if (defaultPlayer.playbackStatus === Mpris.PlaybackStatus.PLAYING) {
-          realPosition.set(position)
-        }
-      })
       const playIcon = bind(defaultPlayer, "playbackStatus").as(s =>
         s === Mpris.PlaybackStatus.PLAYING
-          ? ""
-          : ""
+          ? "⏸"
+          : "▶"
       )
 
       return <button
         className="iconButton"
         css={css}
-        onClick={(_, e) => {
-          if (e.button === Astal.MouseButton.PRIMARY) {
+        label={playIcon}
+        onClicked={() => {
             App.toggle_window(MediaPlayerMenuWindowName);
-          }
-          if (e.button === Astal.MouseButton.SECONDARY) {
-            defaultPlayer.play_pause();
-          }
         }}
-      >
-        <box >
-          <label label={playIcon} css="margin: 0px 5px 0px 10px" />
-          <label label={title} css="margin: 0px 10px 0px 5px" />
-          <label>-</label>
-          <box css="margin: 0px 5px 0px 10px" />
-          <label label={artist} />
-        </box>
-      </button>
+      />
     })}
   </box>
 }
@@ -133,7 +113,7 @@ export function ScreenRecordingButton({ css }: { css: string }) {
   return <button
     className="warningIconButton"
     css={css}
-    label=""
+    label=""
     visible={isRecording()}
     onClicked={() => {
       execAsync("pkill wf-recorder")

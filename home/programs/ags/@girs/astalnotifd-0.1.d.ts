@@ -45,15 +45,14 @@ declare module 'gi://AstalNotifd?version=0.1' {
         const MICRO_VERSION: number;
         const VERSION: string;
         function get_default(): Notifd;
-        module Notifd {
-            // Signal callback interfaces
-
-            interface Notified {
-                (id: number, replaced: boolean): void;
-            }
-
-            interface Resolved {
-                (id: number, reason: ClosedReason): void;
+        namespace Notifd {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                notified: (arg0: number, arg1: boolean) => void;
+                resolved: (arg0: number, arg1: ClosedReason) => void;
+                'notify::ignore-timeout': (pspec: GObject.ParamSpec) => void;
+                'notify::dont-disturb': (pspec: GObject.ParamSpec) => void;
+                'notify::notifications': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -105,6 +104,15 @@ declare module 'gi://AstalNotifd?version=0.1' {
              */
             get notifications(): Notification[];
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Notifd.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Notifd.ConstructorProps>, ...args: any[]);
@@ -115,18 +123,21 @@ declare module 'gi://AstalNotifd?version=0.1' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(signal: 'notified', callback: (_source: this, id: number, replaced: boolean) => void): number;
-            connect_after(signal: 'notified', callback: (_source: this, id: number, replaced: boolean) => void): number;
-            emit(signal: 'notified', id: number, replaced: boolean): void;
-            connect(signal: 'resolved', callback: (_source: this, id: number, reason: ClosedReason) => void): number;
-            connect_after(
-                signal: 'resolved',
-                callback: (_source: this, id: number, reason: ClosedReason) => void,
+            connect<K extends keyof Notifd.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Notifd.SignalSignatures[K]>,
             ): number;
-            emit(signal: 'resolved', id: number, reason: ClosedReason): void;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Notifd.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Notifd.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Notifd.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Notifd.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Static methods
 
@@ -149,15 +160,31 @@ declare module 'gi://AstalNotifd?version=0.1' {
             get_notifications(): Notification[];
         }
 
-        module Notification {
-            // Signal callback interfaces
-
-            interface Resolved {
-                (reason: ClosedReason): void;
-            }
-
-            interface Invoked {
-                (action_id: string): void;
+        namespace Notification {
+            // Signal signatures
+            interface SignalSignatures extends GObject.Object.SignalSignatures {
+                resolved: (arg0: ClosedReason) => void;
+                invoked: (arg0: string) => void;
+                'notify::time': (pspec: GObject.ParamSpec) => void;
+                'notify::app-name': (pspec: GObject.ParamSpec) => void;
+                'notify::app-icon': (pspec: GObject.ParamSpec) => void;
+                'notify::summary': (pspec: GObject.ParamSpec) => void;
+                'notify::body': (pspec: GObject.ParamSpec) => void;
+                'notify::id': (pspec: GObject.ParamSpec) => void;
+                'notify::expire-timeout': (pspec: GObject.ParamSpec) => void;
+                'notify::actions': (pspec: GObject.ParamSpec) => void;
+                'notify::image': (pspec: GObject.ParamSpec) => void;
+                'notify::action-icons': (pspec: GObject.ParamSpec) => void;
+                'notify::category': (pspec: GObject.ParamSpec) => void;
+                'notify::desktop-entry': (pspec: GObject.ParamSpec) => void;
+                'notify::resident': (pspec: GObject.ParamSpec) => void;
+                'notify::sound-file': (pspec: GObject.ParamSpec) => void;
+                'notify::sound-name': (pspec: GObject.ParamSpec) => void;
+                'notify::suppress-sound': (pspec: GObject.ParamSpec) => void;
+                'notify::transient': (pspec: GObject.ParamSpec) => void;
+                'notify::x': (pspec: GObject.ParamSpec) => void;
+                'notify::y': (pspec: GObject.ParamSpec) => void;
+                'notify::urgency': (pspec: GObject.ParamSpec) => void;
             }
 
             // Constructor properties interface
@@ -326,6 +353,15 @@ declare module 'gi://AstalNotifd?version=0.1' {
              */
             get urgency(): Urgency;
 
+            /**
+             * Compile-time signal type information.
+             *
+             * This instance property is generated only for TypeScript type checking.
+             * It is not defined at runtime and should not be accessed in JS code.
+             * @internal
+             */
+            $signals: Notification.SignalSignatures;
+
             // Constructors
 
             constructor(properties?: Partial<Notification.ConstructorProps>, ...args: any[]);
@@ -334,15 +370,21 @@ declare module 'gi://AstalNotifd?version=0.1' {
 
             // Signals
 
-            connect(id: string, callback: (...args: any[]) => any): number;
-            connect_after(id: string, callback: (...args: any[]) => any): number;
-            emit(id: string, ...args: any[]): void;
-            connect(signal: 'resolved', callback: (_source: this, reason: ClosedReason) => void): number;
-            connect_after(signal: 'resolved', callback: (_source: this, reason: ClosedReason) => void): number;
-            emit(signal: 'resolved', reason: ClosedReason): void;
-            connect(signal: 'invoked', callback: (_source: this, action_id: string) => void): number;
-            connect_after(signal: 'invoked', callback: (_source: this, action_id: string) => void): number;
-            emit(signal: 'invoked', action_id: string): void;
+            connect<K extends keyof Notification.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Notification.SignalSignatures[K]>,
+            ): number;
+            connect(signal: string, callback: (...args: any[]) => any): number;
+            connect_after<K extends keyof Notification.SignalSignatures>(
+                signal: K,
+                callback: GObject.SignalCallback<this, Notification.SignalSignatures[K]>,
+            ): number;
+            connect_after(signal: string, callback: (...args: any[]) => any): number;
+            emit<K extends keyof Notification.SignalSignatures>(
+                signal: K,
+                ...args: GObject.GjsParameters<Notification.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never
+            ): void;
+            emit(signal: string, ...args: any[]): void;
 
             // Methods
 
