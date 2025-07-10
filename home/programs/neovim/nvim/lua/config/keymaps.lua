@@ -101,3 +101,7 @@ vim.keymap.set("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = 
 
 -- Prevent conflict with manual code format
 vim.keymap.set("n", "d<Space>", "x", { desc = "Delete character" })
+
+vim.keymap.set("n", "<Esc>", function()
+	vim.cmd("noh")
+end, { desc = "Exit search highlight" })

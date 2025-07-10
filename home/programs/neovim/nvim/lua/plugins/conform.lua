@@ -21,6 +21,7 @@ return {
 				elixir = { "mix" },
 				fish = { "fish_indent" },
 				javascript = { "prettier" },
+				javascriptreact = { "prettier" },
 				json = { "prettier" },
 				jsonc = { "prettier" },
 				lua = { "stylua" },
@@ -29,6 +30,7 @@ return {
 				sh = { "shfmt" },
 				svelte = { "prettier" },
 				typescript = { "prettier" },
+				typescriptreact = { "prettier" },
 				rust = { "rustfmt" },
 				go = { "gofmt" },
 				astro = { "prettier" },
@@ -45,10 +47,6 @@ return {
 				js = { "prettier" },
 				ts = { "prettier" },
 				cs = { "csharpier" },
-			},
-			format_on_save = {
-				timeout_ms = 500,
-				lsp_fallback = true,
 			},
 			formatters = {
 				sqlfluff = {

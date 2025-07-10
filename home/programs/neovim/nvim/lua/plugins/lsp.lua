@@ -139,6 +139,18 @@ return {
 				vim.keymap.set("n", "<leader>cd", vim.lsp.buf.declaration, opts)
 			end)
 
+			-- Global handler for LSP errors
+			vim.lsp.handlers["window/showMessage"] = function(_, result, ctx)
+				local client = vim.lsp.get_client_by_id(ctx.client_id)
+				local lvl = ({
+					vim.log.levels.ERROR,
+					vim.log.levels.WARN,
+					vim.log.levels.INFO,
+					vim.log.levels.DEBUG,
+				})[result.type]
+				vim.notify(result.message, lvl, { title = client.name })
+			end
+
 			-- Configure LSP servers with cmp capabilities
 			local lspconfig = require("lspconfig")
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -164,7 +176,6 @@ return {
 			})
 			require("lspconfig").ts_ls.setup({ capabilities = capabilities })
 			require("lspconfig").terraformls.setup({ capabilities = capabilities })
-			require("lspconfig").rust_analyzer.setup({ capabilities = capabilities })
 			require("lspconfig").gopls.setup({ capabilities = capabilities })
 			require("lspconfig").astro.setup({ capabilities = capabilities })
 			require("lspconfig").ruby_lsp.setup({ capabilities = capabilities })
