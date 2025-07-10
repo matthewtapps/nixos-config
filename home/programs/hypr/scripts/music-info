@@ -1,0 +1,198 @@
+#!/bin/bash
+
+# Music info script for hyprlock
+# Usage: music-info --cover | --song | --artist | --status | --progress
+
+COVER_DIR="/tmp/hyprlock_covers"
+COVER_FILE="$COVER_DIR/current_cover.png"
+DEFAULT_COVER="$HOME/.config/hypr/assets/default_album.png"
+
+# Create cover directory if it doesn't exist
+mkdir -p "$COVER_DIR"
+
+# Function to get metadata using playerctl
+get_metadata() {
+    local key="$1"
+    playerctl metadata --format "{{ $key }}" 2>/dev/null || echo ""
+}
+
+# Function to get current status
+get_status() {
+    local status=$(playerctl status 2>/dev/null)
+    case "$status" in
+        "Playing") echo "⏸" ;;
+        "Paused") echo "▶" ;;
+        *) echo "⏹" ;;
+    esac
+}
+
+# Function to get song title (truncated)
+get_song() {
+    local song=$(get_metadata "xesam:title")
+    if [[ -z "$song" ]]; then
+        echo ""
+    else
+        # Truncate to 30 characters to prevent overflow
+        echo "${song:0:45}$([ ${#song} -gt 45 ] && echo "...")"
+    fi
+}
+
+# Function to get artist (truncated)
+get_artist() {
+    local artist=$(get_metadata "xesam:artist")
+    if [[ -z "$artist" ]]; then
+        echo ""
+    else
+        echo "${artist:0:50}$([ ${#artist} -gt 50 ] && echo "...")"
+    fi
+}
+
+# Function to get album name (truncated)
+get_album() {
+    local album=$(get_metadata "xesam:album")
+    if [[ -z "$album" ]]; then
+        echo ""
+    else
+        echo "${album:0:50}$([ ${#album} -gt 50 ] && echo "...")"
+    fi
+}
+
+# Function to get progress percentage for progress bar
+get_progress() {
+    local position=$(playerctl position 2>/dev/null)
+    local duration=$(playerctl metadata mpris:length 2>/dev/null)
+    
+    if [[ -z "$position" || -z "$duration" || "$duration" -eq 0 ]]; then
+        echo "0"
+    else
+        # Convert position to integer (remove decimal part)
+        position=${position%.*}
+        # Convert duration from microseconds to seconds
+        duration=$((duration / 1000000))
+        # Calculate percentage
+        local progress=$((position * 100 / duration))
+        echo "$progress"
+    fi
+}
+
+# Function to get formatted time
+get_time() {
+    local position=$(playerctl position 2>/dev/null)
+    local duration=$(playerctl metadata mpris:length 2>/dev/null)
+    
+    if [[ -z "$position" || -z "$duration" ]]; then
+        echo "0:00 / 0:00"
+    else
+        # Convert position to integer (remove decimal part)
+        position=${position%.*}
+        # Convert duration from microseconds to seconds
+        duration=$((duration / 1000000))
+        
+        # Format position
+        local pos_min=$((position / 60))
+        local pos_sec=$((position % 60))
+        local pos_formatted=$(printf "%d:%02d" $pos_min $pos_sec)
+        
+        # Format duration
+        local dur_min=$((duration / 60))
+        local dur_sec=$((duration % 60))
+        local dur_formatted=$(printf "%d:%02d" $dur_min $dur_sec)
+        
+        echo "$pos_formatted / $dur_formatted"
+    fi
+}
+
+# Function to download and cache album art
+get_cover() {
+    # Check if music is playing
+    local status=$(playerctl status 2>/dev/null)
+    if [[ "$status" != "Playing" && "$status" != "Paused" ]]; then
+        echo "$DEFAULT_COVER"
+        return
+    fi
+    
+    local art_url=$(get_metadata "mpris:artUrl")
+    
+    if [[ -z "$art_url" ]]; then
+        echo "$DEFAULT_COVER"
+        return
+    fi
+    
+    # Handle different URL types
+    if [[ "$art_url" == file://* ]]; then
+        # Local file
+        local local_path="${art_url#file://}"
+        if [[ -f "$local_path" ]]; then
+            # Copy to our cache location and convert to PNG if needed
+            convert "$local_path" "$COVER_FILE" 2>/dev/null
+            if [[ -f "$COVER_FILE" ]]; then
+                echo "$COVER_FILE"
+            else
+                echo "$DEFAULT_COVER"
+            fi
+        else
+            echo "$DEFAULT_COVER"
+        fi
+    elif [[ "$art_url" == http* ]]; then
+        # URL - download and cache
+        local track_id="$(get_metadata 'mpris:artist') $(get_metadata 'mpris:album') $(get_metadata 'mpris:title')"
+        local cached_cover="$COVER_DIR/${track_id}.png"
+        
+        if [[ ! -f "$cached_cover" ]]; then
+            # Download and convert to PNG
+            curl -s "$art_url" | convert - "$cached_cover" 2>/dev/null
+        fi
+        
+        if [[ -f "$cached_cover" ]]; then
+            # Update current cover symlink
+            ln -sf "$cached_cover" "$COVER_FILE"
+            echo "$COVER_FILE"
+        else
+            echo "$DEFAULT_COVER"
+        fi
+    else
+        echo "$DEFAULT_COVER"
+    fi
+}
+
+# Function to check if music is playing
+is_music_active() {
+    local status=$(playerctl status 2>/dev/null)
+    if [[ "$status" == "Playing" || "$status" == "Paused" ]]; then
+        echo "true"
+    else
+        echo "false"
+    fi
+}
+
+# Parse arguments
+case "$1" in
+    --cover)
+        get_cover
+        ;;
+    --song)
+        get_song
+        ;;
+    --artist)
+        get_artist
+        ;;
+    --album)
+        get_album
+        ;;
+    --status)
+        get_status
+        ;;
+    --progress)
+        get_progress
+        ;;
+    --time)
+        get_time
+        ;;
+    --is-active)
+        is_music_active
+        ;;
+    *)
+        echo "Usage: $0 --cover|--song|--artist|--album|--status|--progress|--time|--is-active"
+        exit 1
+        ;;
+esac

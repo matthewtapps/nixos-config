@@ -1,4 +1,4 @@
-{ device, ... }:
+{ device, pkgs, ... }:
 {
   imports = [
     ./hyprpaper.nix
@@ -6,6 +6,10 @@
 
   home.file."./.config/hypr/bg3.jpg" = {
     source = ./bg3.jpg;
+  };
+
+  home.file."./.config/hypr/assets" = {
+    source = ./assets/default_album.png;
   };
 
   wayland.windowManager.hyprland = {
@@ -23,4 +27,11 @@
       ${builtins.readFile ./hyprlock/common.conf}
     '';
   };
+
+  home.packages = with pkgs; [
+    imagemagick
+    (writeShellScriptBin "music-info" ''
+      ${builtins.readFile ./scripts/music-info}
+    '')
+  ];
 }
