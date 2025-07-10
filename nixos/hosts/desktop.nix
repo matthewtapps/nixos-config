@@ -12,7 +12,6 @@
     ../modules/networkmanager.nix
     ../modules/steam.nix
     ../modules/azure-vpn.nix
-    ../modules/3dprinting.nix
     # ../modules/foundryvtt.nix
   ];
 
