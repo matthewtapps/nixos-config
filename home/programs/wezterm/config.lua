@@ -81,4 +81,6 @@ config.scrollback_lines = 10000
 
 config.selection_word_boundary = " \t\n{}[]()\"'`,;:@"
 
+config.enable_kitty_keyboard = true
+
 return config
