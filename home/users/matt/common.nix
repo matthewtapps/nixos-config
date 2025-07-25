@@ -86,6 +86,7 @@
     overskride
     gtk-engine-murrine
     gnome-themes-extra
+    libqalculate
 
     # jetbrains.datagrip
 
