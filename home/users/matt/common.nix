@@ -145,5 +145,6 @@
     ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/direnv.nix
+    ../../programs/helix/default.nix
   ];
 }

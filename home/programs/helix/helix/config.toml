@@ -1,0 +1,45 @@
+theme = "everforest"
+
+[keys.normal]
+H = ":buffer-previous"
+L = ":buffer-next"
+S-k = "hover"
+C-u = ["page_cursor_half_up", "align_view_center"]
+C-d = ["page_cursor_half_down", "align_view_center"]
+
+# Makes these act like they do in nvim
+w = ["move_next_word_start", "collapse_selection"]
+W = ["move_next_long_word_start", "collapse_selection"]
+e = ["move_next_word_end", "collapse_selection"]
+E = ["move_next_long_word_end", "collapse_selection"]
+b = ["move_prev_word_start", "collapse_selection"]
+B = ["move_prev_long_word_start", "collapse_selection"]
+
+[keys.insert]
+j = { j = "normal_mode" }
+C-backspace = "delete_word_backward"
+
+[keys.normal.space]
+space = "file_picker"
+b = { d = ":bclose", space = "buffer_picker" }
+q = { q = ":q" }
+
+[keys.select]
+p = ":clipboard-paste-replace"
+S-p = ":clipboard-paste-replace"
+g = { c = "toggle_comments" }
+
+[editor]
+middle-click-paste = false
+line-number = "relative"
+cursorline = true
+rulers = [ 80 ]
+end-of-line-diagnostics = "warning"
+bufferline = "multiple"
+default-yank-register = "+"
+shell = ["zsh", "-c"]
+
+[editor.lsp]
+goto-reference-include-declaration = false
+display-inlay-hints = true
+display-progress-messages = true
