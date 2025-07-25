@@ -1,44 +1,181 @@
 #!/bin/bash
 
-# Music info script for hyprlock
-# Usage: music-info --cover | --song | --artist | --status | --progress
+# Usage: music-info --cover | --song | --artist | --album | --status | --progress | --time | --is-active
 
 COVER_DIR="/tmp/hyprlock_covers"
 COVER_FILE="$COVER_DIR/current_cover.png"
 DEFAULT_COVER="$HOME/.config/hypr/assets/default_album.png"
+TRACK_INFO_FILE="$COVER_DIR/current_track_info"
 
 # Create cover directory if it doesn't exist
 mkdir -p "$COVER_DIR"
 
-# Function to get metadata using playerctl
+# Function to get metadata using playerctl with better error handling
 get_metadata() {
     local key="$1"
-    playerctl metadata --format "{{ $key }}" 2>/dev/null || echo ""
+    local result
+    result=$(playerctl metadata --format "{{ $key }}" 2>/dev/null)
+    local exit_code=$?
+    
+    if [[ $exit_code -ne 0 || -z "$result" ]]; then
+        echo ""
+    else
+        echo "$result"
+    fi
 }
 
-# Function to get current status
-get_status() {
-    local status=$(playerctl status 2>/dev/null)
-    case "$status" in
-        "Playing") echo "⏸" ;;
-        "Paused") echo "▶" ;;
-        *) echo "⏹" ;;
-    esac
+# Function to get current player status
+get_player_status() {
+    playerctl status 2>/dev/null || echo "Stopped"
+}
+
+# Function to generate a unique track identifier
+get_track_id() {
+    local title=$(get_metadata "xesam:title")
+    local artist=$(get_metadata "xesam:artist")
+    local album=$(get_metadata "xesam:album")
+    
+    if [[ -z "$title" && -z "$artist" && -z "$album" ]]; then
+        echo ""
+    else
+        echo "${artist}-${album}-${title}" | tr '/' '_' | tr ' ' '_'
+    fi
+}
+
+# Function to check if track has changed
+has_track_changed() {
+    local current_track_id="$1"
+    local stored_track_id=""
+    
+    if [[ -f "$TRACK_INFO_FILE" ]]; then
+        stored_track_id=$(cat "$TRACK_INFO_FILE" 2>/dev/null)
+    fi
+    
+    if [[ "$current_track_id" != "$stored_track_id" ]]; then
+        echo "$current_track_id" > "$TRACK_INFO_FILE"
+        return 0  # Changed
+    else
+        return 1  # Not changed
+    fi
+}
+
+# Function to clean up old cached covers (keep only last 5)
+cleanup_old_covers() {
+    local cover_count=$(find "$COVER_DIR" -name "*.png" -not -name "current_cover.png" | wc -l)
+    if [[ $cover_count -gt 5 ]]; then
+        find "$COVER_DIR" -name "*.png" -not -name "current_cover.png" -type f -printf '%T@ %p\n' | \
+        sort -n | head -n -5 | cut -d' ' -f2- | xargs -r rm
+    fi
+}
+
+# Function to download and process album art with better error handling
+download_and_process_image() {
+    local url="$1"
+    local output_file="$2"
+    local temp_file="$output_file.tmp"
+    
+    # Clean up any existing temp file
+    rm -f "$temp_file"
+    
+    if [[ "$url" == file://* ]]; then
+        # Local file
+        local local_path="${url#file://}"
+        if [[ -f "$local_path" ]]; then
+            # Use ImageMagick to convert and resize
+            if convert "$local_path" -resize 400x400^ -gravity center -extent 400x400 "$temp_file" 2>/dev/null; then
+                mv "$temp_file" "$output_file"
+                return 0
+            fi
+        fi
+    elif [[ "$url" == http* ]]; then
+        # Download from URL with timeout and size limit
+        if curl -s -m 10 -L --max-filesize 10485760 "$url" -o "$temp_file" 2>/dev/null; then
+            # Verify it's an image and convert it
+            if convert "$temp_file" -resize 400x400^ -gravity center -extent 400x400 "$output_file" 2>/dev/null; then
+                rm -f "$temp_file"
+                return 0
+            fi
+        fi
+        rm -f "$temp_file"
+    fi
+    
+    return 1
+}
+
+# Function to get cover with improved caching and error handling
+get_cover() {
+    local status=$(get_player_status)
+    local current_track_id=$(get_track_id)
+    
+    # If no music is playing or no track info, return default cover
+    if [[ "$status" == "Stopped" || -z "$current_track_id" ]]; then
+        # Clean up current cover to show default
+        rm -f "$COVER_FILE"
+        echo "$DEFAULT_COVER"
+        return
+    fi
+    
+    # Check if track has changed
+    if has_track_changed "$current_track_id"; then
+        # Track changed, need to update cover
+        local art_url=$(get_metadata "mpris:artUrl")
+        local cached_cover="$COVER_DIR/${current_track_id}.png"
+        
+        if [[ -n "$art_url" ]]; then
+            # Try to get cover from URL
+            if [[ ! -f "$cached_cover" ]]; then
+                if download_and_process_image "$art_url" "$cached_cover"; then
+                    ln -sf "$cached_cover" "$COVER_FILE"
+                    cleanup_old_covers
+                    echo "$COVER_FILE"
+                    return
+                fi
+            else
+                # Use cached version
+                ln -sf "$cached_cover" "$COVER_FILE"
+                echo "$COVER_FILE"
+                return
+            fi
+        fi
+        
+        # Fallback to default if art couldn't be retrieved
+        rm -f "$COVER_FILE"
+        echo "$DEFAULT_COVER"
+    else
+        # Track hasn't changed, return current cover if it exists
+        if [[ -f "$COVER_FILE" ]]; then
+            echo "$COVER_FILE"
+        else
+            echo "$DEFAULT_COVER"
+        fi
+    fi
 }
 
 # Function to get song title (truncated)
 get_song() {
+    local status=$(get_player_status)
+    if [[ "$status" == "Stopped" ]]; then
+        echo ""
+        return
+    fi
+    
     local song=$(get_metadata "xesam:title")
     if [[ -z "$song" ]]; then
         echo ""
     else
-        # Truncate to 30 characters to prevent overflow
+        # Truncate to prevent overflow
         echo "${song:0:45}$([ ${#song} -gt 45 ] && echo "...")"
     fi
 }
 
 # Function to get artist (truncated)
 get_artist() {
+    local status=$(get_player_status)
+    if [[ "$status" == "Stopped" ]]; then
+        echo ""
+        return
+    fi
+    
     local artist=$(get_metadata "xesam:artist")
     if [[ -z "$artist" ]]; then
         echo ""
@@ -49,6 +186,12 @@ get_artist() {
 
 # Function to get album name (truncated)
 get_album() {
+    local status=$(get_player_status)
+    if [[ "$status" == "Stopped" ]]; then
+        echo ""
+        return
+    fi
+    
     local album=$(get_metadata "xesam:album")
     if [[ -z "$album" ]]; then
         echo ""
@@ -57,8 +200,24 @@ get_album() {
     fi
 }
 
-# Function to get progress percentage for progress bar
+# Function to get current status icon
+get_status() {
+    local status=$(get_player_status)
+    case "$status" in
+        "Playing") echo "⏸" ;;
+        "Paused") echo "▶" ;;
+        *) echo "⏹" ;;
+    esac
+}
+
+# Function to get progress percentage
 get_progress() {
+    local status=$(get_player_status)
+    if [[ "$status" == "Stopped" ]]; then
+        echo "0"
+        return
+    fi
+    
     local position=$(playerctl position 2>/dev/null)
     local duration=$(playerctl metadata mpris:length 2>/dev/null)
     
@@ -77,6 +236,12 @@ get_progress() {
 
 # Function to get formatted time
 get_time() {
+    local status=$(get_player_status)
+    if [[ "$status" == "Stopped" ]]; then
+        echo "0:00 / 0:00"
+        return
+    fi
+    
     local position=$(playerctl position 2>/dev/null)
     local duration=$(playerctl metadata mpris:length 2>/dev/null)
     
@@ -85,7 +250,7 @@ get_time() {
     else
         # Convert position to integer (remove decimal part)
         position=${position%.*}
-        # Convert duration from microseconds to seconds
+        # Convert duration from microseconds to seconds  
         duration=$((duration / 1000000))
         
         # Format position
@@ -102,62 +267,9 @@ get_time() {
     fi
 }
 
-# Function to download and cache album art
-get_cover() {
-    # Check if music is playing
-    local status=$(playerctl status 2>/dev/null)
-    if [[ "$status" != "Playing" && "$status" != "Paused" ]]; then
-        echo "$DEFAULT_COVER"
-        return
-    fi
-    
-    local art_url=$(get_metadata "mpris:artUrl")
-    
-    if [[ -z "$art_url" ]]; then
-        echo "$DEFAULT_COVER"
-        return
-    fi
-    
-    # Handle different URL types
-    if [[ "$art_url" == file://* ]]; then
-        # Local file
-        local local_path="${art_url#file://}"
-        if [[ -f "$local_path" ]]; then
-            # Copy to our cache location and convert to PNG if needed
-            convert "$local_path" "$COVER_FILE" 2>/dev/null
-            if [[ -f "$COVER_FILE" ]]; then
-                echo "$COVER_FILE"
-            else
-                echo "$DEFAULT_COVER"
-            fi
-        else
-            echo "$DEFAULT_COVER"
-        fi
-    elif [[ "$art_url" == http* ]]; then
-        # URL - download and cache
-        local track_id="$(get_metadata 'mpris:artist') $(get_metadata 'mpris:album') $(get_metadata 'mpris:title')"
-        local cached_cover="$COVER_DIR/${track_id}.png"
-        
-        if [[ ! -f "$cached_cover" ]]; then
-            # Download and convert to PNG
-            curl -s "$art_url" | convert - "$cached_cover" 2>/dev/null
-        fi
-        
-        if [[ -f "$cached_cover" ]]; then
-            # Update current cover symlink
-            ln -sf "$cached_cover" "$COVER_FILE"
-            echo "$COVER_FILE"
-        else
-            echo "$DEFAULT_COVER"
-        fi
-    else
-        echo "$DEFAULT_COVER"
-    fi
-}
-
-# Function to check if music is playing
+# Function to check if music is active
 is_music_active() {
-    local status=$(playerctl status 2>/dev/null)
+    local status=$(get_player_status)
     if [[ "$status" == "Playing" || "$status" == "Paused" ]]; then
         echo "true"
     else
