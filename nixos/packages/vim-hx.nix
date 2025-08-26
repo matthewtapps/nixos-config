@@ -17,10 +17,10 @@ rustPlatform.buildRustPackage rec {
     owner = "badranX";
     repo = "vim.hx";
     rev = "main";
-    hash = "sha256-0000000000000000000000000000000000000000000=";
+    hash = "sha256-EtoZFw1KEz1FkgdscBQIyGRlqV5dLDqaQsbIxqSCX3E=";
   };
 
-  cargoHash = "sha256-0000000000000000000000000000000000000000000=";
+  cargoHash = "sha256-upH8lZnJ3+opuMqn2cy79pbyW/NETB8hnj38U2vVTGE=";
 
   nativeBuildInputs = [
     git
