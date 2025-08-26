@@ -1,0 +1,420 @@
+# home-assistant-ac-config.yaml
+# Full Home Assistant configuration for ESP32 AC Controller
+
+# Basic Home Assistant setup
+default_config:
+homeassistant:
+  name: Home
+  latitude: -37.800168
+  longitude: 144.996287
+  elevation: 40
+  unit_system: metric
+  time_zone: Australia/Melbourne
+  temperature_unit: C
+
+# HTTP configuration for local access
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 127.0.0.1
+    - ::1
+
+# Logger
+logger:
+  default: info
+
+# Recorder - limit database size for testing
+recorder:
+  purge_keep_days: 7
+
+# ESP32 AC Controller Integration
+sensor:
+  - platform: rest
+    name: "Room Temperature"
+    resource: http://192.168.0.206/api/status
+    value_template: "{{ value_json.sensor.temperature }}"
+    unit_of_measurement: "°C"
+    device_class: temperature
+    scan_interval: 30
+    
+  - platform: rest
+    name: "Room Humidity"
+    resource: http://192.168.0.206/api/status
+    value_template: "{{ value_json.sensor.humidity }}"
+    unit_of_measurement: "%"
+    device_class: humidity
+    scan_interval: 30
+
+# REST commands for AC control
+rest_command:
+  set_ac_state:
+    url: http://192.168.0.206/control
+    method: GET
+    content_type: 'application/x-www-form-urlencoded'
+    payload: >
+      power={{ power }}&temp={{ temp }}&mode={{ mode }}&fan={{ fan }}&swing_v={{ swing_v }}&swing_h={{ swing_h }}&clean={{ clean }}
+
+# Climate entity
+climate:
+  - platform: generic_thermostat
+    name: "Living Room AC"
+    unique_id: esp32_ac_controller
+    heater: input_boolean.ac_dummy_heater
+    target_sensor: sensor.room_temperature
+    min_temp: 17
+    max_temp: 31
+    ac_mode: true
+    cold_tolerance: 0.5
+    hot_tolerance: 0.5
+    min_cycle_duration:
+      minutes: 5
+    keep_alive:
+      minutes: 3
+    initial_hvac_mode: "off"
+
+# Helper entities
+input_boolean:
+  ac_dummy_heater:
+    name: AC Dummy Heater
+    initial: off
+
+input_select:
+  ac_mode:
+    name: AC Mode
+    options:
+      - "off"
+      - "auto"
+      - "cool"
+      - "heat"
+      - "dry"
+      - "fan_only"
+    initial: "off"
+    icon: mdi:air-conditioner
+    
+  ac_fan_speed:
+    name: AC Fan Speed
+    options:
+      - "auto"
+      - "low"
+      - "medium"
+      - "high"
+      - "turbo"
+      - "eco"
+    initial: "auto"
+    icon: mdi:fan
+    
+  ac_swing_vertical:
+    name: AC Vertical Swing
+    options:
+      - "auto"
+      - "highest"
+      - "high"
+      - "middle"
+      - "low"
+      - "lowest"
+      - "off"
+    initial: "auto"
+    icon: mdi:arrow-up-down
+    
+  ac_swing_horizontal:
+    name: AC Horizontal Swing
+    options:
+      - "auto"
+      - "wide"
+      - "middle"
+      - "off"
+    initial: "auto"
+    icon: mdi:arrow-left-right
+
+input_number:
+  ac_target_temperature:
+    name: AC Target Temperature
+    min: 17
+    max: 31
+    step: 1
+    initial: 24
+    unit_of_measurement: "°C"
+    icon: mdi:thermometer
+
+# Automations
+automation:
+  - id: ac_control_sync
+    alias: "AC Control Sync"
+    description: "Synchronize all AC controls to ESP32"
+    trigger:
+      - platform: state
+        entity_id: 
+          - input_select.ac_mode
+          - input_select.ac_fan_speed
+          - input_number.ac_target_temperature
+          - input_select.ac_swing_vertical
+          - input_select.ac_swing_horizontal
+    action:
+      - service: rest_command.set_ac_state
+        data:
+          power: >
+            {% if states('input_select.ac_mode') == 'off' %}false{% else %}true{% endif %}
+          temp: "{{ states('input_number.ac_target_temperature') | int }}"
+          mode: >
+            {% set mode_map = {
+              'auto': 0,
+              'cool': 1,
+              'dry': 2,
+              'fan_only': 3,
+              'heat': 4,
+              'off': 0
+            } %}
+            {{ mode_map[states('input_select.ac_mode')] }}
+          fan: >
+            {% set fan_map = {
+              'auto': 0,
+              'low': 1,
+              'medium': 2,
+              'high': 3,
+              'turbo': 8,
+              'eco': 6
+            } %}
+            {{ fan_map[states('input_select.ac_fan_speed')] }}
+          swing_v: >
+            {% set swing_map = {
+              'auto': 0,
+              'highest': 1,
+              'high': 2,
+              'middle': 3,
+              'low': 4,
+              'lowest': 5,
+              'off': 6
+            } %}
+            {{ swing_map[states('input_select.ac_swing_vertical')] }}
+          swing_h: >
+            {% set swing_map = {
+              'auto': 0,
+              'wide': 3,
+              'middle': 4,
+              'off': 8
+            } %}
+            {{ swing_map[states('input_select.ac_swing_horizontal')] }}
+          clean: "false"
+
+  - id: smart_heating
+    alias: "Smart Heating"
+    description: "Optimize fan speed for heating"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.room_temperature
+        below: input_number.ac_target_temperature
+        for: "00:02:00"
+    condition:
+      - condition: state
+        entity_id: input_select.ac_mode
+        state: 'heat'
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_fan_speed
+          option: "medium"
+
+  - id: smart_cooling
+    alias: "Smart Cooling"
+    description: "Optimize fan speed for cooling"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.room_temperature
+        above: input_number.ac_target_temperature
+        for: "00:02:00"
+    condition:
+      - condition: state
+        entity_id: input_select.ac_mode
+        state: 'cool'
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_fan_speed
+          option: "high"
+
+  - id: night_energy_saver
+    alias: "Night Energy Saver"
+    description: "Reduce energy usage at night"
+    trigger:
+      - platform: time
+        at: "22:00:00"
+    action:
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.ac_target_temperature
+          value: >
+            {% if states('input_select.ac_mode') == 'cool' %}
+              26
+            {% elif states('input_select.ac_mode') == 'heat' %}
+              20
+            {% else %}
+              {{ states('input_number.ac_target_temperature') }}
+            {% endif %}
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_fan_speed
+          option: "low"
+
+  - id: morning_comfort
+    alias: "Morning Comfort"
+    description: "Comfortable temperature for morning"
+    trigger:
+      - platform: time
+        at: "06:00:00"
+    action:
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.ac_target_temperature
+          value: >
+            {% if states('input_select.ac_mode') == 'cool' %}
+              24
+            {% elif states('input_select.ac_mode') == 'heat' %}
+              22
+            {% else %}
+              {{ states('input_number.ac_target_temperature') }}
+            {% endif %}
+
+  - id: auto_dehumidify
+    alias: "Auto Dehumidify"
+    description: "Switch to dry mode when humidity is high"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.room_humidity
+        above: 70
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_mode
+          option: "dry"
+
+  - id: away_mode
+    alias: "Away Mode"
+    description: "Energy saving when nobody home"
+    trigger:
+      - platform: state
+        entity_id: person.admin
+        to: 'not_home'
+        for: '00:30:00'
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_mode
+          option: "off"
+
+  - id: return_home
+    alias: "Return Home"
+    description: "Pre-condition house when returning"
+    trigger:
+      - platform: zone
+        entity_id: person.admin
+        zone: zone.home
+        event: enter
+    action:
+      - choose:
+          - conditions:
+              - condition: numeric_state
+                entity_id: sensor.room_temperature
+                above: 26
+            sequence:
+              - service: input_select.select_option
+                data:
+                  entity_id: input_select.ac_mode
+                  option: "cool"
+              - service: input_number.set_value
+                data:
+                  entity_id: input_number.ac_target_temperature
+                  value: 24
+          - conditions:
+              - condition: numeric_state
+                entity_id: sensor.room_temperature
+                below: 18
+            sequence:
+              - service: input_select.select_option
+                data:
+                  entity_id: input_select.ac_mode
+                  option: "heat"
+              - service: input_number.set_value
+                data:
+                  entity_id: input_number.ac_target_temperature
+                  value: 22
+
+# Scripts for common operations
+script:
+  ac_quick_cool:
+    alias: "Quick Cool"
+    icon: mdi:snowflake
+    sequence:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_mode
+          option: "cool"
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.ac_target_temperature
+          value: 20
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_fan_speed
+          option: "turbo"
+
+  ac_quick_heat:
+    alias: "Quick Heat"
+    icon: mdi:fire
+    sequence:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_mode
+          option: "heat"
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.ac_target_temperature
+          value: 26
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_fan_speed
+          option: "turbo"
+
+  ac_eco_mode:
+    alias: "Eco Mode"
+    icon: mdi:leaf
+    sequence:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.ac_fan_speed
+          option: "eco"
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.ac_target_temperature
+          value: >
+            {% if states('input_select.ac_mode') == 'cool' %}
+              25
+            {% elif states('input_select.ac_mode') == 'heat' %}
+              21
+            {% else %}
+              23
+            {% endif %}
+
+# Google Assistant configuration (optional - configure after testing)
+# google_assistant:
+#   project_id: YOUR_PROJECT_ID
+#   service_account: !include SERVICE_ACCOUNT.JSON
+#   expose_by_default: false
+#   exposed_domains:
+#     - climate
+#     - sensor
+#     - input_number
+#   entity_config:
+#     climate.living_room_ac:
+#       name: "Living Room AC"
+#       aliases:
+#         - "AC"
+#         - "Air Conditioner"
+#         - "Living Room"
+#       room: Living Room
+#       expose: true
+#     sensor.room_temperature:
+#       name: "Room Temperature"
+#       expose: true
+#     sensor.room_humidity:
+#       name: "Room Humidity"
+#       expose: true
