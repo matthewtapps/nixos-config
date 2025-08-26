@@ -11,9 +11,6 @@
     ../../programs/azure-vpn.nix
     ../../programs/orcaslicer.nix
     ../../programs/mangohud.nix
-  ];
-
-  home.packages = with pkgs; [
-    freecad
+    ../../programs/freecad.nix
   ];
 }

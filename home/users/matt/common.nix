@@ -17,7 +17,7 @@
   home.homeDirectory = "/home/matt";
 
   home.sessionVariables = {
-    EDITOR = "nvim";
+    EDITOR = "hx";
     NIXPKGS_ALLOW_UNFREE = "1";
   };
 
@@ -87,11 +87,13 @@
     gtk-engine-murrine
     gnome-themes-extra
     libqalculate
+    usbutils
 
     # jetbrains.datagrip
 
     remmina
     teams-for-linux
+    zed-editor-fhs
   ];
 
   xdg = {
@@ -143,7 +145,7 @@
 
   imports = [
     ../../programs/zsh/default.nix
-    ../../programs/neovim/default.nix
+    # ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/direnv.nix
     ../../programs/helix/default.nix

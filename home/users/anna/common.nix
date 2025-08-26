@@ -10,7 +10,7 @@
   home.homeDirectory = "/home/anna";
 
   home.sessionVariables = {
-    EDITOR = "nvim";
+    EDITOR = "hx";
   };
 
   home.packages = with pkgs; [
@@ -49,10 +49,11 @@
   imports = [
     #    ./theme.nix
     ../../programs/zsh/default.nix
-    ../../programs/neovim/default.nix
+    # ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/direnv.nix
     #   ../../programs/vscode.nix
+    ../../programs/helix/default.nix
   ];
 
 }
