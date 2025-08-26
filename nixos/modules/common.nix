@@ -7,7 +7,7 @@
 
   environment = {
     variables = {
-      EDITOR = "nvim";
+      EDITOR = "hx";
     };
     systemPackages = with pkgs; [
       neovim
@@ -22,6 +22,9 @@
   };
 
   services.envfs.enable = true;
+
+  services.udev.packages = [ pkgs.openocd ];
+  users.users.matt.extraGroups = [ "dialout" ];
 
   imports = [
     ./ssh.nix
