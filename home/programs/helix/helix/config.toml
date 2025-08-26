@@ -6,6 +6,8 @@ L = ":buffer-next"
 S-k = "hover"
 C-u = ["page_cursor_half_up", "align_view_center"]
 C-d = ["page_cursor_half_down", "align_view_center"]
+C-r = "redo"
+C = ["select_mode", "extend_to_line_end", "trim_selections", "change_selection"]
 
 # Makes these act like they do in nvim
 w = ["move_next_word_start", "collapse_selection"]
@@ -23,6 +25,14 @@ C-backspace = "delete_word_backward"
 space = "file_picker"
 b = { d = ":bclose", space = "buffer_picker" }
 q = { q = ":q" }
+g = { g = [
+    ":write-all", 
+    ":new", 
+    ":insert-output lazygit", 
+    ":buffer-close!", 
+    ":redraw", 
+    ":reload-all"
+]}
 
 [keys.select]
 p = ":clipboard-paste-replace"

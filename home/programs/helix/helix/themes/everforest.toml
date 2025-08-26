@@ -73,7 +73,7 @@
 "ui.virtual.whitespace" = { fg = "bg4" }
 "ui.virtual.indent-guide" = { fg = "bg4" }
 "ui.virtual.ruler" = { bg = "bg3" }
-
+"ui.virtual.inlay-hint" = { fg = "grey0" }
 "hint" = "blue"
 "info" = "aqua"
 "warning" = "yellow"
@@ -81,7 +81,7 @@
 "diagnostic" = { underline = { style = "curl" } }
 "diagnostic.hint" = { underline = { color = "blue", style = "dotted" } }
 "diagnostic.info" = { underline = { color = "aqua", style = "dotted" } }
-"diagnostic.warning" = { underline = { color = "yellow", style = "curl" } }
+"diagnostic.warning" = { fg = "warning_yellow", underline = { color = "warning_yellow", style = "curl" } }
 "diagnostic.error" = { underline = { color = "red", style = "curl" } }
 
 [palette]
@@ -96,11 +96,11 @@ bg_red = "#59454b"
 bg_green = "#48584d"
 bg_blue = "#3d5665"
 bg_yellow = "#55544a"
-
 fg = "#d3c6aa"
 red = "#e67e80"
 orange = "#e69875"
 yellow = "#dbbc7f"
+warning_yellow = "#e3cb9a"
 green = "#a7c080"
 aqua = "#83c092"
 blue = "#7fbbb3"
