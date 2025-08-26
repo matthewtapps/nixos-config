@@ -5,11 +5,10 @@
       enable = true;
       settings = rec {
         initial_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd Hyprland";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd Hyprland";
           user = "matt";
         };
         default_session = initial_session;
-        terminal.vt = 3;
         Type = "idle";
         StandardInput = "tty";
         StandardOutput = "tty";
@@ -25,12 +24,12 @@
     };
   };
 
-  environment.sessionVariables = {
-    NIXOS_OZONE_LAYER = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-    WLR_RENDERER_ALLOW_SOFTWARE = "1";
-    WLR_NO_HARDWARE_CURSORS = "1";
-  };
+  # environment.sessionVariables = {
+  #   NIXOS_OZONE_LAYER = "1";
+  #   MOZ_ENABLE_WAYLAND = "1";
+  #   WLR_RENDERER_ALLOW_SOFTWARE = "1";
+  #   WLR_NO_HARDWARE_CURSORS = "1";
+  # };
 
   programs.hyprland = {
     enable = true;
