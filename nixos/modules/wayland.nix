@@ -24,12 +24,10 @@
     };
   };
 
-  # environment.sessionVariables = {
-  #   NIXOS_OZONE_LAYER = "1";
-  #   MOZ_ENABLE_WAYLAND = "1";
-  #   WLR_RENDERER_ALLOW_SOFTWARE = "1";
-  #   WLR_NO_HARDWARE_CURSORS = "1";
-  # };
+  environment.sessionVariables = {
+    NIXOS_OZONE_LAYER = "1";
+    MOZ_ENABLE_WAYLAND = "1";
+  };
 
   programs.hyprland = {
     enable = true;
