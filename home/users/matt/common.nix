@@ -17,7 +17,6 @@
   home.homeDirectory = "/home/matt";
 
   home.sessionVariables = {
-    EDITOR = "hx";
     NIXPKGS_ALLOW_UNFREE = "1";
   };
 
@@ -145,9 +144,9 @@
 
   imports = [
     ../../programs/zsh/default.nix
-    # ../../programs/neovim/default.nix
+    ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/direnv.nix
-    ../../programs/helix/default.nix
+    # ../../programs/helix/default.nix
   ];
 }
