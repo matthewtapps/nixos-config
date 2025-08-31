@@ -17,7 +17,7 @@ rustPlatform.buildRustPackage rec {
     owner = "badranX";
     repo = "vim.hx";
     rev = "main";
-    hash = "sha256-QqgbxJwx6U55ToFVvGMGm5EggjAlJZM7Dls5u1yZq70=";
+    hash = "sha256-UBAOC6yqHFsg9Zt1A/WmSvvkKYyP1JD9qI3KwuKv788=";
   };
 
   cargoHash = "sha256-Mf0nrgMk1MlZkSyUN6mlM5lmTcrOHn3xBNzmVGtApEU=";
