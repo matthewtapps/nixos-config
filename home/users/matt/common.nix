@@ -70,7 +70,7 @@
     calibre
     qbittorrent
     inputs.zen-browser.packages.${system}.default
-    rofi-wayland
+    rofi
     swww
     brightnessctl
     dart-sass
