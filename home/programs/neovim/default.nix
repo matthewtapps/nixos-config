@@ -21,18 +21,31 @@
       fzf
 
       # Language servers
-      lua-language-server
-      nixd
-      nil
+    nixd
+    nil
+    lua-language-server
+    typescript-language-server
+    bash-language-server
+    astro-language-server
+    docker-language-server
+    gopls
+    terraform-ls
+    vscode-langservers-extracted
+    markdown-oxide
+    ruff
+    yaml-language-server
+    omnisharp-roslyn
+    tailwindcss-language-server
+    phpactor
 
       # Formatters
-      nixfmt-rfc-style
+      nixfmt
       shfmt
       black
       stylua
-      nodePackages_latest.prettier # Used for so many things
+      prettier
+      taplo
     ];
-
   };
 
   home.file."./.config/nvim/" = {
