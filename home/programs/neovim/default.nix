@@ -13,6 +13,7 @@
       ps.luarocks-nix
       ps.magick
     ];
+
     extraPackages = with pkgs; [
       # Binaries
       ripgrep
@@ -21,22 +22,23 @@
       fzf
 
       # Language servers
-    nixd
-    nil
-    lua-language-server
-    typescript-language-server
-    bash-language-server
-    astro-language-server
-    docker-language-server
-    gopls
-    terraform-ls
-    vscode-langservers-extracted
-    markdown-oxide
-    ruff
-    yaml-language-server
-    omnisharp-roslyn
-    tailwindcss-language-server
-    phpactor
+      nixd
+      nil
+      lua-language-server
+      typescript-language-server
+      bash-language-server
+      astro-language-server
+      docker-language-server
+      gopls
+      terraform-ls
+      vscode-langservers-extracted
+      markdown-oxide
+      ruff
+      yaml-language-server
+      omnisharp-roslyn
+      tailwindcss-language-server
+      phpactor
+      rubyPackages_3_3.ruby-lsp
 
       # Formatters
       nixfmt
