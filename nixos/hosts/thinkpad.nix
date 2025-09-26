@@ -58,14 +58,27 @@
   };
 
   # Laptop lid
-  services.logind = {
-    lidSwitch = "lock";
-    lidSwitchExternalPower = "lock";
-    lidSwitchDocked = "lock";
+  services.logind.settings.Login = {
+    HandleLidSwitch = "ignore";
+    HandleLidSwitchExternalPower = "ignore";
+    HandleLidSwitchDocked = "ignore";
   };
 
   # Control cpu throttling and temps
-  services.auto-cpufreq.enable = true;
+  services.auto-cpufreq = {
+    enable = true;
+    settings = {
+      battery = {
+        governor = "schedutil";
+        turbo = "auto";
+      };
+      charger = {
+        governor = "performance";
+        turbo = "auto";
+      };
+    };
+  };
+
   services.thermald.enable = true;
   boot.kernelParams = [
     "amd_pstate=guided"
@@ -88,6 +101,7 @@
   # Fingerprint reader
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = false;
+  security.pam.services.hyprlock.fprintAuth = true;
 
   swapDevices = [
     {
