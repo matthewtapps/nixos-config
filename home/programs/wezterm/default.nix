@@ -1,9 +1,10 @@
-_: {
+{ device, ... }:
+{
   programs.wezterm = {
     enable = true;
     enableZshIntegration = true;
     extraConfig = ''
-      ${builtins.readFile ./config.lua}
+      ${builtins.readFile ./${device}.lua}
     '';
   };
 }
