@@ -1,0 +1,14 @@
+vim.lsp.enable({
+  "lua_ls",
+  "nil_ls",
+  "nixd",
+  "ts_ls",
+  "terraformls",
+  "gopls",
+  "astro",
+  "ruby_lsp",
+  "sqls",
+  "html",
+  "omnisharp",
+  "glsl_analyzer"
+})

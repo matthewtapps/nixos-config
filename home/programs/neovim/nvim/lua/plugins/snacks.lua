@@ -3,10 +3,10 @@ return {
 	priority = 1000,
 	lazy = false,
 	opts = {
-		terminal = { enabled = false }, -- Disable terminal functionality
+		terminal = { enabled = true, win = { style = "float" } },
 		scroll = { enabled = false },
 		animate = { enabled = false },
-		notifier = { top_down = false, enabled = true },
+		notifier = { top_down = true, enabled = true },
 		input = { enabled = true },
 		picker = { enabled = true },
 		bigfile = { enabled = true },
@@ -40,6 +40,14 @@ return {
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠓⠶⠶⠤⣤⣀⣀⣀⣮⣍⣭⢭⣉⣉⣉⣉⣉⠉⣉⢉⢉⣉⣓⣀⣀⣹⣩⠭⠿⠷⠛⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         ]],
+				keys = {
+					{ icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.picker.files()" },
+					{ icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+					{ icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.picker.grep()" },
+					{ icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.picker.recent()" },
+					{ icon = " ", key = "s", desc = "Restore Session", action = ":SessionLoad" },
+					{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
+				},
 			},
 		},
 	},
@@ -158,6 +166,14 @@ return {
 				Snacks.picker.lsp_workspace_symbols()
 			end,
 			desc = "LSP Workspace Symbols",
+		},
+		{
+			"<C-/>",
+			mode = { "n", "t" },
+			function()
+				Snacks.terminal()
+			end,
+			desc = "Toggle terminal",
 		},
 	},
 }
