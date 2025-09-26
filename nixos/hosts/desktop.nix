@@ -12,7 +12,7 @@
     ../modules/networkmanager.nix
     ../modules/steam.nix
     ../modules/azure-vpn.nix
-    ../modules/homeassistant.nix
+    # ../modules/homeassistant.nix
     # ../modules/foundryvtt.nix
   ];
 
@@ -50,13 +50,6 @@
       userServices = true;
       workstation = true;
     };
-  };
-
-  services.home-assistant-ac = {
-    enable = true;
-    esp32Address = "192.168.0.206";  # Your ESP32's IP address
-    port = 8123;
-    openFirewall = true;
   };
 
   programs = {
