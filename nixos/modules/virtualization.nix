@@ -6,14 +6,24 @@ let
     users.users.${user} = {
       extraGroups = lib.mkAfter [
         "docker"
+        "podman"
       ];
     };
   }) users;
 in
 
 {
-  virtualisation.docker.enable = true;
-  virtualisation.docker.liveRestore = false;
+  virtualisation = {
+    docker = {
+      enable = true;
+      liveRestore = false;
+    };
+
+    podman = {
+      enable = true;
+      defaultNetwork.settings.dns_enabled = true;
+    };
+  };
 
   imports = userModules;
 }
