@@ -7,7 +7,7 @@
 
   environment = {
     variables = {
-      EDITOR = "hx";
+      EDITOR = "nvim";
     };
     systemPackages = with pkgs; [
       neovim
