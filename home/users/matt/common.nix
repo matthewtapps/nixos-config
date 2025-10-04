@@ -100,6 +100,7 @@
     gnome-themes-extra
     libqalculate
     usbutils
+    gnumake
 
     # jetbrains.datagrip
 
