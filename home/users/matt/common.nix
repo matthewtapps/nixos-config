@@ -64,6 +64,7 @@
     lm_sensors
     gimp
     zathura
+    feh
 
     # Gurps
     gcs
@@ -83,8 +84,6 @@
     calibre
     qbittorrent
     inputs.zen-browser.packages.${system}.default
-    rofi
-    swww
     brightnessctl
     dart-sass
     inputs.matugen.packages.${system}.default
@@ -96,8 +95,6 @@
     playerctl
     pavucontrol
     overskride
-    gtk-engine-murrine
-    gnome-themes-extra
     libqalculate
     usbutils
     gnumake
@@ -105,8 +102,8 @@
     # jetbrains.datagrip
 
     remmina
-    teams-for-linux
-    zed-editor-fhs
+    # teams-for-linux
+    # zed-editor-fhs
   ];
 
   xdg = {
@@ -161,6 +158,5 @@
     ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/direnv.nix
-    # ../../programs/helix/default.nix
   ];
 }
