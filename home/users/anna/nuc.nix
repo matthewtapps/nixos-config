@@ -32,7 +32,6 @@
     qbittorrent
     zoom-us
 
-    rofi-wayland
     swww
     brightnessctl
     dart-sass
