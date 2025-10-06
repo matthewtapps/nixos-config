@@ -25,6 +25,11 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
 
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # darwin.inputs.nixpkgs.follows = "nixpkgs";
     # darwin.url = "github:lnl7/nix-darwin/master";
 
@@ -38,6 +43,7 @@
       home-manager,
       nixos-wsl,
       foundryvtt,
+      stylix,
       ...
     }@inputs:
     let
@@ -118,7 +124,7 @@
               inherit inputs host;
               mypkgs = mkPkgs host.system;
             };
-            modules = host.modules;
+            modules = host.modules ++ [ inputs.stylix.nixosModules.stylix ];
           };
 
         }) hosts
@@ -142,6 +148,7 @@
                   };
                   modules = [
                     file
+                    inputs.stylix.homeManagerModules.stylix
                     {
                       home.homeDirectory = "/home/${username}";
                       home.username = username;

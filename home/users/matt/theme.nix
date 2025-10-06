@@ -18,39 +18,39 @@ let
   qtStyleName = "Everforest-Dark-BL-LB";
 in
 {
-  home.pointerCursor = {
-    package = cursorThemePackage;
-    name = cursorThemeName;
-    size = cursorSize;
-    gtk.enable = true;
-    x11 = {
-      enable = true;
-      defaultCursor = "left_ptr";
-    };
-  };
+  # home.pointerCursor = {
+  #   package = cursorThemePackage;
+  #   name = cursorThemeName;
+  #   size = cursorSize;
+  #   gtk.enable = true;
+  #   x11 = {
+  #     enable = true;
+  #     defaultCursor = "left_ptr";
+  #   };
+  # };
 
   fonts.fontconfig.enable = true;
 
   gtk = {
     enable = true;
-    font = {
-      package = fontPackage;
-      name = fontName;
-      size = fontSize;
-    };
-    cursorTheme = {
-      name = cursorThemeName;
-      package = cursorThemePackage;
-      size = cursorSize;
-    };
-    theme = {
-      package = themePackage;
-      name = themeName;
-    };
-    iconTheme = {
-      package = iconThemePackage;
-      name = iconThemeName;
-    };
+    # font = {
+    #   package = fontPackage;
+    #   name = fontName;
+    #   size = fontSize;
+    # };
+    # cursorTheme = {
+    #   name = cursorThemeName;
+    #   package = cursorThemePackage;
+    #   size = cursorSize;
+    # };
+    # theme = {
+    #   package = themePackage;
+    #   name = themeName;
+    # };
+    # iconTheme = {
+    #   package = iconThemePackage;
+    #   name = iconThemeName;
+    # };
     gtk3.bookmarks = [
       "file:///home/matt/documents Documents"
       "file:///home/matt/downloads Downloads"
@@ -64,7 +64,7 @@ in
 
   qt = {
     enable = true;
-    platformTheme.name = qtPlatformTheme;
-    style.name = qtStyleName;
+    # platformTheme.name = qtPlatformTheme;
+    # style.name = qtStyleName;
   };
 }

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+_:
 {
   imports = [
     ./common.nix
@@ -12,5 +12,6 @@
     ../../programs/orcaslicer.nix
     ../../programs/mangohud.nix
     ../../programs/freecad.nix
+    ../../programs/stylix.nix
   ];
 }

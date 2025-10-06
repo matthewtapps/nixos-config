@@ -1,7 +1,7 @@
 local config = {}
 local wezterm = require("wezterm")
 
-config.color_scheme = "Everforest Dark Medium (Gogh)"
+-- config.color_scheme = "Everforest Dark Medium (Gogh)"
 config.font = wezterm.font("GeistMono Nerd Font")
 config.enable_tab_bar = true
 config.window_padding = {

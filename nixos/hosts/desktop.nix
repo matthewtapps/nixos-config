@@ -4,6 +4,7 @@
   imports = [
     ../hardware/desktop.nix
     ../modules/common.nix
+    ../modules/stylix.nix
     ../modules/wayland.nix
     ../modules/virtualization.nix
     ../modules/nvidia.nix
