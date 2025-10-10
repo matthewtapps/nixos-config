@@ -5,6 +5,7 @@
     ../hardware/thinkpad.nix
     ../modules/common.nix
     ../modules/wayland.nix
+    ../modules/stylix.nix
     ../modules/virtualization.nix
     ../modules/audio.nix
     ../modules/thunar.nix

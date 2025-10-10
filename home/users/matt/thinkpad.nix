@@ -8,5 +8,6 @@ _: {
     ../../programs/rofi.nix
     ../../programs/wezterm/default.nix
     ../../programs/azure-vpn.nix
+    ../../programs/stylix.nix
   ];
 }
