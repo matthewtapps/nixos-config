@@ -175,5 +175,13 @@ return {
 			end,
 			desc = "Toggle terminal",
 		},
+		{
+			"bo",
+			mode = { "n"},
+			function()
+				Snacks.bufdelete.other()
+			end,
+			desc = "Toggle terminal",
+		},
 	},
 }
