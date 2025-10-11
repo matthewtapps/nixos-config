@@ -46,6 +46,7 @@
       gtk.enable = true;
       gnome.enable = true;
       hyprland.enable = true;
+      hyprlock.enable = false;
       kitty.enable = true;
       rofi.enable = true;
       wezterm.enable = true;
