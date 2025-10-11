@@ -176,12 +176,18 @@ return {
 			desc = "Toggle terminal",
 		},
 		{
-			"bo",
-			mode = { "n"},
+			"<leader>.",
 			function()
-				Snacks.bufdelete.other()
+				Snacks.scratch()
 			end,
-			desc = "Toggle terminal",
+			desc = "Toggle Scratch Buffer",
+		},
+		{
+			"<leader>S",
+			function()
+				Snacks.scratch.select()
+			end,
+			desc = "Select Scratch Buffer",
 		},
 	},
 }

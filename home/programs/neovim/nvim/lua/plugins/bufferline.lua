@@ -8,6 +8,7 @@ return {
 		{ "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
       -- stylua: ignore
 		{ "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer", },
+		{ "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers", },
 		{ "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
 		{ "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
 		{ "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
