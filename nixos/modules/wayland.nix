@@ -21,6 +21,9 @@
           "bluetooth.service"
         ];
       };
+      unitConfig = {
+        After = [ "multi-user.target" ];
+      };
     };
   };
 
