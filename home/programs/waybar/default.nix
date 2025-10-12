@@ -119,14 +119,16 @@
         color: @noti-fg;
       }
 
-      .notification-row {
+      .notification-background {
         background: transparent;
+      }
+
+      .notification-row {
         border: none;
       }
 
       .notification-row:focus,
       .notification-row:hover {
-        background: transparent;
         border: none;
       }
 
@@ -254,13 +256,13 @@
       }
 
       .control-center {
-        background-color: @noti-bg;
+        background: @noti-bg;
         border-radius: 0;
         border: 1px solid @noti-border-color;
       }
 
       .control-center-list {
-        background-color: @noti-bg;
+        background: @noti-bg;
       }
 
       .floating-notifications {
@@ -268,6 +270,10 @@
       }
 
       .notifications {
+        background: @noti-bg;
+      }
+
+      .notification-group {
         background: @noti-bg;
       }
 
@@ -306,7 +312,7 @@
 
       .widget-dnd>switch {
         font-size: initial;
-        border-radius: 4px;
+        border-radius: 12px;
         background: @noti-bg-dark;
         border: none;
         box-shadow: none;
@@ -318,7 +324,7 @@
 
       .widget-dnd>switch slider {
         background: @noti-bg-hover;
-        border-radius: 4px;
+        border-radius: 10px;
       }
 
       /* Label widget */
@@ -477,6 +483,7 @@
           tooltip = false;
           on-click = "wezterm start --class wezterm-btop btop";
           "critical-threshold" = 80;
+          hwmon-path = "/sys/class/hwmon/hwmon3/temp1_input";
         };
 
         backlight = {
