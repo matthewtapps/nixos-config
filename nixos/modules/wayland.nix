@@ -21,9 +21,16 @@
           "bluetooth.service"
         ];
       };
-      unitConfig = {
-        After = [ "multi-user.target" ];
-      };
+    };
+  };
+
+  systemd.services.greetd = {
+    serviceConfig = {
+      Type = "idle";
+    };
+    unitConfig = {
+      After = [ "multi-user.target" ];
+
     };
   };
 
