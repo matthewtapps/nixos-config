@@ -40,10 +40,9 @@
       hide-on-action = true;
       script-fail-notify = true;
       notification-visibility = {
-        example-name = {
+        spotify_player = {
           state = "muted";
           urgency = "Low";
-          app-name = "spotify_player";
         };
       };
 
@@ -503,7 +502,7 @@
         };
 
         clock = {
-          format = "{:%I:%M:%S %p}";
+          format = "{:%H:%M:%S  %a %b %d}";
           tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
           interval = 1;
         };
