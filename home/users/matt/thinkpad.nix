@@ -2,7 +2,7 @@ _: {
   imports = [
     ./common.nix
     ./theme.nix
-    ../../programs/ags/default.nix
+    ../../programs/waybar/default.nix
     ../../programs/hypr/default.nix
     ../../programs/lan-mouse.nix
     ../../programs/rofi.nix
