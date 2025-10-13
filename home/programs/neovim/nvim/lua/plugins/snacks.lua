@@ -189,5 +189,12 @@ return {
 			end,
 			desc = "Select Scratch Buffer",
 		},
+		{
+			"gd",
+			function()
+				Snacks.picker.lsp_definitions()
+			end,
+			desc = "Goto Definition",
+		},
 	},
 }
