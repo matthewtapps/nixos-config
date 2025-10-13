@@ -457,9 +457,9 @@
         ];
 
         modules-right = [
+          "pulseaudio"
           "network"
           "bluetooth"
-          "pulseaudio"
         ];
 
         cpu = {
@@ -528,11 +528,11 @@
 
         pulseaudio = {
           format = "{volume}% {icon} {format_source} ";
-          format-bluetooth = "{icon} {format_source}  ";
-          format-bluetooth-muted = "󰝟 {icon} {format_source}  ";
-          format-muted = "󰝟 {format_source}  ";
+          format-bluetooth = "{icon} {format_source} ";
+          format-bluetooth-muted = "󰝟 {icon} {format_source} ";
+          format-muted = "󰝟 {format_source} ";
           format-source = "  ";
-          format-source-muted = "   ";
+          format-source-muted = "  ";
           format-icons = {
             headphone = " ";
             headset = "";
