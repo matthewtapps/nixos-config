@@ -8,11 +8,6 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
 
-    ags = {
-      url = "github:aylur/ags";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
@@ -30,6 +25,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # darwin.inputs.nixpkgs.follows = "nixpkgs";
     # darwin.url = "github:lnl7/nix-darwin/master";
 
@@ -145,10 +144,11 @@
                   extraSpecialArgs = {
                     inherit inputs host;
                     device = host.device;
+                    claude-desktop = inputs.claude-desktop.packages.${host.system}.claude-desktop-with-fhs;
                   };
                   modules = [
                     file
-                    inputs.stylix.homeManagerModules.stylix
+                    inputs.stylix.homeModules.stylix
                     {
                       home.homeDirectory = "/home/${username}";
                       home.username = username;
