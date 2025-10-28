@@ -33,5 +33,8 @@
     (writeShellScriptBin "music-info" ''
       ${builtins.readFile ./scripts/music-info}
     '')
+    (writeShellScriptBin "record-region-toggle" ''
+      ${builtins.readFile ./scripts/record-region-toggle.sh}
+    '')
   ];
 }

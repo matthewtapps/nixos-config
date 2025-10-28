@@ -92,6 +92,8 @@
     hyprlock
     hyprpaper
     hyprshot
+    wf-recorder
+    slurp
     playerctl
     pavucontrol
     overskride
@@ -115,18 +117,18 @@
         XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/screenshots";
       };
     };
-    
+
     mime.enable = true;
     mimeApps = {
       enable = true;
-      
+
       associations.added = {
         # Directories
         "inode/directory" = "thunar.desktop";
-        
+
         # PDFs
         "application/pdf" = "org.pwmt.zathura-cb.desktop";
-        
+
         # Images - feh
         "image/jpeg" = "feh.desktop";
         "image/png" = "feh.desktop";
@@ -135,7 +137,7 @@
         "image/webp" = "feh.desktop";
         "image/tiff" = "feh.desktop";
         "image/svg+xml" = "feh.desktop";
-        
+
         # Text/Code files - NeoVim in WezTerm
         "text/plain" = "nvim-terminal.desktop";
         "text/x-shellscript" = "nvim-terminal.desktop";
@@ -151,7 +153,7 @@
         "text/x-toml" = "nvim-terminal.desktop";
         "application/x-yaml" = "nvim-terminal.desktop";
         "application/toml" = "nvim-terminal.desktop";
-        
+
         # Browser
         "x-scheme-handler/http" = "zen-beta.desktop";
         "x-scheme-handler/https" = "zen-beta.desktop";
@@ -164,14 +166,14 @@
         "application/x-extension-xhtml" = "zen-beta.desktop";
         "application/x-extension-xht" = "zen-beta.desktop";
       };
-      
+
       defaultApplications = {
         # Directories
         "inode/directory" = "thunar.desktop";
-        
+
         # PDFs
         "application/pdf" = "org.pwmt.zathura-cb.desktop";
-        
+
         # Images - feh
         "image/jpeg" = "feh.desktop";
         "image/png" = "feh.desktop";
@@ -180,7 +182,7 @@
         "image/webp" = "feh.desktop";
         "image/tiff" = "feh.desktop";
         "image/svg+xml" = "feh.desktop";
-        
+
         # Text/Code files - NeoVim in WezTerm
         "text/plain" = "nvim-terminal.desktop";
         "text/x-shellscript" = "nvim-terminal.desktop";
@@ -196,7 +198,7 @@
         "text/x-toml" = "nvim-terminal.desktop";
         "application/x-yaml" = "nvim-terminal.desktop";
         "application/toml" = "nvim-terminal.desktop";
-        
+
         # Browser
         "x-scheme-handler/http" = "zen-beta.desktop";
         "x-scheme-handler/https" = "zen-beta.desktop";
