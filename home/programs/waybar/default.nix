@@ -457,10 +457,31 @@
         ];
 
         modules-right = [
+          "battery"
+          "backlight"
           "pulseaudio"
           "network"
           "bluetooth"
         ];
+
+        battery = {
+          states = {
+            warning = 30;
+            critical = 15;
+          };
+          format = "{icon}  ";
+          format-full = "{icon}  ";
+          format-charging = "󰂄  ";
+          format-plugged = "  ";
+          format-alt = "{icon}  ";
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
+        };
 
         cpu = {
           format = "{usage}%   ";
@@ -486,7 +507,7 @@
         };
 
         backlight = {
-          format = "{percent}% {icon}";
+          format = "{icon}  ";
           format-icons = [
             ""
             ""
