@@ -12,9 +12,9 @@ let
       owner = "isaacphi";
       repo = "mcp-language-server";
       rev = "main";
-      sha256 = "sha256-INyzT/8UyJfg1PW5+PqZkIy/MZrDYykql0rD2Sl97Gg=";
+      sha256 = "sha256-ksQoVmYTdjtK7HCKOFzieK2F0OVgceIMTuOP2dXBzlk=";
     };
-    vendorHash = "sha256-WcYKtM8r9xALx68VvgRabMPq8XnubhTj6NAdtmaPa+g=";
+    vendorHash = "sha256-INyzT/8UyJfg1PW5+PqZkIy/MZrDYykql0rD2Sl97Gg=";
     subPackages = [ "." ];
     doCheck = false;
   };
