@@ -41,6 +41,7 @@
       rubyPackages_3_3.ruby-lsp
       sqls
       glsl_analyzer
+      phpactor
 
       # Formatters
       nixfmt

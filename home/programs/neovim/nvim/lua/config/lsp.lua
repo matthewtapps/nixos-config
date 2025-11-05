@@ -52,6 +52,12 @@ vim.lsp.config("gopls", { capabilities = capabilities })
 vim.lsp.config("astro", { capabilities = capabilities })
 vim.lsp.config("ruby_lsp", { capabilities = capabilities })
 vim.lsp.config("sqls", { capabilities = capabilities })
+vim.lsp.config("phpactor", {
+	capabilities = capabilities,
+	cmd = { "phpactor", "language-server" },
+	filetypes = { "php" },
+	root_markers = { "composer.json", ".git" },
+})
 vim.lsp.config("html", {
 	capabilities = capabilities,
 	filetypes = { "html", "handlebars", "html.handlebars", "html.hbs" },
@@ -115,4 +121,5 @@ vim.lsp.enable({
 	"html",
 	"omnisharp",
 	"glsl_analyzer",
+  "phpactor"
 })
