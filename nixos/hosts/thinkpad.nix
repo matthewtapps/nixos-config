@@ -33,6 +33,15 @@
     firewall.enable = false;
   };
 
+  networking.hosts = {
+    "127.0.0.1" = [
+      "rosterfy2.localhost.com"
+      "sub.rosterfy2.localhost.com"
+      "localstack"
+      "gcloud-emulator"
+    ];
+  };
+
   programs = {
     zsh = {
       enable = true;
