@@ -9,6 +9,6 @@ _: {
     ../../programs/wezterm/default.nix
     ../../programs/azure-vpn.nix
     ../../programs/stylix.nix
-    ../../programs/claude-desktop.nix
+    # ../../programs/claude-desktop.nix
   ];
 }
