@@ -15,7 +15,6 @@ config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = false
 config.hide_tab_bar_if_only_one_tab = true
 config.window_close_confirmation = 'NeverPrompt'
-config.dpi = 384.0
 
 -- config.keys = {
 -- 	{ key = "h", mods = "CTRL", action = wezterm.action.ActivatePaneDirection("Left") },
