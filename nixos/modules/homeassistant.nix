@@ -1,9 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
   cfg = config.services.home-assistant-ac;
-  
+
   haConfig = {
     homeassistant = {
       name = "Home";
@@ -15,11 +20,16 @@ let
       temperature_unit = "C";
     };
 
-    default_config = {};
-    
+    default_config = { };
+
     http = {
       use_x_forwarded_for = true;
-      trusted_proxies = [ "127.0.0.1" "::1" ];
+      trusted_proxies = [
+        "127.0.0.1"
+        "::1"
+      ];
+      server_host = "127.0.0.1";
+      server_port = 8123;
     };
 
     logger = {
@@ -28,7 +38,7 @@ let
         "homeassistant.components.rest" = "debug";
       };
     };
-    
+
     recorder.purge_keep_days = 7;
 
     # Single REST sensor - fetches all data once
@@ -37,7 +47,10 @@ let
         platform = "rest";
         name = "AC Status";
         resource = "http://${cfg.esp32Address}/api/status";
-        json_attributes = [ "sensor" "ac" ];
+        json_attributes = [
+          "sensor"
+          "ac"
+        ];
         value_template = "{{ value_json.sensor.temperature }}";
         unit_of_measurement = "°C";
         scan_interval = 15;
@@ -148,28 +161,60 @@ let
     input_select = {
       ac_mode = {
         name = "Mode";
-        options = [ "auto" "cool" "dry" "fan_only" "heat" ];
+        options = [
+          "auto"
+          "cool"
+          "dry"
+          "fan_only"
+          "heat"
+        ];
         initial = "auto";
         icon = "mdi:air-conditioner";
       };
-      
+
       ac_fan = {
         name = "Fan Speed";
-        options = [ "auto" "low" "medium" "high" "max" "econo" "turbo" ];
+        options = [
+          "auto"
+          "low"
+          "medium"
+          "high"
+          "max"
+          "econo"
+          "turbo"
+        ];
         initial = "auto";
         icon = "mdi:fan";
       };
-      
+
       ac_swing_vertical = {
         name = "Vertical Swing";
-        options = [ "auto" "highest" "high" "middle" "low" "lowest" "off" ];
+        options = [
+          "auto"
+          "highest"
+          "high"
+          "middle"
+          "low"
+          "lowest"
+          "off"
+        ];
         initial = "auto";
         icon = "mdi:arrow-up-down";
       };
-      
+
       ac_swing_horizontal = {
         name = "Horizontal Swing";
-        options = [ "auto" "left_max" "left" "left_right" "middle" "right_left" "right" "right_max" "off" ];
+        options = [
+          "auto"
+          "left_max"
+          "left"
+          "left_right"
+          "middle"
+          "right_left"
+          "right"
+          "right_max"
+          "off"
+        ];
         initial = "auto";
         icon = "mdi:arrow-left-right";
       };
@@ -180,91 +225,133 @@ let
       {
         id = "ac_power_changed";
         alias = "AC Power Changed";
-        trigger = [{ platform = "state"; entity_id = "input_boolean.ac_power"; }];
-        action = [{
-          service = "rest_command.ac_control";
-          data = {
-            payload = ''{"power": {{ "true" if trigger.to_state.state == "on" else "false" }}}'';
-          };
-        }];
+        trigger = [
+          {
+            platform = "state";
+            entity_id = "input_boolean.ac_power";
+          }
+        ];
+        action = [
+          {
+            service = "rest_command.ac_control";
+            data = {
+              payload = ''{"power": {{ "true" if trigger.to_state.state == "on" else "false" }}}'';
+            };
+          }
+        ];
       }
-      
+
       {
         id = "ac_temperature_changed";
         alias = "AC Temperature Changed";
-        trigger = [{ platform = "state"; entity_id = "input_number.ac_temperature"; }];
-        action = [{
-          service = "rest_command.ac_control";
-          data = {
-            payload = ''{"temperature": {{ trigger.to_state.state | int }}}'';
-          };
-        }];
+        trigger = [
+          {
+            platform = "state";
+            entity_id = "input_number.ac_temperature";
+          }
+        ];
+        action = [
+          {
+            service = "rest_command.ac_control";
+            data = {
+              payload = ''{"temperature": {{ trigger.to_state.state | int }}}'';
+            };
+          }
+        ];
       }
-      
+
       {
         id = "ac_mode_changed";
         alias = "AC Mode Changed";
-        trigger = [{ platform = "state"; entity_id = "input_select.ac_mode"; }];
-        action = [{
-          service = "rest_command.ac_control";
-          data = {
-            payload = ''
-              {% set mode_map = {'auto': 0, 'cool': 1, 'dry': 2, 'fan_only': 3, 'heat': 4} %}
-              {"mode": {{ mode_map[trigger.to_state.state] }}}
-            '';
-          };
-        }];
+        trigger = [
+          {
+            platform = "state";
+            entity_id = "input_select.ac_mode";
+          }
+        ];
+        action = [
+          {
+            service = "rest_command.ac_control";
+            data = {
+              payload = ''
+                {% set mode_map = {'auto': 0, 'cool': 1, 'dry': 2, 'fan_only': 3, 'heat': 4} %}
+                {"mode": {{ mode_map[trigger.to_state.state] }}}
+              '';
+            };
+          }
+        ];
       }
-      
+
       {
         id = "ac_fan_changed";
         alias = "AC Fan Changed";
-        trigger = [{ platform = "state"; entity_id = "input_select.ac_fan"; }];
-        action = [{
-          service = "rest_command.ac_control";
-          data = {
-            payload = ''
-              {% set fan_map = {'auto': 0, 'low': 1, 'medium': 2, 'high': 3, 'max': 4, 'econo': 6, 'turbo': 8} %}
-              {"fan": {{ fan_map[trigger.to_state.state] }}}
-            '';
-          };
-        }];
+        trigger = [
+          {
+            platform = "state";
+            entity_id = "input_select.ac_fan";
+          }
+        ];
+        action = [
+          {
+            service = "rest_command.ac_control";
+            data = {
+              payload = ''
+                {% set fan_map = {'auto': 0, 'low': 1, 'medium': 2, 'high': 3, 'max': 4, 'econo': 6, 'turbo': 8} %}
+                {"fan": {{ fan_map[trigger.to_state.state] }}}
+              '';
+            };
+          }
+        ];
       }
-      
+
       {
         id = "ac_swing_v_changed";
         alias = "AC Vertical Swing Changed";
-        trigger = [{ platform = "state"; entity_id = "input_select.ac_swing_vertical"; }];
-        action = [{
-          service = "rest_command.ac_control";
-          data = {
-            payload = ''
-              {% set swing_map = {'auto': 0, 'highest': 1, 'high': 2, 'middle': 3, 'low': 4, 'lowest': 5, 'off': 6} %}
-              {"swing_v": {{ swing_map[trigger.to_state.state] }}}
-            '';
-          };
-        }];
+        trigger = [
+          {
+            platform = "state";
+            entity_id = "input_select.ac_swing_vertical";
+          }
+        ];
+        action = [
+          {
+            service = "rest_command.ac_control";
+            data = {
+              payload = ''
+                {% set swing_map = {'auto': 0, 'highest': 1, 'high': 2, 'middle': 3, 'low': 4, 'lowest': 5, 'off': 6} %}
+                {"swing_v": {{ swing_map[trigger.to_state.state] }}}
+              '';
+            };
+          }
+        ];
       }
-      
+
       {
         id = "ac_swing_h_changed";
         alias = "AC Horizontal Swing Changed";
-        trigger = [{ platform = "state"; entity_id = "input_select.ac_swing_horizontal"; }];
-        action = [{
-          service = "rest_command.ac_control";
-          data = {
-            payload = ''
-              {% set swing_map = {'auto': 0, 'left_max': 1, 'left': 2, 'left_right': 3, 'middle': 4, 'right_left': 5, 'right': 6, 'right_max': 7, 'off': 8} %}
-              {"swing_h": {{ swing_map[trigger.to_state.state] }}}
-            '';
-          };
-        }];
+        trigger = [
+          {
+            platform = "state";
+            entity_id = "input_select.ac_swing_horizontal";
+          }
+        ];
+        action = [
+          {
+            service = "rest_command.ac_control";
+            data = {
+              payload = ''
+                {% set swing_map = {'auto': 0, 'left_max': 1, 'left': 2, 'left_right': 3, 'middle': 4, 'right_left': 5, 'right': 6, 'right_max': 7, 'off': 8} %}
+                {"swing_h": {{ swing_map[trigger.to_state.state] }}}
+              '';
+            };
+          }
+        ];
       }
     ];
 
     lovelace = {
       mode = "yaml";
-      resources = [];
+      resources = [ ];
       dashboards = {
         ac-control = {
           mode = "yaml";
@@ -276,8 +363,9 @@ let
       };
     };
   };
-  
-in {
+
+in
+{
   options = {
     services.home-assistant-ac = {
       esp32Address = mkOption {
@@ -285,13 +373,13 @@ in {
         default = "192.168.0.206";
         description = "IP address of your ESP32 device";
       };
-      
+
       port = mkOption {
         type = types.port;
         default = 8123;
         description = "Port for Home Assistant web interface";
       };
-      
+
       openFirewall = mkOption {
         type = types.bool;
         default = true;
@@ -304,15 +392,16 @@ in {
     services.home-assistant = {
       enable = true;
       config = haConfig;
-      
-      extraPackages = python3Packages: with python3Packages; [
-        requests
-        aiohttp
-        jinja2
-        voluptuous
-        pyyaml
-      ];
-      
+
+      extraPackages =
+        python3Packages: with python3Packages; [
+          requests
+          aiohttp
+          jinja2
+          voluptuous
+          pyyaml
+        ];
+
       openFirewall = cfg.openFirewall;
     };
 
