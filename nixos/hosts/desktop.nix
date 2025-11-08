@@ -13,7 +13,7 @@
     ../modules/networkmanager.nix
     ../modules/steam.nix
     ../modules/azure-vpn.nix
-    ../modules/homeassistant.nix
+    # ../modules/homeassistant.nix
     # ../modules/foundryvtt.nix
   ];
 
