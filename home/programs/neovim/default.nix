@@ -50,6 +50,7 @@
       stylua
       prettier
       taplo
+      pretty-php
     ];
   };
 

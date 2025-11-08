@@ -47,6 +47,7 @@ return {
 				js = { "prettier" },
 				ts = { "prettier" },
 				cs = { "csharpier" },
+        php = { "pretty-php" },
 			},
 			formatters = {
 				sqlfluff = {
