@@ -7,15 +7,30 @@
 {
   sops.secrets = {
     google_project_id = {
-      sopsFile = ../../secrets/kruppe.yaml;
+      sopsFile = ../../../secrets/kruppe.yaml;
     };
     google_client_email = {
-      sopsFile = ../../secrets/kruppe.yaml;
+      sopsFile = ../../../secrets/kruppe.yaml;
     };
     google_private_key = {
-      sopsFile = ../../secrets/kruppe.yaml;
+      sopsFile = ../../../secrets/kruppe.yaml;
     };
   };
+
+  systemd.services.home-assistant.preStart =
+    let
+      secretsFile = pkgs.writeShellScript "generate-ha-secrets" ''
+        cat > /var/lib/home-assistant/secrets.yaml <<EOF
+        google_project_id: $(cat ${config.sops.secrets.google_project_id.path})
+        google_client_email: $(cat ${config.sops.secrets.google_client_email.path})
+        google_private_key: |
+          $(cat ${config.sops.secrets.google_private_key.path} | sed 's/^/  /')
+        EOF
+        chown hass:hass /var/lib/home-assistant/secrets.yaml
+        chmod 600 /var/lib/home-assistant/secrets.yaml
+      '';
+    in
+    "${secretsFile}";
 
   services.home-assistant = {
     enable = true;
@@ -33,10 +48,10 @@
       };
 
       google_assistant = {
-        project_id = builtins.readFile config.sops.secrets.google_project_id.path;
+        project_id = "!secret google_project_id";
         service_account = {
-          client_email = builtins.readFile config.sops.secrets.google_client_email.path;
-          private_key = builtins.readFile config.sops.secrets.google_private_key.path;
+          client_email = "!secret google_client_email";
+          private_key = "!secret google_private_key";
         };
         report_state = true;
         exposed_domains = [
