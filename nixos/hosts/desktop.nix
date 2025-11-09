@@ -13,7 +13,7 @@
     ../modules/networkmanager.nix
     ../modules/steam.nix
     ../modules/azure-vpn.nix
-    # ../modules/homeassistant.nix
+    ../modules/avahi.nix
     # ../modules/foundryvtt.nix
   ];
 
@@ -44,7 +44,7 @@
   };
 
   networking = {
-    hostName = "Matt-DESKTOP-NIXOS";
+    hostName = "karsa";
     firewall.enable = false;
   };
 

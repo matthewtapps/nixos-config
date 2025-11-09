@@ -12,6 +12,7 @@
     ../modules/networkmanager.nix
     ../modules/steam.nix
     ../modules/azure-vpn.nix
+    ../modules/avahi.nix
   ];
 
   programs.azure-vpn = {
@@ -29,7 +30,7 @@
   };
 
   networking = {
-    hostName = "Matt-THINKPAD-NIXOS";
+    hostName = "mappo";
     firewall.enable = false;
   };
 

@@ -13,6 +13,7 @@
     ../modules/home-server/reverse-proxy.nix
     ../modules/home-server/fail2ban.nix
     ../modules/home-server/ssh-hardening.nix
+    ../modules/avahi.nix
   ];
 
   boot.loader = {
@@ -26,16 +27,14 @@
   };
 
   networking = {
-    hostName = "NUC-NIXOS";
-    # Firewall is now enabled via reverse-proxy module
-    # DON'T set firewall.enable = false anymore!
+    hostName = "kruppe";
   };
 
   # Configure your domain and email for Let's Encrypt
   services.secure-reverse-proxy = {
     enable = true;
-    domain = "mattys.cloud"; # ⚠️ CHANGE THIS to your actual domain
-    email = "me@mattys.cloud"; # ⚠️ CHANGE THIS to your email
+    domain = "mattys.cloud";
+    email = "me@mattys.cloud";
     homeAssistantPort = 8123;
   };
 
@@ -49,9 +48,9 @@
   # Secure SSH configuration
   services.secure-ssh = {
     enable = true;
-    port = 2222; # Non-standard port - more secure than 22
+    port = 2222; # Non-standard port
     allowPasswordAuth = false; # SSH keys only
-    allowedUsers = [ "matt" ]; # Add other users if needed
+    allowedUsers = [ "matt" ];
   };
 
   # Enable Home Assistant
