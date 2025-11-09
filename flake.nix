@@ -29,9 +29,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    sopswarden = {
-      url = "github:pfassina/sopswarden";
-    };
+    sops-nix.url = "github:Mic92/sops-nix";
 
     # darwin.inputs.nixpkgs.follows = "nixpkgs";
     # darwin.url = "github:lnl7/nix-darwin/master";
@@ -45,7 +43,6 @@
       nixpkgs,
       home-manager,
       foundryvtt,
-      sopswarden,
       stylix,
       ...
     }@inputs:
@@ -78,7 +75,7 @@
           modules = [
             ./nixos/hosts/karsa.nix
             foundryvtt.nixosModules.foundryvtt
-            sopswarden.nixosModules.default
+            inputs.sops-nix.nixosModules.sops
           ];
         }
         {
@@ -90,7 +87,7 @@
           };
           modules = [
             ./nixos/hosts/mappo.nix
-            sopswarden.nixosModules.default
+            inputs.sops-nix.nixosModules.sops
           ];
         }
         {
@@ -102,7 +99,7 @@
           };
           modules = [
             ./nixos/hosts/kruppe.nix
-            sopswarden.nixosModules.default
+            inputs.sops-nix.nixosModules.sops
           ];
         }
       ];

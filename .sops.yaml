@@ -1,0 +1,7 @@
+keys:
+  - &kruppe age1wm99fs5q65gp20mtwjscnnmfzj7ht79l2pv0secsr6jph84zxymsn7aycx
+creation_rules:
+  - path_regex: secrets/kruppe.yaml$
+    key_groups:
+      - age:
+        - *kruppe

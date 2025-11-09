@@ -22,10 +22,10 @@ let
     };
 
     google_assistant = {
-      project_id = builtins.readFile config.sops.secrets.google-assistant-project-id.path;
+      project_id = builtins.readFile config.sops.secrets.google_project_id.path;
       service_account = {
-        client_email = builtins.readFile config.sops.secrets.google-assistant-client-email.path;
-        private_key = builtins.readFile config.sops.secrets.google-assistant-private-key.path;
+        client_email = builtins.readFile config.sops.secrets.google_client_email.path;
+        private_key = builtins.readFile config.sops.secrets.google_private_key.path;
       };
       report_state = true;
       exposed_domains = [
@@ -382,6 +382,18 @@ let
 
 in
 {
+  sops.secrets = {
+    google_project_id = {
+      sopsFile = ../../secrets/kruppe.yaml;
+    };
+    google_client_email = {
+      sopsFile = ../../secrets/kruppe.yaml;
+    };
+    google_private_key = {
+      sopsFile = ../../secrets/kruppe.yaml;
+    };
+  };
+
   options = {
     services.home-assistant-ac = {
       esp32Address = mkOption {
