@@ -22,6 +22,7 @@
       pinentry
       ssh-to-age
       sops
+      wol
     ];
   };
 

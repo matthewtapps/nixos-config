@@ -3,7 +3,7 @@ _: {
     enable = true;
     maxretry = 5;
     bantime = "1h";
-    
+
     ignoreIP = [
       "127.0.0.1/8"
       "::1"
@@ -19,7 +19,7 @@ _: {
           backend = "auto";
         };
       };
-      
+
       nginx-limit-req = {
         settings = {
           enabled = true;
@@ -28,7 +28,7 @@ _: {
           backend = "auto";
         };
       };
-      
+
       nginx-botsearch = {
         settings = {
           enabled = true;
@@ -46,7 +46,7 @@ _: {
           backend = "auto";
         };
       };
-      
+
       sshd = {
         settings = {
           enabled = true;
@@ -60,14 +60,15 @@ _: {
   # Create custom filter for Home Assistant
   environment.etc."fail2ban/filter.d/home-assistant.conf".text = ''
     [Definition]
+    __prefix_line = ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+
     failregex = ^%(__prefix_line)s.*Login attempt or request with invalid authentication from <HOST>.*$
                 ^%(__prefix_line)s.*\[homeassistant.components.http.ban\] Login attempt or request with invalid authentication from <HOST>.*$
                 ^%(__prefix_line)s.*Possible authentication attempt or login with invalid authentication from <HOST>.*$
-    
-    ignoreregex =
-    
-    datepattern = ^%%Y-%%m-%%d %%H:%%M:%%S
-  '';
 
+    ignoreregex =
+
+    datepattern = {^LN-BEG}%%Y-%%m-%%d %%H:%%M:%%S
+  '';
   systemd.services.fail2ban.after = [ "network.target" ];
 }
