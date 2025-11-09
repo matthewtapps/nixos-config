@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }:
 
@@ -17,20 +18,21 @@
     };
   };
 
-  systemd.services.home-assistant.preStart =
+  systemd.services.home-assistant.serviceConfig.ExecStartPre =
     let
-      secretsFile = pkgs.writeShellScript "generate-ha-secrets" ''
-        cat > /var/lib/home-assistant/secrets.yaml <<EOF
+      script = pkgs.writeShellScript "setup-ha-secrets" ''
+        mkdir -p /var/lib/hass
+        cat > /var/lib/hass/secrets.yaml <<EOF
         google_project_id: $(cat ${config.sops.secrets.google_project_id.path})
         google_client_email: $(cat ${config.sops.secrets.google_client_email.path})
         google_private_key: |
-          $(cat ${config.sops.secrets.google_private_key.path} | sed 's/^/  /')
+        $(cat ${config.sops.secrets.google_private_key.path} | sed 's/^/  /')
         EOF
-        chown hass:hass /var/lib/home-assistant/secrets.yaml
-        chmod 600 /var/lib/home-assistant/secrets.yaml
+        chown hass:hass /var/lib/hass/secrets.yaml
+        chmod 600 /var/lib/hass/secrets.yaml
       '';
     in
-    "${secretsFile}";
+    [ "+${script}" ];
 
   services.home-assistant = {
     enable = true;
