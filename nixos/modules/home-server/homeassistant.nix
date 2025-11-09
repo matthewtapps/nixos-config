@@ -18,6 +18,7 @@ let
       unit_system = "metric";
       time_zone = "Australia/Melbourne";
       temperature_unit = "C";
+      external_url = "https://mattys.cloud";
     };
 
     default_config = { };
@@ -30,7 +31,6 @@ let
       ];
       server_host = "127.0.0.1";
       server_port = 8123;
-      external_url = "https://mattys.cloud";
     };
 
     logger = {
