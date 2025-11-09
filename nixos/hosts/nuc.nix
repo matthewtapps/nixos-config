@@ -1,5 +1,4 @@
-# nixos/hosts/nuc.nix
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -58,6 +57,13 @@
     esp32Address = "192.168.0.206";
     port = 8123;
     openFirewall = false; # Don't open directly - nginx proxies instead
+  };
+
+  services.tailscale.useRoutingFeatures = lib.mkForce "server";
+  
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = 1;
+    "net.ipv6.conf.all.forwarding" = 1;
   };
 
   programs = {
