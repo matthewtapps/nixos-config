@@ -43,15 +43,12 @@
         controlPersist = "no";
       };
       "kruppe" = {
-        hostname = "192.168.0.181";
         user = "matt";
       };
       "karsa" = {
-        hostname = "192.168.0.194";
         user = "matt";
       };
       "mappo" = {
-        hostname = "192.168.0.111";
         user = "matt";
       };
     };
