@@ -29,6 +29,12 @@
     hostName = "kruppe";
   };
 
+  nix.settings.trusted-users = [
+    "matt"
+    "root"
+    "@wheel"
+  ];
+
   # Enable Home Assistant
   services.home-assistant-ac = {
     esp32Address = "192.168.0.206";
@@ -37,7 +43,7 @@
   };
 
   services.tailscale.useRoutingFeatures = lib.mkForce "server";
-  
+
   boot.kernel.sysctl = {
     "net.ipv4.ip_forward" = 1;
     "net.ipv6.conf.all.forwarding" = 1;

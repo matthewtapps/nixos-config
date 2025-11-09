@@ -48,6 +48,12 @@
     firewall.enable = false;
   };
 
+  nix.settings.trusted-users = [
+    "matt"
+    "root"
+    "@wheel"
+  ];
+
   services.avahi = {
     enable = true;
     nssmdns4 = true;

@@ -34,6 +34,12 @@
     firewall.enable = false;
   };
 
+  nix.settings.trusted-users = [
+    "matt"
+    "root"
+    "@wheel"
+  ];
+
   networking.hosts = {
     "127.0.0.1" = [
       "rosterfy2.localhost.com"
