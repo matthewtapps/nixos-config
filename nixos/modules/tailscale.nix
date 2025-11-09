@@ -1,19 +1,20 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+
 {
-  services.tailscale.enable = true;
-
-  services.tailscale.useRoutingFeatures = "both";
-
-  networking.firewall.checkReversePath = "loose";
-
-  environment = {
-    systemPackages = with pkgs; [
-      tailscale
-      ktailctl
-    ];
-  };
-
-  services.resolved = {
+  services.tailscale = {
     enable = true;
+    useRoutingFeatures = "client";
   };
+
+  # Firewall configuration
+  networking.firewall = {
+    checkReversePath = "loose";
+    trustedInterfaces = [ "tailscale0" ];
+    allowedUDPPorts = [ config.services.tailscale.port ];
+  };
+
+  environment.systemPackages = with pkgs; [
+    tailscale
+    ktailctl
+  ];
 }

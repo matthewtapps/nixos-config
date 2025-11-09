@@ -34,5 +34,6 @@
     ./nix-options.nix
     ./linux-kernel.nix
     ./cachix.nix
+    ./tailscale.nix
   ];
 }
