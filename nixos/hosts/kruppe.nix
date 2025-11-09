@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../hardware/nuc.nix
+    ../hardware/kruppe.nix
     ../modules/common.nix
     ../modules/wayland.nix
     ../modules/audio.nix

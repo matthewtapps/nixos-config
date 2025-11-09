@@ -2,7 +2,7 @@
 {
   services.foundryvtt = {
     enable = true;
-    hostName = "Matt-DESKTOP-NIXOS";
+    hostName = "karsa";
     minifyStaticFiles = true;
     package = inputs.foundryvtt.packages.${pkgs.system}.foundryvtt_12;
     proxyPort = 443;

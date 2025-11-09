@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../hardware/thinkpad.nix
+    ../hardware/mappo.nix
     ../modules/common.nix
     ../modules/wayland.nix
     ../modules/stylix.nix

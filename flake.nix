@@ -65,50 +65,37 @@
 
       hosts = [
         {
-          name = "desktop";
+          name = "karsa";
           system = "x86_64-linux";
-          device = "desktop";
+          device = "karsa";
           users = {
-            matt = ./home/users/matt/desktop.nix;
+            matt = ./home/users/matt/karsa.nix;
           };
           modules = [
-            ./nixos/hosts/desktop.nix
+            ./nixos/hosts/karsa.nix
             foundryvtt.nixosModules.foundryvtt
           ];
         }
         {
-          name = "thinkpad";
+          name = "mappo";
           system = "x86_64-linux";
-          device = "thinkpad";
+          device = "mappo";
           users = {
-            matt = ./home/users/matt/thinkpad.nix;
+            matt = ./home/users/matt/mappo.nix;
           };
           modules = [
-            ./nixos/hosts/thinkpad.nix
+            ./nixos/hosts/mappo.nix
           ];
         }
         {
-          name = "nuc";
+          name = "kruppe";
           system = "x86_64-linux";
-          device = "nuc";
+          device = "kruppe";
           users = {
-            matt = ./home/users/matt/nuc.nix;
-            anna = ./home/users/anna/nuc.nix;
+            matt = ./home/users/matt/kruppe.nix;
           };
           modules = [
-            ./nixos/hosts/nuc.nix
-          ];
-        }
-        {
-          name = "thinkpad-wsl";
-          system = "x86_64-linux";
-          device = "thinkpad-wsl";
-          users = {
-            matt = ./home/users/matt/matt_thinkpad-wsl.nix;
-          };
-          modules = [
-            ./nixos/hosts/thinkpad-wsl.nix
-            nixos-wsl.nixosModules.default
+            ./nixos/hosts/kruppe.nix
           ];
         }
       ];

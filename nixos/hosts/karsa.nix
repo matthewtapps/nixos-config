@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../hardware/desktop.nix
+    ../hardware/karsa.nix
     ../modules/common.nix
     ../modules/stylix.nix
     ../modules/wayland.nix
