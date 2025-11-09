@@ -4,6 +4,7 @@
   imports = [
     ../hardware/kruppe.nix
     ../modules/common.nix
+    ../modules/stylix.nix
     ../modules/wayland.nix
     ../modules/audio.nix
     ../modules/thunar.nix
