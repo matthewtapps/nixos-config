@@ -9,10 +9,10 @@
     ../modules/audio.nix
     ../modules/thunar.nix
     ../modules/networkmanager.nix
-    ../modules/homeassistant.nix
-    ../modules/reverse-proxy.nix
-    ../modules/fail2ban.nix
-    ../modules/ssh-hardening.nix
+    ../modules/home-server/homeassistant.nix
+    ../modules/home-server/reverse-proxy.nix
+    ../modules/home-server/fail2ban.nix
+    ../modules/home-server/ssh-hardening.nix
   ];
 
   boot.loader = {
@@ -34,8 +34,8 @@
   # Configure your domain and email for Let's Encrypt
   services.secure-reverse-proxy = {
     enable = true;
-    domain = "matty.cloud";  # ⚠️ CHANGE THIS to your actual domain
-    email = "me@matty.cloud";  # ⚠️ CHANGE THIS to your email
+    domain = "matty.cloud"; # ⚠️ CHANGE THIS to your actual domain
+    email = "me@matty.cloud"; # ⚠️ CHANGE THIS to your email
     homeAssistantPort = 8123;
   };
 
@@ -49,16 +49,16 @@
   # Secure SSH configuration
   services.secure-ssh = {
     enable = true;
-    port = 2222;  # Non-standard port - more secure than 22
-    allowPasswordAuth = false;  # SSH keys only
-    allowedUsers = [ "matt" ];  # Add other users if needed
+    port = 2222; # Non-standard port - more secure than 22
+    allowPasswordAuth = false; # SSH keys only
+    allowedUsers = [ "matt" ]; # Add other users if needed
   };
 
   # Enable Home Assistant
   services.home-assistant-ac = {
     esp32Address = "192.168.0.206";
     port = 8123;
-    openFirewall = false;  # Don't open directly - nginx proxies instead
+    openFirewall = false; # Don't open directly - nginx proxies instead
   };
 
   programs = {
