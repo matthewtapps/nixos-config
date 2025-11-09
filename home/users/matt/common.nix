@@ -29,18 +29,59 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks."*" = {
-      forwardAgent = false;
-      addKeysToAgent = "no";
-      compression = false;
-      serverAliveInterval = 0;
-      serverAliveCountMax = 3;
-      hashKnownHosts = false;
-      userKnownHostsFile = "~/.ssh/known_hosts";
-      controlMaster = "no";
-      controlPath = "~/.ssh/master-%r@%n:%p";
-      controlPersist = "no";
+    matchBlocks = {
+      "*" = {
+        forwardAgent = false;
+        addKeysToAgent = "no";
+        compression = false;
+        serverAliveInterval = 0;
+        serverAliveCountMax = 3;
+        hashKnownHosts = false;
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        controlMaster = "no";
+        controlPath = "~/.ssh/master-%r@%n:%p";
+        controlPersist = "no";
+      };
+      "kruppe" = {
+        hostname = "192.168.0.181";
+        user = "matt";
+      };
+      "karsa" = {
+        hostname = "192.168.0.194";
+        user = "matt";
+      };
+      "mappo" = {
+        hostname = "192.168.0.111";
+        user = "matt";
+      };
     };
+  };
+
+  # Clipboard sync scripts
+  home.file.".local/bin/pbcopy" = {
+    text = ''
+      #!/usr/bin/env bash
+      data=$(cat)
+      if [ -n "$WAYLAND_DISPLAY" ]; then
+        echo "$data" | wl-copy
+      else
+        echo "$data" | xclip -selection clipboard
+      fi
+      printf "\033]52;c;%s\a" "$(echo -n "$data" | base64 | tr -d '\n')"
+    '';
+    executable = true;
+  };
+
+  home.file.".local/bin/pbpaste" = {
+    text = ''
+      #!/usr/bin/env bash
+      if [ -n "$WAYLAND_DISPLAY" ]; then
+        wl-paste
+      else
+        xclip -o -selection clipboard
+      fi
+    '';
+    executable = true;
   };
 
   home.packages = with pkgs; [
