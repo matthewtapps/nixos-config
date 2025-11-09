@@ -29,29 +29,6 @@
     hostName = "kruppe";
   };
 
-  # Configure your domain and email for Let's Encrypt
-  services.secure-reverse-proxy = {
-    enable = true;
-    domain = "mattys.cloud";
-    email = "me@mattys.cloud";
-    homeAssistantPort = 8123;
-  };
-
-  # Enable fail2ban for intrusion prevention
-  services.secure-fail2ban = {
-    enable = true;
-    bantime = "1h";
-    maxretry = 5;
-  };
-
-  # Secure SSH configuration
-  services.secure-ssh = {
-    enable = true;
-    port = 2222; # Non-standard port
-    allowPasswordAuth = false; # SSH keys only
-    allowedUsers = [ "matt" ];
-  };
-
   # Enable Home Assistant
   services.home-assistant-ac = {
     esp32Address = "192.168.0.206";
