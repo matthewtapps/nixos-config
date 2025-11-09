@@ -20,6 +20,8 @@
       bash
       rbw
       pinentry
+      ssh-to-age
+      sops
     ];
   };
 
