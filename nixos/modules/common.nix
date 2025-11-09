@@ -18,6 +18,8 @@
       curl
       lazygit
       bash
+      rbw
+      pinentry
     ];
   };
 

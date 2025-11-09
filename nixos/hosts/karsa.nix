@@ -14,6 +14,7 @@
     ../modules/steam.nix
     ../modules/azure-vpn.nix
     ../modules/avahi.nix
+    ../modules/sopswarden.nix
     # ../modules/foundryvtt.nix
   ];
 

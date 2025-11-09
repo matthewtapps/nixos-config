@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
@@ -29,6 +28,11 @@
       url = "github:k3d3/claude-desktop-linux-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    sopswarden = {
+      url = "github:pfassina/sopswarden";
+    };
+
     # darwin.inputs.nixpkgs.follows = "nixpkgs";
     # darwin.url = "github:lnl7/nix-darwin/master";
 
@@ -40,8 +44,8 @@
     {
       nixpkgs,
       home-manager,
-      nixos-wsl,
       foundryvtt,
+      sopswarden,
       stylix,
       ...
     }@inputs:
@@ -74,6 +78,7 @@
           modules = [
             ./nixos/hosts/karsa.nix
             foundryvtt.nixosModules.foundryvtt
+            sopswarden.nixosModules.default
           ];
         }
         {
@@ -85,6 +90,7 @@
           };
           modules = [
             ./nixos/hosts/mappo.nix
+            sopswarden.nixosModules.default
           ];
         }
         {
@@ -96,6 +102,7 @@
           };
           modules = [
             ./nixos/hosts/kruppe.nix
+            sopswarden.nixosModules.default
           ];
         }
       ];

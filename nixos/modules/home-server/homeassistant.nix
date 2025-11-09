@@ -21,6 +21,21 @@ let
       external_url = "https://mattys.cloud";
     };
 
+    google_assistant = {
+      project_id = builtins.readFile config.sops.secrets.google-assistant-project-id.path;
+      service_account = {
+        client_email = builtins.readFile config.sops.secrets.google-assistant-client-email.path;
+        private_key = builtins.readFile config.sops.secrets.google-assistant-private-key.path;
+      };
+      report_state = true;
+      exposed_domains = [
+        "climate"
+        "fan"
+        "light"
+        "switch"
+      ];
+    };
+
     default_config = { };
 
     http = {
