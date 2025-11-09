@@ -42,7 +42,7 @@ _: {
         settings = {
           enabled = true;
           filter = "home-assistant";
-          logpath = "/var/lib/home-assistant/home-assistant.log";
+          logpath = "/var/lib/hass/home-assistant.log";
           backend = "auto";
         };
       };
