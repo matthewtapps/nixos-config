@@ -34,8 +34,8 @@
   # Configure your domain and email for Let's Encrypt
   services.secure-reverse-proxy = {
     enable = true;
-    domain = "matty.cloud"; # ⚠️ CHANGE THIS to your actual domain
-    email = "me@matty.cloud"; # ⚠️ CHANGE THIS to your email
+    domain = "mattys.cloud"; # ⚠️ CHANGE THIS to your actual domain
+    email = "me@mattys.cloud"; # ⚠️ CHANGE THIS to your email
     homeAssistantPort = 8123;
   };
 
