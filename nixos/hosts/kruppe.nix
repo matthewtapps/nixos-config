@@ -36,13 +36,6 @@
     "@wheel"
   ];
 
-  services.tailscale.useRoutingFeatures = lib.mkForce "server";
-
-  boot.kernel.sysctl = {
-    "net.ipv4.ip_forward" = 1;
-    "net.ipv6.conf.all.forwarding" = 1;
-  };
-
   programs = {
     zsh = {
       enable = true;
