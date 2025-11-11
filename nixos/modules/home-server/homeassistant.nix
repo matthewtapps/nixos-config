@@ -61,6 +61,9 @@
           "fan"
           "light"
           "switch"
+          "input_boolean"
+          "input_number"
+          "input_select"
         ];
       };
 
