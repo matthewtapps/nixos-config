@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  lib,
   ...
 }:
 
@@ -58,16 +57,10 @@
         report_state = true;
         exposed_domains = [
           "climate"
-          "fan"
-          "light"
-          "switch"
           "input_boolean"
-          "input_number"
           "input_select"
         ];
       };
-
-      default_config = { };
 
       http = {
         use_x_forwarded_for = true;
@@ -84,7 +77,9 @@
         logs."homeassistant.components.rest" = "debug";
       };
 
-      recorder.purge_keep_days = 7;
+      recorder = {
+        purge_keep_days = 7;
+      };
 
       sensor = [
         {
@@ -104,68 +99,43 @@
         }
       ];
 
+      # Template sensors cleaned up
       template = [
         {
           sensor = [
             {
               name = "AC Room Temperature";
-              state = "{{ state_attr('sensor.ac_status', 'sensor')['temperature'] if state_attr('sensor.ac_status', 'sensor') else 0 }}";
+              state = "{{ state_attr('sensor.ac_status', 'sensor')['temperature'] | default(0) }}";
               unit_of_measurement = "°C";
               device_class = "temperature";
               state_class = "measurement";
             }
             {
               name = "AC Room Humidity";
-              state = "{{ state_attr('sensor.ac_status', 'sensor')['humidity'] if state_attr('sensor.ac_status', 'sensor') else 0 }}";
+              state = "{{ state_attr('sensor.ac_status', 'sensor')['humidity'] | default(0) }}";
               unit_of_measurement = "%";
               device_class = "humidity";
               state_class = "measurement";
             }
-            {
-              name = "AC Current Temperature";
-              state = "{{ state_attr('sensor.ac_status', 'ac')['temperature'] if state_attr('sensor.ac_status', 'ac') else 24 }}";
-              unit_of_measurement = "°C";
-            }
-            {
-              name = "AC Current Mode";
-              state = ''
-                {% set ac = state_attr('sensor.ac_status', 'ac') %}
-                {% if ac %}
-                  {% set mode = ac['mode'] | int(-1) %}
-                  {% if mode == 0 %}auto
-                  {% elif mode == 1 %}cool
-                  {% elif mode == 2 %}dry
-                  {% elif mode == 3 %}fan_only
-                  {% elif mode == 4 %}heat
-                  {% else %}unknown{% endif %}
-                {% else %}unknown{% endif %}
-              '';
-            }
-            {
-              name = "AC Current Fan";
-              state = ''
-                {% set ac = state_attr('sensor.ac_status', 'ac') %}
-                {% if ac %}
-                  {% set fan = ac['fan'] | int(-1) %}
-                  {% if fan == 0 %}auto
-                  {% elif fan == 1 %}low
-                  {% elif fan == 2 %}medium
-                  {% elif fan == 3 %}high
-                  {% elif fan == 4 %}max
-                  {% elif fan == 6 %}econo
-                  {% elif fan == 8 %}turbo
-                  {% else %}unknown{% endif %}
-                {% else %}unknown{% endif %}
-              '';
-            }
           ];
-          binary_sensor = [
-            {
-              name = "AC Power";
-              state = "{{ state_attr('sensor.ac_status', 'ac')['power'] if state_attr('sensor.ac_status', 'ac') else false }}";
-              device_class = "power";
-            }
-          ];
+        }
+      ];
+
+      # Use input_boolean.ac_power directly for climate control
+      climate = [
+        {
+          platform = "generic_thermostat";
+          name = "Living Room AC";
+          heater = "input_boolean.ac_power";
+          target_sensor = "sensor.ac_room_temperature";
+          min_temp = 17;
+          max_temp = 31;
+          precision = 1;
+          cold_tolerance = 1;
+          hot_tolerance = 1;
+          target_temp_step = 1;
+          initial_hvac_mode = "off";
+          ac_mode = false;
         }
       ];
 
@@ -176,21 +146,12 @@
         payload = ''{{ payload }}'';
       };
 
-      input_boolean.ac_power = {
-        name = "AC Power";
-        initial = false;
-        icon = "mdi:power";
-      };
-
-      input_number.ac_temperature = {
-        name = "Target Temperature";
-        min = 17;
-        max = 31;
-        step = 1;
-        mode = "box";
-        initial = 24;
-        unit_of_measurement = "°C";
-        icon = "mdi:thermometer";
+      input_boolean = {
+        ac_power = {
+          name = "AC Power";
+          initial = false;
+          icon = "mdi:power";
+        };
       };
 
       input_select = {
@@ -265,26 +226,13 @@
           action = [
             {
               service = "rest_command.ac_control";
-              data.payload = ''{"power": {{ "true" if trigger.to_state.state == "on" else "false" }}}'';
+              data.payload = ''
+                {{ {"power": "true" if trigger.to_state.state == "on" else "false"} | to_json }}
+              '';
             }
           ];
         }
-        {
-          id = "ac_temperature_changed";
-          alias = "AC Temperature Changed";
-          trigger = [
-            {
-              platform = "state";
-              entity_id = "input_number.ac_temperature";
-            }
-          ];
-          action = [
-            {
-              service = "rest_command.ac_control";
-              data.payload = ''{"temperature": {{ trigger.to_state.state | int }}}'';
-            }
-          ];
-        }
+
         {
           id = "ac_mode_changed";
           alias = "AC Mode Changed";
@@ -298,12 +246,13 @@
             {
               service = "rest_command.ac_control";
               data.payload = ''
-                {% set mode_map = {'auto': 0, 'cool': 1, 'dry': 2, 'fan_only': 3, 'heat': 4} %}
-                {"mode": {{ mode_map[trigger.to_state.state] }}}
+                {% set m = {"auto":0,"cool":1,"dry":2,"fan_only":3,"heat":4} %}
+                {{ {"mode": m[trigger.to_state.state]} | to_json }}
               '';
             }
           ];
         }
+
         {
           id = "ac_fan_changed";
           alias = "AC Fan Changed";
@@ -317,12 +266,13 @@
             {
               service = "rest_command.ac_control";
               data.payload = ''
-                {% set fan_map = {'auto': 0, 'low': 1, 'medium': 2, 'high': 3, 'max': 4, 'econo': 6, 'turbo': 8} %}
-                {"fan": {{ fan_map[trigger.to_state.state] }}}
+                {% set f = {"auto":0,"low":1,"medium":2,"high":3,"max":4,"econo":6,"turbo":8} %}
+                {{ {"fan": f[trigger.to_state.state]} | to_json }}
               '';
             }
           ];
         }
+
         {
           id = "ac_swing_v_changed";
           alias = "AC Vertical Swing Changed";
@@ -336,12 +286,13 @@
             {
               service = "rest_command.ac_control";
               data.payload = ''
-                {% set swing_map = {'auto': 0, 'highest': 1, 'high': 2, 'middle': 3, 'low': 4, 'lowest': 5, 'off': 6} %}
-                {"swing_v": {{ swing_map[trigger.to_state.state] }}}
+                {% set s = {"auto":0,"highest":1,"high":2,"middle":3,"low":4,"lowest":5,"off":6} %}
+                {{ {"swing_v": s[trigger.to_state.state]} | to_json }}
               '';
             }
           ];
         }
+
         {
           id = "ac_swing_h_changed";
           alias = "AC Horizontal Swing Changed";
@@ -355,8 +306,8 @@
             {
               service = "rest_command.ac_control";
               data.payload = ''
-                {% set swing_map = {'auto': 0, 'left_max': 1, 'left': 2, 'left_right': 3, 'middle': 4, 'right_left': 5, 'right': 6, 'right_max': 7, 'off': 8} %}
-                {"swing_h": {{ swing_map[trigger.to_state.state] }}}
+                {% set s = {"auto":0,"left_max":1,"left":2,"left_right":3,"middle":4,"right_left":5,"right":6,"right_max":7,"off":8} %}
+                {{ {"swing_h": s[trigger.to_state.state]} | to_json }}
               '';
             }
           ];
@@ -366,7 +317,7 @@
       lovelace = {
         mode = "yaml";
         resources = [ ];
-        dashboards.ac-control = {
+        dashboards.ac_control = {
           mode = "yaml";
           title = "AC Control";
           icon = "mdi:air-conditioner";
@@ -405,34 +356,26 @@
                 name: Temperature
               - entity: sensor.ac_room_humidity
                 name: Humidity
-          
+
+          - type: climate
+            entity: climate.living_room_ac
+            name: Living Room AC
+            title: AC Control
+            show_header_toggle: false
+
           - type: entities
-            title: AC Controls (Change These)
+            title: AC Mode
             entities:
-              - entity: input_boolean.ac_power
-                name: Power
-              - entity: input_number.ac_temperature
-                name: Target Temperature
               - entity: input_select.ac_mode
                 name: Mode
+                icon: mdi:air-conditioner
+
+          - type: entities
+            title: Fan Control
+            entities:
               - entity: input_select.ac_fan
                 name: Fan Speed
-              - entity: input_select.ac_swing_vertical
-                name: Vertical Swing
-              - entity: input_select.ac_swing_horizontal
-                name: Horizontal Swing
-          
-          - type: entities
-            title: Current AC State (Read-Only)
-            entities:
-              - entity: binary_sensor.ac_power
-                name: Power State
-              - entity: sensor.ac_current_temperature
-                name: Target Temp
-              - entity: sensor.ac_current_mode
-                name: Mode
-              - entity: sensor.ac_current_fan
-                name: Fan
+                icon: mdi:fan
   '';
 
   environment.systemPackages = with pkgs; [
