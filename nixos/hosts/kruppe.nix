@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -13,6 +13,7 @@
     ../modules/home-server/reverse-proxy.nix
     ../modules/home-server/fail2ban.nix
     # ../modules/home-server/ssh-hardening.nix
+    ../modules/foundryvtt.nix
     ../modules/avahi.nix
   ];
 

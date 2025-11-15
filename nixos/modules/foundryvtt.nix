@@ -2,7 +2,7 @@
 {
   services.foundryvtt = {
     enable = true;
-    hostName = "karsa";
+    hostName = "kruppe";
     minifyStaticFiles = true;
     package = inputs.foundryvtt.packages.${pkgs.system}.foundryvtt_12;
     proxyPort = 443;

@@ -74,7 +74,6 @@
           };
           modules = [
             ./nixos/hosts/karsa.nix
-            foundryvtt.nixosModules.foundryvtt
             inputs.sops-nix.nixosModules.sops
           ];
         }
@@ -99,6 +98,7 @@
           };
           modules = [
             ./nixos/hosts/kruppe.nix
+            foundryvtt.nixosModules.foundryvtt
             inputs.sops-nix.nixosModules.sops
           ];
         }
