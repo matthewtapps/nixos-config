@@ -12,7 +12,7 @@
     port = 8080;
     environment = {
       # Point to Ollama on Karsa
-      OLLAMA_BASE_URL = "http://karsa.local:11434";
+      OLLAMA_BASE_URL = "http://karsa:11434";
       # Optional: Add Claude API support
       OPENAI_API_BASE_URLS = "https://api.anthropic.com/v1";
     };
