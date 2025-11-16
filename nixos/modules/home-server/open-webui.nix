@@ -1,5 +1,11 @@
 { config, pkgs, ... }:
 {
+  nixpkgs.config.allowUnfreePredicate =
+    pkg:
+    builtins.elem (pkgs.lib.getName pkg) [
+      "open-webui"
+    ];
+
   services.open-webui = {
     enable = true;
     host = "127.0.0.1";
