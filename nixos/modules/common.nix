@@ -19,7 +19,7 @@
       lazygit
       bash
       rbw
-      pinentry
+      pinentry-curses
       ssh-to-age
       sops
       wol

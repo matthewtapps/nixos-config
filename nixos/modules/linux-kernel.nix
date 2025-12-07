@@ -8,7 +8,7 @@
 # in lib.mkMerge [
 #   (lib.mkIf (host == "desktop") {
 {
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_6_17;
 }
 # })
 # (lib.mkIf (host != "desktop") {
