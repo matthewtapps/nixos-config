@@ -11,14 +11,14 @@
     ../modules/thunar.nix
     ../modules/networkmanager.nix
     ../modules/steam.nix
-    ../modules/azure-vpn.nix
+    # ../modules/azure-vpn.nix
     ../modules/avahi.nix
   ];
 
-  programs.azure-vpn = {
-    enable = true;
-    users = [ "matt" ];
-  };
+  # programs.azure-vpn = {
+  #   enable = true;
+  #   users = [ "matt" ];
+  # };
 
   nixpkgs.pkgs = mypkgs;
 
