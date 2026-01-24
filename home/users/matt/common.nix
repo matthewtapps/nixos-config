@@ -101,7 +101,6 @@
     iproute2
     lm_sensors
     gimp
-    zathura
     feh
 
     # Gurps
@@ -259,5 +258,6 @@
     ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/direnv.nix
+    ../../programs/zathura.nix
   ];
 }
