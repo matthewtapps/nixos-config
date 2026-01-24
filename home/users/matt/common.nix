@@ -140,6 +140,8 @@
     gnumake
 
     remmina
+    runelite
+    bolt-launcher
   ];
 
   xdg = {
