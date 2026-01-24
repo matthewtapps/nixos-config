@@ -5,7 +5,7 @@
       enable = true;
       settings = rec {
         initial_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd Hyprland";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd start-hyprland";
           user = "matt";
         };
         default_session = initial_session;

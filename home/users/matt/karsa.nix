@@ -10,7 +10,7 @@ _:
     ../../programs/azure-vpn.nix
     ../../programs/orcaslicer.nix
     ../../programs/mangohud.nix
-    ../../programs/freecad.nix
+    # ../../programs/freecad.nix
     ../../programs/stylix.nix
     ../../programs/waybar/default.nix
   ];

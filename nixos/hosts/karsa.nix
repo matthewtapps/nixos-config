@@ -12,7 +12,6 @@
     ../modules/thunar.nix
     ../modules/networkmanager.nix
     ../modules/steam.nix
-    ../modules/azure-vpn.nix
     ../modules/avahi.nix
     ../modules/ollama.nix
   ];
@@ -27,11 +26,6 @@
   };
 
   nixpkgs.pkgs = mypkgs;
-
-  programs.azure-vpn = {
-    enable = true;
-    users = [ "matt" ];
-  };
 
   boot.loader = {
     efi.canTouchEfiVariables = true;
