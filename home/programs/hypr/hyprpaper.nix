@@ -6,7 +6,7 @@ _:
       preload = "~/.config/hypr/bg3.jpg";
       wallpaper = [
         {
-          monitor = "DP-1";
+          monitor = "";
           path = "~/.config/hypr/bg3.jpg";
         }
       ];
