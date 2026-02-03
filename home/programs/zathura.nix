@@ -1,6 +1,10 @@
-_: {
+{ pkgs, ... }:
+{
   programs.zathura = {
     enable = true;
+    package = pkgs.zathura.override {
+      plugins = [ pkgs.zathuraPkgs.zathura_pdf_mupdf ];
+    };
     options = {
       # Page display
       pages-per-row = 1;
@@ -10,7 +14,7 @@ _: {
       adjust-open = "best-fit";
       double-click-follow = false;
       advance-pages-per-row = true;
-      
+
       # Optional: nicer defaults
       selection-clipboard = "clipboard";
       statusbar-h-padding = 0;
