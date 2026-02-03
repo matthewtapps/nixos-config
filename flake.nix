@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05"; # Add this
 
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
@@ -114,11 +113,6 @@
             specialArgs = {
               inherit inputs host;
               mypkgs = mkPkgs host.system;
-              pkgs-stable = import inputs.nixpkgs-stable {
-                # Add this
-                system = host.system;
-                config.allowUnfree = true;
-              };
             };
             modules = host.modules ++ [ inputs.stylix.nixosModules.stylix ];
           };
