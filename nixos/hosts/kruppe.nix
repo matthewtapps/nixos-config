@@ -52,7 +52,7 @@
   environment = {
     systemPackages = with pkgs; [
       openssl
-      xfce.thunar
+      thunar
       bun
       gcc
       # Useful tools for monitoring

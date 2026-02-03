@@ -117,7 +117,7 @@
     vscode
     signal-desktop-bin
     spotify-player
-    xfce.thunar
+    thunar
     calibre
     qbittorrent
     inputs.zen-browser.packages.${system}.default

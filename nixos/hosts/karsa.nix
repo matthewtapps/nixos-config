@@ -79,7 +79,7 @@
   environment = {
     systemPackages = with mypkgs; [
       openssl
-      xfce.thunar
+      thunar
       bun
       gcc
     ];
