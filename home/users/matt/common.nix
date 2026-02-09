@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  lib,
   ...
 }:
 {
@@ -157,16 +158,129 @@
       };
     };
 
+    # Create custom desktop entries
+    desktopEntries = {
+      nvim-terminal = {
+        name = "Neovim (Terminal)";
+        genericName = "Text Editor";
+        comment = "Edit text files in Neovim within WezTerm";
+        exec = "wezterm start -- nvim %F";
+        icon = "nvim";
+        terminal = false;
+        categories = [
+          "Utility"
+          "TextEditor"
+          "Development"
+        ];
+        mimeType = [
+          "text/plain"
+          "text/x-shellscript"
+          "application/json"
+          "application/xml"
+          "text/x-python"
+          "text/x-rust"
+          "text/x-c"
+          "text/x-c++"
+          "text/x-lua"
+          "text/markdown"
+          "text/x-yaml"
+          "text/x-toml"
+          "application/x-yaml"
+          "application/toml"
+          "text/x-nix"
+          "application/javascript"
+          "text/x-java"
+          "text/css"
+          "text/x-go"
+          "application/x-shellscript"
+        ];
+      };
+    };
+
     mime.enable = true;
     mimeApps = {
       enable = true;
+
+      associations.removed = {
+        # Remove ALL Calibre applications from document types
+        "application/vnd.oasis.opendocument.text" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/msword" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/vnd.ms-word.document.macroEnabled.12" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/rtf" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/vnd.oasis.opendocument.spreadsheet" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/vnd.ms-excel" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/vnd.oasis.opendocument.presentation" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/vnd.ms-powerpoint" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "application/pdf" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "text/plain" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+        "text/html" = [
+          "calibre-ebook-viewer.desktop"
+          "calibre-ebook-edit.desktop"
+          "calibre-gui.desktop"
+        ];
+      };
 
       associations.added = {
         # Directories
         "inode/directory" = "thunar.desktop";
 
         # PDFs
-        "application/pdf" = "org.pwmt.zathura-cb.desktop";
+        "application/pdf" = "org.pwmt.zathura.desktop";
 
         # Images - feh
         "image/jpeg" = "feh.desktop";
@@ -192,6 +306,34 @@
         "text/x-toml" = "nvim-terminal.desktop";
         "application/x-yaml" = "nvim-terminal.desktop";
         "application/toml" = "nvim-terminal.desktop";
+        "text/x-nix" = "nvim-terminal.desktop";
+        "application/javascript" = "nvim-terminal.desktop";
+        "text/css" = "nvim-terminal.desktop";
+
+        # LibreOffice Writer - Word documents
+        "application/vnd.oasis.opendocument.text" = "libreoffice-writer.desktop";
+        "application/vnd.oasis.opendocument.text-template" = "libreoffice-writer.desktop";
+        "application/msword" = "libreoffice-writer.desktop";
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" =
+          "libreoffice-writer.desktop";
+        "application/vnd.ms-word.document.macroEnabled.12" = "libreoffice-writer.desktop";
+        "application/rtf" = "libreoffice-writer.desktop";
+
+        # LibreOffice Calc - Spreadsheets
+        "application/vnd.oasis.opendocument.spreadsheet" = "libreoffice-calc.desktop";
+        "application/vnd.oasis.opendocument.spreadsheet-template" = "libreoffice-calc.desktop";
+        "application/vnd.ms-excel" = "libreoffice-calc.desktop";
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "libreoffice-calc.desktop";
+        "application/vnd.ms-excel.sheet.macroEnabled.12" = "libreoffice-calc.desktop";
+        "text/csv" = "libreoffice-calc.desktop";
+
+        # LibreOffice Impress - Presentations
+        "application/vnd.oasis.opendocument.presentation" = "libreoffice-impress.desktop";
+        "application/vnd.oasis.opendocument.presentation-template" = "libreoffice-impress.desktop";
+        "application/vnd.ms-powerpoint" = "libreoffice-impress.desktop";
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation" =
+          "libreoffice-impress.desktop";
+        "application/vnd.ms-powerpoint.presentation.macroEnabled.12" = "libreoffice-impress.desktop";
 
         # Browser
         "x-scheme-handler/http" = "zen-beta.desktop";
@@ -211,7 +353,7 @@
         "inode/directory" = "thunar.desktop";
 
         # PDFs
-        "application/pdf" = "org.pwmt.zathura-cb.desktop";
+        "application/pdf" = "org.pwmt.zathura.desktop";
 
         # Images - feh
         "image/jpeg" = "feh.desktop";
@@ -237,6 +379,34 @@
         "text/x-toml" = "nvim-terminal.desktop";
         "application/x-yaml" = "nvim-terminal.desktop";
         "application/toml" = "nvim-terminal.desktop";
+        "text/x-nix" = "nvim-terminal.desktop";
+        "application/javascript" = "nvim-terminal.desktop";
+        "text/css" = "nvim-terminal.desktop";
+
+        # LibreOffice Writer - Word documents
+        "application/vnd.oasis.opendocument.text" = "libreoffice-writer.desktop";
+        "application/vnd.oasis.opendocument.text-template" = "libreoffice-writer.desktop";
+        "application/msword" = "libreoffice-writer.desktop";
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" =
+          "libreoffice-writer.desktop";
+        "application/vnd.ms-word.document.macroEnabled.12" = "libreoffice-writer.desktop";
+        "application/rtf" = "libreoffice-writer.desktop";
+
+        # LibreOffice Calc - Spreadsheets
+        "application/vnd.oasis.opendocument.spreadsheet" = "libreoffice-calc.desktop";
+        "application/vnd.oasis.opendocument.spreadsheet-template" = "libreoffice-calc.desktop";
+        "application/vnd.ms-excel" = "libreoffice-calc.desktop";
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "libreoffice-calc.desktop";
+        "application/vnd.ms-excel.sheet.macroEnabled.12" = "libreoffice-calc.desktop";
+        "text/csv" = "libreoffice-calc.desktop";
+
+        # LibreOffice Impress - Presentations
+        "application/vnd.oasis.opendocument.presentation" = "libreoffice-impress.desktop";
+        "application/vnd.oasis.opendocument.presentation-template" = "libreoffice-impress.desktop";
+        "application/vnd.ms-powerpoint" = "libreoffice-impress.desktop";
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation" =
+          "libreoffice-impress.desktop";
+        "application/vnd.ms-powerpoint.presentation.macroEnabled.12" = "libreoffice-impress.desktop";
 
         # Browser
         "x-scheme-handler/http" = "zen-beta.desktop";
@@ -252,6 +422,11 @@
       };
     };
   };
+
+  home.activation.createCustomDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    $DRY_RUN_CMD mkdir -p $VERBOSE_ARG ${config.home.homeDirectory}/GCS
+    $DRY_RUN_CMD mkdir -p $VERBOSE_ARG ${config.home.homeDirectory}/screenshots
+  '';
 
   imports = [
     ../../programs/zsh/default.nix
