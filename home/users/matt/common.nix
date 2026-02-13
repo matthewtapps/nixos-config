@@ -195,6 +195,20 @@
           "application/x-shellscript"
         ];
       };
+
+      gcs = {
+        name = "GCS";
+        genericName = "Character Sheet Editor";
+        comment = "Generic Character Sheet for GURPS";
+        exec = "gcs --settings /home/matt/GCS/settings.json %F";
+        icon = "gcs";
+        terminal = false;
+        categories = [
+          "Utility"
+          "RolePlaying"
+        ];
+        mimeType = [ "application/x-gcs" ];
+      };
     };
 
     mime.enable = true;
