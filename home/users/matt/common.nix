@@ -139,9 +139,11 @@
     usbutils
     gnumake
 
-    remmina
     runelite
     bolt-launcher
+
+    claude-code
+    tree
   ];
 
   xdg = {
