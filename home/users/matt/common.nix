@@ -112,11 +112,11 @@
     vlc
     slack
     btop
-    neofetch
+    fastfetch
     obsidian
     discord
     vscode
-    signal-desktop-bin
+    signal-desktop
     spotify-player
     thunar
     calibre
