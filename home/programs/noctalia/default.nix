@@ -25,32 +25,32 @@
         clipboardWrapText = true;
         customLaunchPrefix = "";
         customLaunchPrefixEnabled = false;
-        density = "default";
+        density = "compact";
         enableClipPreview = true;
         enableClipboardChips = true;
-        enableClipboardHistory = false;
+        enableClipboardHistory = true;
         enableClipboardSmartIcons = true;
         enableSessionSearch = true;
         enableSettingsSearch = true;
         enableWindowsSearch = true;
         iconMode = "tabler";
         ignoreMouseInput = false;
-        overviewLayer = false;
+        overviewLayer = true;
         pinnedApps = [ ];
         position = "center";
         screenshotAnnotationTool = "";
         showCategories = true;
         showIconBackground = false;
         sortByMostUsed = true;
-        terminalCommand = "alacritty -e";
+        terminalCommand = "wezterm start --";
         viewMode = "list";
       };
 
       audio = {
         mprisBlacklist = [ ];
         preferredPlayer = "spotify";
-        spectrumFrameRate = 30;
-        visualizerType = "linear";
+        spectrumFrameRate = 144;
+        visualizerType = "mirrored";
         volumeFeedback = false;
         volumeFeedbackSoundFile = "";
         volumeOverdrive = false;
@@ -430,6 +430,7 @@
               id = "Volume";
               displayMode = "alwaysShow";
               iconColor = "none";
+              middleClickCommand = "pwvucontrol || pavucontrol";
               textColor = "none";
             }
             {
@@ -461,8 +462,8 @@
         colorizeIcons = false;
         deadOpacity = 0.6;
         displayMode = "auto_hide";
-        dockType = "floating";
-        enabled = true;
+        dockType = "attached";
+        enabled = false;
         floatingRatio = 1;
         groupApps = false;
         groupClickAction = "cycle";
@@ -491,20 +492,20 @@
         allowPanelsOnScreenWithoutBar = true;
         allowPasswordWithFprintd = false;
         animationDisabled = false;
-        animationSpeed = 2;
+        animationSpeed = 1;
         autoStartAuth = true;
         avatarImage = "/home/matt/.config/matt.jpg";
         boxRadiusRatio = 0;
         clockFormat = "hh:mm:ss";
         clockStyle = "custom";
         compactLockScreen = false;
-        dimmerOpacity = 0.2;
+        dimmerOpacity = 0;
         enableBlurBehind = true;
         enableLockScreenCountdown = true;
         enableLockScreenMediaControls = true;
         enableShadows = false;
         forceBlackScreenCorners = false;
-        iRadiusRatio = 0;
+        iRadiusRatio = 0.4;
         keybinds = {
           keyDown = [ "Down" ];
           keyEnter = [
@@ -519,13 +520,13 @@
         };
         language = "";
         lockOnSuspend = true;
-        lockScreenAnimations = false;
+        lockScreenAnimations = true;
         lockScreenBlur = 0;
         lockScreenCountdownDuration = 10000;
         lockScreenMonitors = [ ];
         lockScreenTint = 0;
         passwordChars = false;
-        radiusRatio = 0;
+        radiusRatio = 0.4;
         reverseScroll = false;
         scaleRatio = 1;
         screenRadiusRatio = 0;
@@ -599,7 +600,7 @@
       };
 
       ui = {
-        boxBorderEnabled = false;
+        boxBorderEnabled = true;
         fontDefault = "Geist";
         fontDefaultScale = 1;
         fontFixed = "GeistMono Nerd Font";
@@ -610,7 +611,7 @@
         settingsPanelMode = "attached";
         settingsPanelSideBarCardStyle = false;
         tooltipsEnabled = true;
-        translucentWidgets = false;
+        translucentWidgets = true;
       };
 
       wallpaper = {
@@ -622,7 +623,13 @@
         fillColor = "#000000";
         fillMode = "crop";
         hideWallpaperFilenames = false;
-        monitorDirectories = [ ];
+        monitorDirectories = [
+          {
+            directory = "/home/matt/.config/hypr";
+            name = "DP-1";
+            wallpaper = "";
+          }
+        ];
         overviewBlur = 0.4;
         overviewEnabled = false;
         overviewTint = 0.6;
