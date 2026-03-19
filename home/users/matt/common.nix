@@ -25,6 +25,10 @@
     ".hushlogin".text = "";
   };
 
+  home.file."./.config/matt.jpg" = {
+    source = ./matt.jpeg;
+  };
+
   services.ssh-agent.enable = true;
 
   programs.ssh = {

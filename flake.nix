@@ -31,6 +31,17 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.noctalia-qs.follows = "noctalia-qs";
+    };
+
+    noctalia-qs = {
+      url = "github:noctalia-dev/noctalia-qs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # darwin.inputs.nixpkgs.follows = "nixpkgs";
     # darwin.url = "github:lnl7/nix-darwin/master";
 
@@ -49,6 +60,7 @@
     let
       overlays = [
         inputs.neovim-nightly-overlay.overlays.default
+        inputs.noctalia.overlays.default
         (final: prev: {
           zen-browser = inputs.zen-browser.packages.${final.system}.default;
         })
@@ -140,6 +152,7 @@
                   modules = [
                     file
                     inputs.stylix.homeModules.stylix
+                    inputs.noctalia.homeModules.default
                     {
                       home.homeDirectory = "/home/${username}";
                       home.username = username;
