@@ -12,6 +12,6 @@ _:
     ../../programs/mangohud.nix
     # ../../programs/freecad.nix
     ../../programs/stylix.nix
-    ../../programs/waybar/default.nix
+    ../../programs/quickshell/default.nix
   ];
 }

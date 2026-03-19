@@ -7,6 +7,6 @@ _: {
     ../../programs/wezterm/default.nix
     ../../programs/rofi.nix
     ../../programs/stylix.nix
-    ../../programs/waybar/default.nix
+    ../../programs/quickshell/default.nix
   ];
 }

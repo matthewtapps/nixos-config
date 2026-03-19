@@ -56,7 +56,6 @@
       spotify-player.enable = true;
       xfce.enable = true;
       btop.enable = true;
-      swaync.enable = false;
       waybar.enable = false;
     };
   };

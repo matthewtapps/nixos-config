@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:quickshell.org)",
+      "WebSearch",
+      "Bash(quickshell:*)",
+      "WebFetch(domain:docs.noctalia.dev)"
+    ]
+  }
+}
