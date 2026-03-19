@@ -19,7 +19,6 @@
       settingsVersion = 59;
 
       appLauncher = {
-        enable = true;
         autoPasteClipboard = false;
         clipboardWatchImageCommand = "wl-paste --type image --watch cliphist store";
         clipboardWatchTextCommand = "wl-paste --type text --watch cliphist store";
@@ -49,7 +48,7 @@
 
       audio = {
         mprisBlacklist = [ ];
-        preferredPlayer = "";
+        preferredPlayer = "spotify";
         spectrumFrameRate = 30;
         visualizerType = "linear";
         volumeFeedback = false;
@@ -280,7 +279,7 @@
         batteryWarningThreshold = 20;
         cpuCriticalThreshold = 90;
         cpuWarningThreshold = 80;
-        criticalColor = "";
+        criticalColor = "#e67e80";
         diskAvailCriticalThreshold = 10;
         diskAvailWarningThreshold = 20;
         diskCriticalThreshold = 90;
@@ -295,8 +294,8 @@
         swapWarningThreshold = 80;
         tempCriticalThreshold = 90;
         tempWarningThreshold = 80;
-        useCustomColors = false;
-        warningColor = "";
+        useCustomColors = true;
+        warningColor = "#d699b6";
       };
 
       templates = {
@@ -403,12 +402,18 @@
               useMonospaceFont = true;
               usePadding = false;
             }
+            {
+              id = "AudioVisualizer";
+              colorName = "primary";
+              hideWhenIdle = false;
+              width = 200;
+            }
           ];
           right = [
             {
               id = "Battery";
               deviceNativePath = "__default__";
-              displayMode = "graphic-clean";
+              displayMode = "graphic";
               hideIfIdle = false;
               hideIfNotDetected = true;
               showNoctaliaPerformance = false;
@@ -417,15 +422,14 @@
             {
               id = "Brightness";
               applyToAllMonitors = false;
-              displayMode = "onhover";
+              displayMode = "alwaysHide";
               iconColor = "none";
               textColor = "none";
             }
             {
               id = "Volume";
-              displayMode = "onhover";
+              displayMode = "alwaysShow";
               iconColor = "none";
-              middleClickCommand = "pwvucontrol || pavucontrol";
               textColor = "none";
             }
             {
@@ -439,6 +443,14 @@
               displayMode = "onhover";
               iconColor = "none";
               textColor = "none";
+            }
+            {
+              id = "NotificationHistory";
+              hideWhenZero = false;
+              hideWhenZeroUnread = false;
+              iconColor = "none";
+              showUnreadBadge = true;
+              unreadBadgeColor = "error";
             }
           ];
         };
