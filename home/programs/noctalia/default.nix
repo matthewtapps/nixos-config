@@ -495,7 +495,7 @@
         autoStartAuth = true;
         avatarImage = "/home/matt/.config/matt.jpg";
         boxRadiusRatio = 0;
-        clockFormat = "hh::mm::ss";
+        clockFormat = "hh:mm:ss";
         clockStyle = "custom";
         compactLockScreen = false;
         dimmerOpacity = 0.2;
