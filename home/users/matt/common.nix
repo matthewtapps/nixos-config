@@ -25,9 +25,13 @@
     ".hushlogin".text = "";
   };
 
-  home.file."./.config/matt.jpg" = {
+  home.file.".config/matt.jpg" = {
     source = ./matt.jpeg;
   };
+
+  home.file.".config/lazygit/config.yml".text = ''
+    disableStartupPopups: true
+  '';
 
   services.ssh-agent.enable = true;
 

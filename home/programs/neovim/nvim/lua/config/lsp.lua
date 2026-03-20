@@ -89,8 +89,15 @@ vim.lsp.config("glsl_analyzer", { capabilities = capabilities })
 -- Set up LSP keymaps on attach
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
-		local client = vim.lsp.get_client_by_id(args.data.client_id)
 		local bufnr = args.buf
+
+		-- Don't attach LSP to oil buffers (oil:// URI scheme causes errors)
+		if vim.bo[bufnr].filetype == "oil" then
+			vim.lsp.buf_detach_client(bufnr, args.data.client_id)
+			return
+		end
+
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
 		local opts = { buffer = bufnr }
 
 		-- Disable LSP formatting in favor of conform.nvim if you use it

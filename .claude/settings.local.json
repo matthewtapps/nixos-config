@@ -4,7 +4,8 @@
       "WebFetch(domain:quickshell.org)",
       "WebSearch",
       "Bash(quickshell:*)",
-      "WebFetch(domain:docs.noctalia.dev)"
+      "WebFetch(domain:docs.noctalia.dev)",
+      "Bash(grep:*)"
     ]
   }
 }
