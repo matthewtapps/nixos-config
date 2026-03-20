@@ -62,7 +62,7 @@
         inputs.neovim-nightly-overlay.overlays.default
         inputs.noctalia.overlays.default
         (final: prev: {
-          zen-browser = inputs.zen-browser.packages.${final.system}.default;
+          zen-browser = inputs.zen-browser.packages.${final.stdenv.hostPlatform.system}.default;
         })
       ];
 
