@@ -6,6 +6,27 @@ if ok then
 end
 
 -- Configure individual LSP servers with capabilities
+vim.lsp.config("nixd", {
+	capabilities = capabilities,
+	cmd = { "nixd" },
+	filetypes = { "nix" },
+	root_markers = { "flake.nix", ".git" },
+	settings = {
+		nixd = {
+			nixpkgs = {
+				expr = "import <nixpkgs> { }",
+			},
+			options = {
+				nixos = {
+					expr = "(builtins.getFlake \"/home/matt/nixos-config\").nixosConfigurations."
+						.. vim.fn.hostname()
+						.. ".options",
+				},
+			},
+		},
+	},
+})
+
 vim.lsp.config("lua_ls", {
 	capabilities = capabilities,
 	on_init = function(client)
@@ -27,28 +48,14 @@ vim.lsp.config("lua_ls", {
 	settings = { Lua = {} },
 })
 
-vim.lsp.config("nil_ls", { capabilities = capabilities })
-
-vim.lsp.config("nixd", {
-	capabilities = capabilities,
-	cmd = { "nixd" },
-	settings = {
-		nixd = {
-			nixpkgs = {
-				expr = "import <nixpkgs> { }",
-			},
-			options = {
-				nixos = {
-					expr = '(builtins.getFlake "/home/wout/.nix").nixosConfigurations.framework.options',
-				},
-			},
-		},
-	},
-})
 
 vim.lsp.config("ts_ls", { capabilities = capabilities })
 vim.lsp.config("terraformls", { capabilities = capabilities })
-vim.lsp.config("gopls", { capabilities = capabilities })
+vim.lsp.config("gopls", {
+	capabilities = capabilities,
+	filetypes = { "go", "gomod", "gowork", "gotmpl" },
+	root_markers = { "go.work", "go.mod", ".git" },
+})
 vim.lsp.config("astro", { capabilities = capabilities })
 vim.lsp.config("ruby_lsp", { capabilities = capabilities })
 vim.lsp.config("sqls", { capabilities = capabilities })
@@ -107,6 +114,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 
 		-- Keymaps
+		vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>", { buffer = bufnr, desc = "LSP Info" })
 		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 		vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 		vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
@@ -117,7 +125,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- Enable the LSP servers
 vim.lsp.enable({
 	"lua_ls",
-	"nil_ls",
 	"nixd",
 	"ts_ls",
 	"terraformls",
