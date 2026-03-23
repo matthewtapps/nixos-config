@@ -2,7 +2,7 @@ _: {
   imports = [
     ./common.nix
     ./theme.nix
-    ../../programs/noctalia/default.nix
+    ../../programs/noctalia/mappo.nix
     ../../programs/hypr/default.nix
     ../../programs/lan-mouse.nix
     ../../programs/wezterm/default.nix

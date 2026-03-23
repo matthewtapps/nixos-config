@@ -1,3 +1,4 @@
+{ spectrumFrameRate, enableDgpuMonitoring }:
 { lib, ... }:
 {
   # Disable swaync — noctalia handles notifications natively
@@ -49,7 +50,7 @@
       audio = {
         mprisBlacklist = [ ];
         preferredPlayer = "spotify";
-        spectrumFrameRate = 144;
+        spectrumFrameRate = spectrumFrameRate;
         visualizerType = "mirrored";
         volumeFeedback = false;
         volumeFeedbackSoundFile = "";
@@ -284,7 +285,7 @@
         diskAvailWarningThreshold = 20;
         diskCriticalThreshold = 90;
         diskWarningThreshold = 80;
-        enableDgpuMonitoring = true;
+        enableDgpuMonitoring = enableDgpuMonitoring;
         externalMonitor = "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor";
         gpuCriticalThreshold = 90;
         gpuWarningThreshold = 80;

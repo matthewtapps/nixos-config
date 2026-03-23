@@ -87,7 +87,7 @@
     settings = {
       battery = {
         governor = "schedutil";
-        turbo = "auto";
+        turbo = "never";
       };
       charger = {
         governor = "performance";
@@ -96,9 +96,8 @@
     };
   };
 
-  services.thermald.enable = true;
   boot.kernelParams = [
-    "amd_pstate=guided"
+    "amd_pstate=active"
     "acpi_backlight=native"
   ];
   powerManagement.enable = true;
