@@ -67,6 +67,7 @@
       thunar
       bun
       gcc
+      powertop
     ];
   };
 
@@ -87,7 +88,7 @@
     settings = {
       battery = {
         governor = "schedutil";
-        turbo = "never";
+        turbo = "auto";
       };
       charger = {
         governor = "performance";
