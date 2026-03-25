@@ -61,7 +61,7 @@
 
   # Right prompt segments.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
-    command_execution_time  # previous command duration
+    cmd_time                # previous command duration (custom: µs/ms/s)
     # virtualenv              # python virtual environment
     # context                 # user@host
     # time                      # current time
@@ -112,9 +112,8 @@
   typeset -g POWERLEVEL9K_NIX_SHELL_CONTENT_EXPANSION=
   typeset -g POWERLEVEL9K_NIX_SHELL_VISUAL_IDENTIFIER_EXPANSION="󱄅"
 
-  # Show previous command duration only if it's >= 5s.
+  # (command_execution_time segment unused — custom cmd_time segment used instead)
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=5
-  # Don't show fractional seconds. Thus, 7s rather than 7.3s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=0
   # Duration format: 1d 2h 3m 4s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FORMAT='d h m s'
