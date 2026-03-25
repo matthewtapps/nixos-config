@@ -406,7 +406,7 @@
             {
               id = "AudioVisualizer";
               colorName = "primary";
-              hideWhenIdle = false;
+              hideWhenIdle = true;
               width = 200;
             }
           ];
@@ -501,7 +501,7 @@
         clockStyle = "custom";
         compactLockScreen = false;
         dimmerOpacity = 0;
-        enableBlurBehind = true;
+        enableBlurBehind = false;
         enableLockScreenCountdown = true;
         enableLockScreenMediaControls = true;
         enableShadows = false;

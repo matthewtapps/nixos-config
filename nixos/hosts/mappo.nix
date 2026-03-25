@@ -82,27 +82,13 @@
     HandleLidSwitchDocked = "ignore";
   };
 
-  # Control cpu throttling and temps
-  services.auto-cpufreq = {
-    enable = true;
-    settings = {
-      battery = {
-        governor = "schedutil";
-        turbo = "auto";
-      };
-      charger = {
-        governor = "performance";
-        turbo = "auto";
-      };
-    };
-  };
+  services.power-profiles-daemon.enable = true;
 
   boot.kernelParams = [
     "amd_pstate=active"
     "acpi_backlight=native"
   ];
   powerManagement.enable = true;
-  powerManagement.cpuFreqGovernor = "schedutil";
 
   # Battery power profiles
   services.upower = {

@@ -1,1 +1,1 @@
-import ./default.nix { spectrumFrameRate = 30; enableDgpuMonitoring = false; }
+import ./default.nix { spectrumFrameRate = 15; enableDgpuMonitoring = false; }
