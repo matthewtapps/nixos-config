@@ -90,6 +90,10 @@
     "amd_pstate=active"
     "acpi_backlight=native"
   ];
+
+  # NFC chip declared in ACPI but not physically present (or broken) — driver
+  # spins in an interrupt loop causing ~80% load on one core at boot.
+  boot.blacklistedKernelModules = [ "nxp-nci" "nxp-nci-i2c" ];
   powerManagement.enable = true;
 
   # Battery power profiles
