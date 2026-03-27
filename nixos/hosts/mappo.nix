@@ -27,6 +27,7 @@
     grub.enable = true;
     grub.device = "nodev";
     grub.efiSupport = true;
+    grub.memtest86.enable = true;
   };
 
   networking = {
@@ -83,6 +84,7 @@
   };
 
   services.power-profiles-daemon.enable = true;
+  hardware.rasdaemon.enable = true;
 
   boot.kernelParams = [
     "amd_pstate=active"
