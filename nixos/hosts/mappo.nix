@@ -95,6 +95,7 @@
   # spins in an interrupt loop causing ~80% load on one core at boot.
   boot.blacklistedKernelModules = [ "nxp-nci" "nxp-nci-i2c" ];
   powerManagement.enable = true;
+  powerManagement.powertop.enable = true;
 
   # Battery power profiles
   services.upower = {
