@@ -61,10 +61,17 @@
 
   # Right prompt segments.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+    status                  # exit code on failure only
+    background_jobs         # suspended job count
+    node_ver                # node.js version + update indicator (custom)
+    python_ver              # python version + update indicator (custom)
+    rust_ver                # rust version + update indicator (custom)
+    go_ver                  # go version + update indicator (custom)
+    aws                     # AWS profile (when typing aws/terraform commands)
+    terraform               # terraform workspace (when typing terraform commands)
+    gcloud_account          # GCloud project (when typing gcloud commands)
     cmd_time                # previous command duration (custom: µs/ms/s)
-    # virtualenv              # python virtual environment
-    # context                 # user@host
-    # time                      # current time
+    time                    # current time HH:MM:SS
   )
 
   # Basic style options that define the overall prompt look.
@@ -160,6 +167,34 @@
   # commands will contain the start times of their commands rather than the end times of
   # their preceding commands.
   typeset -g POWERLEVEL9K_TIME_UPDATE_ON_COMMAND=false
+
+  # Exit status — numeric code shown only on failure.
+  typeset -g POWERLEVEL9K_STATUS_OK=false
+  typeset -g POWERLEVEL9K_STATUS_ERROR_FOREGROUND=$red
+  typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL=true
+  typeset -g POWERLEVEL9K_STATUS_VERBOSE_SIGNAME=false
+
+  # Background jobs — shows count when processes are suspended.
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE=true
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND=$orange
+
+  # Language version segments are custom (defined in zsh.conf): node_ver, python_ver, rust_ver, go_ver.
+  # They walk up the directory tree to detect projects and append ↑ when a newer version is cached.
+
+  # AWS — only shown when typing aws/terraform/pulumi commands.
+  typeset -g POWERLEVEL9K_AWS_FOREGROUND=$yellow
+  typeset -g POWERLEVEL9K_AWS_SHOW_ON_COMMAND='aws|awless|terraform|tofu|pulumi|terragrunt'
+  typeset -g POWERLEVEL9K_AWS_VISUAL_IDENTIFIER_EXPANSION='󰸏'
+
+  # Terraform — only shown when typing terraform commands.
+  typeset -g POWERLEVEL9K_TERRAFORM_FOREGROUND=$magenta
+  typeset -g POWERLEVEL9K_TERRAFORM_SHOW_ON_COMMAND='terraform|tofu|terragrunt'
+  typeset -g POWERLEVEL9K_TERRAFORM_VISUAL_IDENTIFIER_EXPANSION='󱁢'
+
+  # Google Cloud — only shown when typing gcloud/gsutil/bq commands.
+  typeset -g POWERLEVEL9K_GCLOUD_ACCOUNT_FOREGROUND=$blue
+  typeset -g POWERLEVEL9K_GCLOUD_ACCOUNT_SHOW_ON_COMMAND='gcloud|gsutil|bq'
+  typeset -g POWERLEVEL9K_GCLOUD_ACCOUNT_VISUAL_IDENTIFIER_EXPANSION='󱇶'
 
   # Transient prompt works similarly to the builtin transient_rprompt option. It trims down prompt
   # when accepting a command line. Supported values:

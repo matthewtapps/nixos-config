@@ -4,6 +4,7 @@
   ...
 }:
 {
+  imports = [ ./version-check.nix ];
   # home.file.".zshrc" = {
   #   source = ./.zshrc;
   # };

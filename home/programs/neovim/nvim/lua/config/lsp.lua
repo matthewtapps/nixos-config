@@ -27,6 +27,58 @@ vim.lsp.config("nixd", {
 	},
 })
 
+-- Auto-generate .nixd.json so nixd uses the project's pinned nixpkgs.
+-- We read flake.lock and build a locked github:owner/repo/rev reference,
+-- which nixd can evaluate in pure mode (unlike a raw local path).
+-- The file is regenerated whenever the lock changes (e.g. after nix flake update).
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "nix",
+	callback = function(ev)
+		local root = vim.fs.root(ev.buf, "flake.nix")
+		if not root then return end
+
+		-- Parse flake.lock to get the pinned nixpkgs commit
+		local nixpkgs_expr = "import <nixpkgs> { }"
+		local lf = io.open(root .. "/flake.lock", "r")
+		if lf then
+			local ok, lock = pcall(vim.json.decode, lf:read("*a"))
+			lf:close()
+			-- Follow root → nixpkgs node → locked attrs
+			local inputs = ok and lock.nodes and lock.nodes.root and lock.nodes.root.inputs
+			local node_name = inputs and inputs.nixpkgs
+			local locked = node_name and lock.nodes[node_name] and lock.nodes[node_name].locked
+			if locked and locked.type == "github" and locked.rev then
+				nixpkgs_expr = ('import (builtins.getFlake "github:%s/%s/%s") { }')
+					:format(locked.owner, locked.repo, locked.rev)
+			end
+		end
+
+		local config = vim.json.encode({
+			nixpkgs = { expr = nixpkgs_expr },
+			options = {
+				nixos = {
+					expr = "(builtins.getFlake \"/home/matt/nixos-config\").nixosConfigurations."
+						.. vim.fn.hostname() .. ".options",
+				},
+			},
+		})
+
+		-- Only write + restart nixd if content differs (avoids churn on every file open)
+		local nixd_path = root .. "/.nixd.json"
+		local existing = ""
+		local ef = io.open(nixd_path, "r")
+		if ef then existing = ef:read("*a"); ef:close() end
+		if existing ~= config then
+			local wf = io.open(nixd_path, "w")
+			if wf then
+				wf:write(config)
+				wf:close()
+				vim.schedule(function() vim.cmd("LspRestart nixd") end)
+			end
+		end
+	end,
+})
+
 vim.lsp.config("lua_ls", {
 	capabilities = capabilities,
 	on_init = function(client)
