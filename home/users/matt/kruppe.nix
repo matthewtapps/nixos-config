@@ -6,6 +6,6 @@ _: {
     ../../programs/lan-mouse.nix
     ../../programs/wezterm/default.nix
     ../../programs/stylix.nix
-    ../../programs/noctalia/default.nix
+    ../../programs/noctalia/karsa.nix
   ];
 }

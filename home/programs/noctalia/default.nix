@@ -1,4 +1,4 @@
-{ spectrumFrameRate, enableDgpuMonitoring }:
+{ spectrumFrameRate, enableDgpuMonitoring, idleConfig ? {} }:
 { lib, ... }:
 {
   # Disable swaync — noctalia handles notifications natively
@@ -172,7 +172,7 @@
         screenOffTimeout = 600;
         suspendCommand = "";
         suspendTimeout = 1800;
-      };
+      } // idleConfig;
 
       network = {
         airplaneModeEnabled = false;

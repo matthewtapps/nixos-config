@@ -111,7 +111,7 @@
   # Fingerprint reader
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = false;
-  security.pam.services.hyprlock.fprintAuth = true;
+  security.pam.services.noctalia.fprintAuth = true;
 
   swapDevices = [
     {
