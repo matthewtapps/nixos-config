@@ -114,6 +114,28 @@
             inputs.sops-nix.nixosModules.sops
           ];
         }
+        {
+          name = "tehol";
+          system = "x86_64-linux";
+          device = "tehol";
+          users = {
+            matt = ./home/users/matt/tehol.nix;
+          };
+          modules = [
+            ./nixos/hosts/tehol.nix
+          ];
+        }
+        {
+          name = "samar";
+          system = "x86_64-linux";
+          device = "samar";
+          users = {
+            matt = ./home/users/matt/samar.nix;
+          };
+          modules = [
+            ./nixos/hosts/samar.nix
+          ];
+        }
       ];
     in
     {

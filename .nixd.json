@@ -1,0 +1,1 @@
+{"nixpkgs":{"expr":"import (builtins.getFlake \"github:nixos/nixpkgs/cda48547b432e8d3b18b4180ba07473762ec8558\") { }"},"options":{"nixos":{"expr":"(builtins.getFlake \"/home/matt/nixos-config\").nixosConfigurations.tehol.options"}}}
