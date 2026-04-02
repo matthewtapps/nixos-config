@@ -8,15 +8,17 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-label/NIXROOT";
+    { device = "/dev/mapper/cryptroot";
       fsType = "ext4";
     };
+
+  boot.initrd.luks.devices."cryptroot".device = "/dev/disk/by-uuid/e8c22a19-1011-499d-bfe2-834953a988ab";
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-label/NIXBOOT";
@@ -24,7 +26,7 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  swapDevices = [ ];
+  swapDevices = [{device = "/.swapfile"; size = 10000;} ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

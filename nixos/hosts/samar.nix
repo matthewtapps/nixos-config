@@ -14,13 +14,15 @@
 
   nixpkgs.pkgs = mypkgs;
 
-  boot.loader = {
-    efi.canTouchEfiVariables = true;
-    grub = {
-      enable = true;
-      devices = [ "nodev" ];
-      efiSupport = true;
-      useOSProber = true;
+  boot = {
+    loader = {
+      efi.canTouchEfiVariables = true;
+      grub = {
+        enable = true;
+        devices = [ "nodev" ];
+        efiSupport = true;
+        enableCryptodisk = true;
+      };
     };
   };
 
