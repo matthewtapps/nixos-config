@@ -6,6 +6,6 @@ _:
     ../../programs/hypr/default.nix
     ../../programs/wezterm/default.nix
     ../../programs/stylix.nix
-    ../../programs/noctalia/tehol.nix
+    ../../programs/noctalia/samar.nix
   ];
 }

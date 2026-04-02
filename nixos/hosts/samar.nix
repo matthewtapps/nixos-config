@@ -25,7 +25,7 @@
   };
 
   networking = {
-    hostName = "tehol";
+    hostName = "samar";
   };
 
   nix.settings.trusted-users = [
