@@ -13,6 +13,7 @@
     ../modules/steam.nix
     # ../modules/azure-vpn.nix
     ../modules/avahi.nix
+    ../modules/laptop.nix
   ];
 
   # programs.azure-vpn = {
@@ -68,23 +69,12 @@
       thunar
       bun
       gcc
-      powertop
     ];
   };
 
   hardware = {
     bluetooth.enable = true;
   };
-
-  # Laptop lid
-  services.logind.settings.Login = {
-    HandleLidSwitch = "ignore";
-    HandleLidSwitchExternalPower = "ignore";
-    HandleLidSwitchDocked = "ignore";
-  };
-
-  services.power-profiles-daemon.enable = true;
-  hardware.rasdaemon.enable = true;
 
   boot.kernelParams = [
     "amd_pstate=active"
@@ -94,24 +84,7 @@
   # NFC chip declared in ACPI but not physically present (or broken) — driver
   # spins in an interrupt loop causing ~80% load on one core at boot.
   boot.blacklistedKernelModules = [ "nxp-nci" "nxp-nci-i2c" ];
-  powerManagement.enable = true;
-  powerManagement.powertop.enable = true;
-
-  # Battery power profiles
-  services.upower = {
-    enable = true;
-    ignoreLid = true;
-  };
-
-  services.devmon.enable = true;
-  services.udisks2.enable = true;
-
   hardware.sensor.iio.enable = false;
-
-  # Fingerprint reader
-  services.fprintd.enable = true;
-  security.pam.services.login.fprintAuth = false;
-  security.pam.services.noctalia.fprintAuth = true;
 
   swapDevices = [
     {

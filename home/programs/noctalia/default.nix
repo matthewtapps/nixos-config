@@ -16,6 +16,23 @@
   programs.noctalia-shell = {
     enable = true;
 
+    plugins = {
+      sources = [
+        {
+          enabled = true;
+          name = "Official Noctalia Plugins";
+          url = "https://github.com/noctalia-dev/noctalia-plugins";
+        }
+      ];
+      states = {
+        network-manager-vpn = {
+          enabled = true;
+          sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+        };
+      };
+      version = 2;
+    };
+
     settings = {
       settingsVersion = 59;
 
@@ -436,6 +453,12 @@
             }
             {
               id = "Network";
+              displayMode = "onhover";
+              iconColor = "none";
+              textColor = "none";
+            }
+            {
+              id = "network-manager-vpn";
               displayMode = "onhover";
               iconColor = "none";
               textColor = "none";

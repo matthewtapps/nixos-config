@@ -10,6 +10,8 @@
     ../modules/audio.nix
     ../modules/thunar.nix
     ../modules/networkmanager.nix
+    ../modules/wireguard.nix
+    ../modules/laptop.nix
   ];
 
   nixpkgs.pkgs = mypkgs;
@@ -64,6 +66,13 @@
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="on"
   '';
+
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 8 * 1024;
+    }
+  ];
 
   # Don't delete
   system.stateVersion = "24.05";
