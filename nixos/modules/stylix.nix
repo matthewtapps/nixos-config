@@ -12,7 +12,7 @@
     cursor = {
       package = pkgs.simp1e-cursors;
       name = "Simp1e Cursors";
-      size = 16;
+      size = 22;
     };
 
     # Fonts configuration

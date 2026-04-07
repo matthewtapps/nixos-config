@@ -30,6 +30,8 @@
     hostName = "tehol";
   };
 
+  networking.firewall.allowedTCPPorts = [ 9090 ];
+
   nix.settings.trusted-users = [
     "matt"
     "root"

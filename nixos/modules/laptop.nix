@@ -24,6 +24,8 @@
   # Fingerprint reader
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = false;
+  security.pam.services.greetd.fprintAuth = true;
+  security.pam.services.sudo.fprintAuth = true;
   security.pam.services.noctalia.fprintAuth = true;
 
   environment.systemPackages = with pkgs; [ powertop ];
