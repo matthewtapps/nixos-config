@@ -1,6 +1,7 @@
 _: {
   imports = [
     ./common.nix
+    ./common-personal.nix
     ./theme.nix
     ../../programs/hypr/default.nix
     ../../programs/lan-mouse.nix

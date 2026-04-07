@@ -458,10 +458,12 @@
               textColor = "none";
             }
             {
-              id = "network-manager-vpn";
-              displayMode = "onhover";
-              iconColor = "none";
-              textColor = "none";
+              id = "plugin:network-manager-vpn";
+              defaultSettings = {
+                connectedColor = "primary";
+                disconnectedColor = "none";
+                displayMode = "onhover";
+              };
             }
             {
               id = "Bluetooth";

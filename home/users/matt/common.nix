@@ -109,26 +109,17 @@
     xdg-desktop-portal-hyprland
     iproute2
     lm_sensors
-    gimp
     feh
 
-    # Gurps
-    gcs
-
     libreoffice
-    spotify
     vlc
-    slack
     btop
     fastfetch
     obsidian
-    discord
     vscode
     signal-desktop
     spotify-player
     thunar
-    calibre
-    qbittorrent
     inputs.zen-browser.packages.${system}.default
     brightnessctl
     dart-sass
@@ -146,12 +137,12 @@
     libqalculate
     usbutils
     gnumake
-
-    runelite
-    bolt-launcher
+    jq
 
     claude-code
     tree
+    thunderbird
+    aerc
   ];
 
   xdg = {
@@ -206,20 +197,7 @@
         ];
       };
 
-      gcs = {
-        name = "GCS";
-        genericName = "Character Sheet Editor";
-        comment = "Generic Character Sheet for GURPS";
-        exec = "gcs --settings /home/matt/GCS/settings.json %F";
-        icon = "gcs";
-        terminal = false;
-        categories = [
-          "Utility"
-          "RolePlaying"
-        ];
-        mimeType = [ "application/x-gcs" ];
-      };
-    };
+};
 
     mime.enable = true;
     mimeApps = {
@@ -448,7 +426,6 @@
   };
 
   home.activation.createCustomDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    $DRY_RUN_CMD mkdir -p $VERBOSE_ARG ${config.home.homeDirectory}/GCS
     $DRY_RUN_CMD mkdir -p $VERBOSE_ARG ${config.home.homeDirectory}/screenshots
   '';
 

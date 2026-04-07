@@ -17,6 +17,7 @@
       chezmoi
       curl
       lazygit
+      lazydocker
       bash
       rbw
       pinentry-curses
