@@ -1,5 +1,7 @@
-_:
+{ pkgs, ... }:
 {
+  home.packages = [ pkgs.teams-for-linux ];
+
   imports = [
     ./common.nix
     ./theme.nix
