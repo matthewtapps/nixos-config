@@ -25,7 +25,15 @@
         }
       ];
       states = {
+        latency-monitor = {
+          enabled = true;
+          sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+        };
         network-manager-vpn = {
+          enabled = true;
+          sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+        };
+        privacy-indicator = {
           enabled = true;
           sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
         };
@@ -366,6 +374,9 @@
               tooltipFormat = "HH:mm:ss ddd, MMM dd";
               useCustomFont = false;
             }
+            {
+              id = "plugin:privacy-indicator";
+            }
           ];
           left = [
             {
@@ -458,12 +469,7 @@
               textColor = "none";
             }
             {
-              id = "plugin:network-manager-vpn";
-              defaultSettings = {
-                connectedColor = "primary";
-                disconnectedColor = "none";
-                displayMode = "onhover";
-              };
+              id = "plugin:latency-monitor";
             }
             {
               id = "Bluetooth";
@@ -478,6 +484,14 @@
               iconColor = "none";
               showUnreadBadge = true;
               unreadBadgeColor = "error";
+            }
+            {
+              id = "plugin:network-manager-vpn";
+              defaultSettings = {
+                connectedColor = "primary";
+                disconnectedColor = "none";
+                displayMode = "onhover";
+              };
             }
           ];
         };
