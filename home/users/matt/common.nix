@@ -116,7 +116,6 @@
     btop
     fastfetch
     obsidian
-    vscode
     signal-desktop
     spotify-player
     thunar
@@ -141,8 +140,6 @@
 
     claude-code
     tree
-    thunderbird
-    aerc
   ];
 
   xdg = {
@@ -435,5 +432,10 @@
     ../../programs/git.nix
     ../../programs/direnv.nix
     ../../programs/zathura.nix
+    ./theme.nix
+    ../../programs/hypr/default.nix
+    ../../programs/noctalia/default.nix
+    ../../programs/wezterm/default.nix
+    ../../programs/stylix.nix
   ];
 }

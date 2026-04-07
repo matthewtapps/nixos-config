@@ -45,7 +45,7 @@ return {
 					{ icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
 					{ icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.picker.grep()" },
 					{ icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.picker.recent()" },
-					{ icon = " ", key = "s", desc = "Restore Session", action = ":Persisted load" },
+					{ icon = " ", key = "s", desc = "Restore Session", action = function() require("persisted").load() end },
 					{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
 				},
 			},
