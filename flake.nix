@@ -64,6 +64,10 @@
         (final: prev: {
           zen-browser = inputs.zen-browser.packages.${final.stdenv.hostPlatform.system}.default;
         })
+        # Ruby sass gem is broken (no bin/); replace with dart-sass for stylix gnome shell theme
+        (final: prev: {
+          sass = final.dart-sass;
+        })
       ];
 
       config = {
