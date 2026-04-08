@@ -77,7 +77,8 @@
       mkPkgs =
         system:
         import nixpkgs {
-          inherit system config overlays;
+          localSystem = system;
+          inherit config overlays;
         };
 
       hosts = [
@@ -147,12 +148,14 @@
         map (host: {
           name = host.name;
           value = nixpkgs.lib.nixosSystem {
-            system = host.system;
             specialArgs = {
               inherit inputs host;
               mypkgs = mkPkgs host.system;
             };
-            modules = host.modules ++ [ inputs.stylix.nixosModules.stylix ];
+            modules = host.modules ++ [
+              inputs.stylix.nixosModules.stylix
+              { nixpkgs.hostPlatform = host.system; }
+            ];
           };
 
         }) hosts
