@@ -11,7 +11,9 @@
   home.stateVersion = "24.05";
 
   home.activation.report-changes = config.lib.dag.entryAnywhere ''
-    ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff $oldGenPath $newGenPath
+    if [ -n "''${oldGenPath-}" ]; then
+      ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff $oldGenPath $newGenPath
+    fi
   '';
 
   home.username = "matt";
@@ -119,10 +121,10 @@
     signal-desktop
     spotify-player
     thunar
-    inputs.zen-browser.packages.${system}.default
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     brightnessctl
     dart-sass
-    inputs.matugen.packages.${system}.default
+    inputs.matugen.packages.${pkgs.stdenv.hostPlatform.system}.default
     fd
     dconf
     hyprlock
