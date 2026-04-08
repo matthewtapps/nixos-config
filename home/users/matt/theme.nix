@@ -7,6 +7,7 @@
       package = pkgs.papirus-icon-theme;
       name = "Papirus-Dark";
     };
+    gtk4.theme = null;
     gtk3 = {
       bookmarks = [
         "file:///home/matt/documents Documents"

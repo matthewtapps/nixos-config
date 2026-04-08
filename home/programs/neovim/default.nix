@@ -8,6 +8,8 @@
     viAlias = true;
     coc.enable = false;
     withNodeJs = true;
+    withRuby = false;
+    withPython3 = false;
     extraLuaPackages = ps: [
       ps.lua
       ps.luarocks-nix

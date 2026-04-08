@@ -26,12 +26,74 @@ let
     lockTimeout = 600;
   };
 
+  barRightWidgets = [
+    {
+      id = "Battery";
+      deviceNativePath = "__default__";
+      displayMode = "graphic";
+      hideIfIdle = false;
+      hideIfNotDetected = true;
+      showNoctaliaPerformance = false;
+      showPowerProfiles = true;
+    }
+    {
+      id = "Brightness";
+      applyToAllMonitors = false;
+      displayMode = "alwaysHide";
+      iconColor = "none";
+      textColor = "none";
+    }
+    {
+      id = "Volume";
+      displayMode = "alwaysShow";
+      iconColor = "none";
+      middleClickCommand = "pwvucontrol || pavucontrol";
+      textColor = "none";
+    }
+    {
+      id = "Network";
+      displayMode = "onhover";
+      iconColor = "none";
+      textColor = "none";
+    }
+    {
+      id = "plugin:latency-monitor";
+    }
+    {
+      id = "Bluetooth";
+      displayMode = "onhover";
+      iconColor = "none";
+      textColor = "none";
+    }
+    {
+      id = "NotificationHistory";
+      hideWhenZero = false;
+      hideWhenZeroUnread = false;
+      iconColor = "none";
+      showUnreadBadge = true;
+      unreadBadgeColor = "error";
+    }
+  ];
+
+  vpnWidget = {
+    id = "plugin:network-manager-vpn";
+    defaultSettings = {
+      connectedColor = "primary";
+      disconnectedColor = "none";
+      displayMode = "onhover";
+    };
+  };
+
+  withVpn = overrides: overrides // {
+    bar.widgets.right = barRightWidgets ++ [ vpnWidget ];
+  };
+
   deviceOverrides = {
     karsa  = { audio.spectrumFrameRate = 144; systemMonitor.enableDgpuMonitoring = true;  idle = desktopIdleOverrides; };
     kruppe = { audio.spectrumFrameRate = 144; systemMonitor.enableDgpuMonitoring = true;  idle = desktopIdleOverrides; };
     mappo  = { audio.spectrumFrameRate = 15;  systemMonitor.enableDgpuMonitoring = false; idle = laptopIdleOverrides; };
-    samar  = { audio.spectrumFrameRate = 144; systemMonitor.enableDgpuMonitoring = true;  idle = desktopIdleOverrides; };
-    tehol  = { audio.spectrumFrameRate = 15;  systemMonitor.enableDgpuMonitoring = false; idle = laptopIdleOverrides; };
+    samar  = withVpn { audio.spectrumFrameRate = 144; systemMonitor.enableDgpuMonitoring = true;  idle = desktopIdleOverrides; };
+    tehol  = withVpn { audio.spectrumFrameRate = 15;  systemMonitor.enableDgpuMonitoring = false; idle = laptopIdleOverrides; };
   };
 
   settings = lib.recursiveUpdate defaultSettings (deviceOverrides.${device} or {});
@@ -71,6 +133,7 @@ let
       mprisBlacklist = [ ];
       preferredPlayer = "spotify";
       spectrumFrameRate = 60;
+      spectrumMirrored = true;
       visualizerType = "mirrored";
       volumeFeedback = false;
       volumeFeedbackSoundFile = "";
@@ -110,6 +173,7 @@ let
       monitorForColors = "";
       predefinedScheme = "Noctalia (default)";
       schedulingMode = "off";
+      syncGsettings = true;
       useWallpaperColors = false;
     };
 
@@ -195,7 +259,6 @@ let
     };
 
     network = {
-      airplaneModeEnabled = false;
       bluetoothAutoConnect = true;
       bluetoothDetailsViewMode = "grid";
       bluetoothHideUnnamedDevices = false;
@@ -204,7 +267,6 @@ let
       disableDiscoverability = false;
       networkPanelView = "wifi";
       wifiDetailsViewMode = "grid";
-      wifiEnabled = true;
     };
 
     nightLight = {
@@ -333,7 +395,6 @@ let
       density = "default";
       displayMode = "always_visible";
       enableExclusionZoneInset = true;
-      floating = false;
       fontScale = 1.3;
       frameRadius = 0;
       frameThickness = 8;
@@ -378,6 +439,7 @@ let
             id = "ControlCenter";
             colorizeDistroLogo = true;
             colorizeSystemIcon = "none";
+            colorizeSystemText = "none";
             customIconPath = "";
             enableColorization = false;
             icon = "nixos";
@@ -433,62 +495,7 @@ let
             width = 200;
           }
         ];
-        right = [
-          {
-            id = "Battery";
-            deviceNativePath = "__default__";
-            displayMode = "graphic";
-            hideIfIdle = false;
-            hideIfNotDetected = true;
-            showNoctaliaPerformance = false;
-            showPowerProfiles = true;
-          }
-          {
-            id = "Brightness";
-            applyToAllMonitors = false;
-            displayMode = "alwaysHide";
-            iconColor = "none";
-            textColor = "none";
-          }
-          {
-            id = "Volume";
-            displayMode = "alwaysShow";
-            iconColor = "none";
-            middleClickCommand = "pwvucontrol || pavucontrol";
-            textColor = "none";
-          }
-          {
-            id = "Network";
-            displayMode = "onhover";
-            iconColor = "none";
-            textColor = "none";
-          }
-          {
-            id = "plugin:latency-monitor";
-          }
-          {
-            id = "Bluetooth";
-            displayMode = "onhover";
-            iconColor = "none";
-            textColor = "none";
-          }
-          {
-            id = "NotificationHistory";
-            hideWhenZero = false;
-            hideWhenZeroUnread = false;
-            iconColor = "none";
-            showUnreadBadge = true;
-            unreadBadgeColor = "error";
-          }
-          {
-            id = "plugin:network-manager-vpn";
-            defaultSettings = {
-              connectedColor = "primary";
-              disconnectedColor = "none";
-              displayMode = "onhover";
-            };
-          }
-        ];
+        right = barRightWidgets;
       };
     };
 
@@ -572,11 +579,13 @@ let
       showHibernateOnLockScreen = false;
       showScreenCorners = false;
       showSessionButtonsOnLockScreen = true;
+      smoothScrollEnabled = true;
       telemetryEnabled = false;
     };
 
     location = {
       analogClockInCalendar = false;
+      autoLocate = false;
       firstDayOfWeek = -1;
       hideWeatherCityName = false;
       hideWeatherTimezone = false;
@@ -587,6 +596,7 @@ let
       use12hourFormat = false;
       useFahrenheit = false;
       weatherEnabled = true;
+      weatherTaliaMascotAlways = false;
       weatherShowEffects = true;
     };
 
@@ -658,6 +668,7 @@ let
       fillColor = "#000000";
       fillMode = "crop";
       hideWallpaperFilenames = false;
+      linkLightAndDarkWallpapers = true;
       monitorDirectories = [
         {
           directory = "/home/matt/.config/hypr";
@@ -685,6 +696,7 @@ let
         "pixelate"
         "honeycomb"
       ];
+      useOriginalImages = false;
       useSolidColor = false;
       useWallhaven = false;
       viewMode = "single";
