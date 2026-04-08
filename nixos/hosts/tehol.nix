@@ -30,21 +30,6 @@
     hostName = "tehol";
   };
 
-  # services.resolved = {
-  #   enable = true;
-  #   settings.Resolve = {
-  #     DNS = [
-  #       "1.1.1.1"
-  #       "8.8.8.8"
-  #     ];
-  #     Domains = [ "~." ];
-  #     FallbackDNS = [
-  #       "1.1.1.1"
-  #       "8.8.8.8"
-  #     ];
-  #   };
-  # };
-  #
   networking.firewall.allowedTCPPorts = [ 9090 ];
 
   nix.settings.trusted-users = [
