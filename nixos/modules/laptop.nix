@@ -21,6 +21,8 @@
 
   hardware.rasdaemon.enable = true;
 
+  services.fwupd.enable = true;
+
   # Fingerprint reader
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = false;
