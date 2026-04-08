@@ -29,9 +29,9 @@
     source = ./matt.jpeg;
   };
 
-  home.file.".config/lazygit/config.yml".text = ''
-    disableStartupPopups: true
-  '';
+  home.file.".config/lazygit/config.yml" = {
+    source = ./lazygit.yml;
+  };
 
   services.ssh-agent.enable = true;
 
@@ -137,6 +137,7 @@
     usbutils
     gnumake
     jq
+    wirelesstools
 
     claude-code
     tree
