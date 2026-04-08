@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   powerManagement.enable = true;
-  powerManagement.powertop.enable = true;
+  powerManagement.powertop.enable = false;
 
   services.power-profiles-daemon.enable = true;
 
@@ -28,5 +28,5 @@
   security.pam.services.sudo.fprintAuth = true;
   security.pam.services.noctalia.fprintAuth = true;
 
-  environment.systemPackages = with pkgs; [ powertop ];
+  environment.systemPackages = with pkgs; [ ];
 }

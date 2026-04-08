@@ -441,7 +441,7 @@ let
             hideIfIdle = false;
             hideIfNotDetected = true;
             showNoctaliaPerformance = false;
-            showPowerProfiles = false;
+            showPowerProfiles = true;
           }
           {
             id = "Brightness";
