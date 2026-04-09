@@ -9,5 +9,6 @@
     thunderbird
     aerc
     teams-for-linux
+    github-copilot-cli
   ];
 }
