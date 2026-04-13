@@ -140,6 +140,7 @@
     gnumake
     jq
     wirelesstools
+    iw
 
     claude-code
     tree
