@@ -4,6 +4,7 @@ let
     enabled = true;
     screenOffTimeout = 0;
     lockTimeout = 0;
+    suspendTimeout = 0; # Handled via custom commands below (battery-only)
     customCommands = builtins.toJSON [
       {
         name = "Battery: screen off + lock at 5 min";
@@ -17,6 +18,12 @@ let
         command = "cat /sys/class/power_supply/BAT*/status 2>/dev/null | grep -q Discharging || (hyprctl dispatch dpms off && noctalia-shell ipc call lockScreen lock)";
         resumeCommand = "hyprctl dispatch dpms on";
       }
+      {
+        name = "Battery: suspend at 20 min";
+        timeout = 1200;
+        command = "cat /sys/class/power_supply/BAT*/status 2>/dev/null | grep -q Discharging && systemctl suspend";
+        resumeCommand = "";
+      }
     ];
   };
 
@@ -24,6 +31,7 @@ let
     enabled = true;
     screenOffTimeout = 600;
     lockTimeout = 600;
+    suspendTimeout = 0; # Desktops should not auto-suspend
   };
 
   barRightWidgets = [
