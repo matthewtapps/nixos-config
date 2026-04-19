@@ -731,7 +731,7 @@ in
 
   # Tell noctalia where the wallpaper lives so the lock screen can use it
   home.file.".cache/noctalia/wallpapers.json".text = builtins.toJSON {
-    defaultWallpaper = "/home/matt/.config/hypr/bg3.jpg";
+    defaultWallpaper = "/home/matt/.config/hypr/bg4.jpg";
     wallpapers = { };
   };
 

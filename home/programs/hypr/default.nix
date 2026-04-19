@@ -8,6 +8,10 @@
     source = ./bg3.jpg;
   };
 
+  home.file."./.config/hypr/bg4.jpg" = {
+    source = ./bg4.jpg;
+  };
+
   home.file."./.config/hypr/assets" = {
     source = ./assets/default_album.png;
   };
