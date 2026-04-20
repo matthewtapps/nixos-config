@@ -10,5 +10,6 @@
     aerc
     teams-for-linux
     github-copilot-cli
+    dbgate
   ];
 }
