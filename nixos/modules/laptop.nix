@@ -2,7 +2,21 @@
   powerManagement.enable = true;
   powerManagement.powertop.enable = true;
 
-  services.power-profiles-daemon.enable = true;
+  services.auto-cpufreq = {
+    enable = true;
+    settings = {
+      battery = {
+        governor = "powersave";
+        turbo = "auto";
+        energy_performance_preference = "power";
+      };
+      charger = {
+        governor = "performance";
+        turbo = "auto";
+        energy_performance_preference = "performance";
+      };
+    };
+  };
 
   services.upower = {
     enable = true;

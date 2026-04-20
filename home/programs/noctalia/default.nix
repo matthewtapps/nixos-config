@@ -42,7 +42,7 @@ let
       hideIfIdle = false;
       hideIfNotDetected = true;
       showNoctaliaPerformance = false;
-      showPowerProfiles = true;
+      showPowerProfiles = false;
     }
     {
       id = "Brightness";
@@ -223,7 +223,6 @@ let
         ];
         right = [
           { id = "Notifications"; }
-          { id = "PowerProfile"; }
           { id = "KeepAwake"; }
           { id = "NightLight"; }
         ];
