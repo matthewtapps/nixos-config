@@ -25,7 +25,6 @@
 
       # Language servers
       nixd
-      nil
       lua-language-server
       typescript-language-server
       bash-language-server
@@ -43,7 +42,6 @@
       rubyPackages_3_3.ruby-lsp
       sqls
       glsl_analyzer
-      phpactor
 
       # Formatters
       nixfmt

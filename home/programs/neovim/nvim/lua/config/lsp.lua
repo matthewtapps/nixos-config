@@ -93,6 +93,15 @@ vim.lsp.config("omnisharp", {
 	},
 })
 vim.lsp.config("glsl_analyzer", { capabilities = capabilities })
+vim.lsp.config("jsonls", { capabilities = capabilities })
+vim.lsp.config("bashls", { capabilities = capabilities })
+vim.lsp.config("dockerls", { capabilities = capabilities })
+vim.lsp.config("cssls", { capabilities = capabilities })
+vim.lsp.config("eslint", { capabilities = capabilities })
+vim.lsp.config("markdown_oxide", { capabilities = capabilities })
+vim.lsp.config("ruff", { capabilities = capabilities })
+vim.lsp.config("yamlls", { capabilities = capabilities })
+vim.lsp.config("tailwindcss", { capabilities = capabilities })
 
 -- Set up LSP keymaps on attach
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -136,5 +145,14 @@ vim.lsp.enable({
 	"html",
 	"omnisharp",
 	"glsl_analyzer",
-  "phpactor"
+	"phpactor",
+	"jsonls",
+	"bashls",
+	"dockerls",
+	"cssls",
+	"eslint",
+	"markdown_oxide",
+	"ruff",
+	"yamlls",
+	"tailwindcss",
 })
