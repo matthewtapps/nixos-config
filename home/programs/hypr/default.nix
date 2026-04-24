@@ -1,9 +1,5 @@
 { device, pkgs, ... }:
 {
-  imports = [
-    ./hyprpaper.nix
-  ];
-
   home.file."./.config/hypr/bg3.jpg" = {
     source = ./bg3.jpg;
   };

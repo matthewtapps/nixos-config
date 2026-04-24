@@ -128,7 +128,6 @@
     fd
     dconf
     hyprlock
-    hyprpaper
     hyprshot
     wf-recorder
     slurp
