@@ -98,7 +98,7 @@
           ];
           value_template = "{{ value_json.sensor.temperature }}";
           unit_of_measurement = "°C";
-          scan_interval = 60;
+          scan_interval = 5;
           timeout = 10;
           verify_ssl = false;
           force_update = true;
