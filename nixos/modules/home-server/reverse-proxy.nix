@@ -60,6 +60,7 @@ _: {
           extraConfig = ''
             allow 192.168.0.0/24;
             allow 100.64.0.0/10;
+            allow 87.121.93.120;
             deny all;
           '';
         };
