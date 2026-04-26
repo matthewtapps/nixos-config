@@ -15,7 +15,7 @@
     ../modules/home-server/fail2ban.nix
     ../modules/home-server/open-webui.nix
     # ../modules/home-server/ssh-hardening.nix
-    ../modules/foundryvtt.nix
+    # ../modules/foundryvtt.nix
     ../modules/avahi.nix
   ];
 
