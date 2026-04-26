@@ -47,6 +47,23 @@ _: {
           proxyWebsockets = true;
         };
       };
+
+      # AC controller (ESP32 at 192.168.0.206) — HTTP-only device fronted by
+      # nginx for TLS. Accessible from the home LAN and over Tailscale only;
+      # ACME validates via the public record but the deny rule keeps the
+      # outside world out, since the firmware has no auth of its own.
+      "ac.mattys.cloud" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/" = {
+          proxyPass = "http://192.168.0.206";
+          extraConfig = ''
+            allow 192.168.0.0/24;
+            allow 100.64.0.0/10;
+            deny all;
+          '';
+        };
+      };
     };
   };
 

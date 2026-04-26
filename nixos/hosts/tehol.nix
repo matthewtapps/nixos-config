@@ -13,6 +13,7 @@
     ../modules/wireguard.nix
     ../modules/laptop.nix
     ../modules/aic8800.nix
+    ../modules/avahi.nix
   ];
 
   nixpkgs.pkgs = mypkgs;

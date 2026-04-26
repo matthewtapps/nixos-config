@@ -12,6 +12,7 @@
     ../modules/thunar.nix
     ../modules/networkmanager.nix
     ../modules/wireguard.nix
+    ../modules/avahi.nix
   ];
 
   nixpkgs.pkgs = mypkgs;
