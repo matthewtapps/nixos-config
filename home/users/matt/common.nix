@@ -106,7 +106,7 @@
     nixpkgs-fmt
 
     lsof
-    clipman
+    cliphist
     wl-clipboard
     xdg-desktop-portal-hyprland
     iproute2
