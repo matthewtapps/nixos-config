@@ -83,6 +83,7 @@
       thunar
       bun
       gcc
+      (callPackage ../packages/gloriousctl.nix { })
     ];
   };
 
@@ -92,6 +93,7 @@
 
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="on"
+    SUBSYSTEM=="hidraw", ATTRS{idVendor}=="258a", ATTRS{idProduct}=="0033", TAG+="uaccess"
   '';
 
   # Don't delete
