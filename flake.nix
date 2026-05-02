@@ -7,8 +7,6 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
 
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
     foundryvtt.url = "github:reckenrode/nix-foundryvtt";
@@ -59,7 +57,6 @@
     }@inputs:
     let
       overlays = [
-        inputs.neovim-nightly-overlay.overlays.default
         inputs.noctalia.overlays.default
         (final: prev: {
           zen-browser = inputs.zen-browser.packages.${final.stdenv.hostPlatform.system}.default;

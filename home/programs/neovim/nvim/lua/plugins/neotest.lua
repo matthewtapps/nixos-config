@@ -1,3 +1,7 @@
+local function has_plugin(name)
+  return require("lazy.core.config").spec.plugins[name] ~= nil
+end
+
 return {
   "nvim-neotest/neotest",
   dependencies = {
@@ -36,7 +40,7 @@ return {
     output = { open_on_run = true },
     quickfix = {
       open = function()
-        if LazyVim.has("trouble.nvim") then
+        if has_plugin("trouble.nvim") then
           require("trouble").open({ mode = "quickfix", focus = false })
         else
           vim.cmd("copen")
@@ -57,7 +61,7 @@ return {
       },
     }, neotest_ns)
 
-    if LazyVim.has("trouble.nvim") then
+    if has_plugin("trouble.nvim") then
       opts.consumers = opts.consumers or {}
       -- Refresh and auto close trouble after running tests
       ---@type neotest.Consumer

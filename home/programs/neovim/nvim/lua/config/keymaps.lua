@@ -40,9 +40,13 @@ vim.keymap.set("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning"
 vim.keymap.set("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
 -- lazygit
+local function git_root()
+	return vim.fs.root(0, ".git") or vim.uv.cwd()
+end
+
 if vim.fn.executable("lazygit") == 1 then
 	vim.keymap.set("n", "<leader>gg", function()
-		Snacks.lazygit({ cwd = LazyVim.root.git() })
+		Snacks.lazygit({ cwd = git_root() })
 	end, { desc = "Lazygit (Root Dir)" })
 	vim.keymap.set("n", "<leader>gG", function()
 		Snacks.lazygit()
@@ -51,7 +55,7 @@ if vim.fn.executable("lazygit") == 1 then
 		Snacks.picker.git_log_file()
 	end, { desc = "Git Current File History" })
 	vim.keymap.set("n", "<leader>gl", function()
-		Snacks.picker.git_log({ cwd = LazyVim.root.git() })
+		Snacks.picker.git_log({ cwd = git_root() })
 	end, { desc = "Git Log" })
 	vim.keymap.set("n", "<leader>gL", function()
 		Snacks.picker.git_log()
