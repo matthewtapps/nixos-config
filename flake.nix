@@ -39,12 +39,6 @@
       url = "github:noctalia-dev/noctalia-qs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # darwin.inputs.nixpkgs.follows = "nixpkgs";
-    # darwin.url = "github:lnl7/nix-darwin/master";
-
-    # impermanence.url =
-    #   "github:nix-community/impermanence/63f4d0443e32b0dd7189001ee1894066765d18a5";
   };
 
   outputs =

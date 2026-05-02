@@ -2,7 +2,7 @@
 {
   programs.neovim = {
     enable = true;
-    package = pkgs.neovim;
+    package = pkgs.neovim-unwrapped;
     defaultEditor = true;
     vimAlias = true;
     viAlias = true;
@@ -10,6 +10,46 @@
     withNodeJs = true;
     withRuby = false;
     withPython3 = false;
+
+    plugins = [
+      (pkgs.vimPlugins.nvim-treesitter.withPlugins (
+        p: with p; [
+          astro
+          bash
+          c_sharp
+          css
+          diff
+          eex
+          elixir
+          erlang
+          glimmer
+          glsl
+          hcl
+          heex
+          html
+          hyprlang
+          javascript
+          json
+          lua
+          markdown
+          markdown_inline
+          nix
+          python
+          regex
+          ruby
+          rust
+          sql
+          svelte
+          terraform
+          toml
+          typescript
+          vim
+          vimdoc
+          yaml
+        ]
+      ))
+    ];
+
     extraLuaPackages = ps: [
       ps.lua
       ps.luarocks-nix
