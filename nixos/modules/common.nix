@@ -29,6 +29,9 @@
 
   security.sudo.wheelNeedsPassword = false;
 
+  # Restarting dbus-broker during switch deadlocks — changes take effect on next login/reboot
+  systemd.user.services.dbus-broker.restartIfChanged = false;
+
   services.envfs.enable = true;
 
   services.udev.packages = [ pkgs.openocd ];

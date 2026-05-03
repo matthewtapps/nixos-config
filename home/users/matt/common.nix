@@ -55,12 +55,23 @@
       };
       "kruppe" = {
         user = "matt";
+        hostname = "kruppe.local";
       };
       "karsa" = {
         user = "matt";
+        hostname = "karsa.local";
       };
       "mappo" = {
         user = "matt";
+        hostname = "mappo.local";
+      };
+      "tehol" = {
+        user = "matt";
+        hostname = "tehol.local";
+      };
+      "samar" = {
+        user = "matt";
+        hostname = "samar.local";
       };
     };
   };
