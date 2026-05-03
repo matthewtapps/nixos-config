@@ -74,6 +74,7 @@
       ${builtins.readFile ./zsh.conf}
 	alias nixswitch="sudo nixos-rebuild switch --flake $HOME/nixos-config#${device}"                     # nixswitch = NixOS system switch
 	alias hmswitch="nix run $HOME/nixos-config#homeConfigurations.$USER@${device}.activationPackage"     # hmswitch  = User config switch
+	alias fleetswitch="colmena apply --impure && colmena exec -- git -C /home/matt/nixos-config pull"    # fleetswitch = Deploy all machines + sync config
     '';
   };
 
