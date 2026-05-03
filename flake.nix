@@ -59,6 +59,19 @@
         (final: prev: {
           sass = final.dart-sass;
         })
+        # GitLab regenerated the wireshark v4.6.5 archive tarball, so the hash
+        # locked in nixpkgs no longer matches what GitLab serves. Pin to the
+        # current upstream hash until nixpkgs bumps the version.
+        (final: prev: {
+          wireshark = prev.wireshark.overrideAttrs (old: {
+            src = prev.fetchFromGitLab {
+              repo = "wireshark";
+              owner = "wireshark";
+              tag = "v${old.version}";
+              hash = "sha256-Zvrwxjp4LK2J3QnxmPxKKrU01YHQvPyp54UWzeGNCjA=";
+            };
+          });
+        })
       ];
 
       config = {
