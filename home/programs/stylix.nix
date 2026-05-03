@@ -49,7 +49,9 @@
       hyprlock.enable = false;
       kitty.enable = true;
       rofi.enable = true;
-      wezterm.enable = true;
+      ghostty.enable = true;
+      starship.enable = true;
+      # wezterm.enable = true;  # kept for easy rollback
       lazygit.enable = true;
       zen-browser.profileNames = [ "Personal" ];
       qt.enable = true;

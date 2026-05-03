@@ -13,7 +13,7 @@ let
           "networkmanager"
           "video"
         ];
-        shell = pkgs.zsh; # Or use another shell based on your config
+        shell = pkgs.nushell;
       };
     }) users
   );

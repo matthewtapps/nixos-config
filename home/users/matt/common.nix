@@ -174,8 +174,8 @@
       nvim-terminal = {
         name = "Neovim (Terminal)";
         genericName = "Text Editor";
-        comment = "Edit text files in Neovim within WezTerm";
-        exec = "wezterm start -- nvim %F";
+        comment = "Edit text files in Neovim within Ghostty";
+        exec = "ghostty -e nvim %F";
         icon = "nvim";
         terminal = false;
         categories = [
@@ -440,7 +440,11 @@
   '';
 
   imports = [
-    ../../programs/zsh/default.nix
+    # ../../programs/zsh/default.nix      # kept for easy rollback
+    # ../../programs/wezterm/default.nix  # kept for easy rollback
+    ../../programs/zsh/version-check.nix
+    ../../programs/ghostty.nix
+    ../../programs/nushell/default.nix
     ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/direnv.nix
@@ -448,7 +452,6 @@
     ./theme.nix
     ../../programs/hypr/default.nix
     ../../programs/noctalia/default.nix
-    ../../programs/wezterm/default.nix
     ../../programs/stylix.nix
   ];
 }

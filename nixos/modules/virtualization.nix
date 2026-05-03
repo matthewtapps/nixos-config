@@ -1,17 +1,4 @@
 { host, lib, ... }:
-let
-  users = builtins.attrNames host.users;
-
-  userModules = map (user: {
-    users.users.${user} = {
-      extraGroups = lib.mkAfter [
-        "docker"
-        "podman"
-      ];
-    };
-  }) users;
-in
-
 {
   virtualisation = {
     docker = {
@@ -33,5 +20,7 @@ in
     };
   };
 
-  imports = userModules;
+  users.users = lib.genAttrs (builtins.attrNames host.users) (_: {
+    extraGroups = lib.mkAfter [ "docker" "podman" ];
+  });
 }
