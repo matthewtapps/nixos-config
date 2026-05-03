@@ -126,11 +126,6 @@
           ^colmena apply --impure err> /dev/null
           sudo nixos-rebuild switch --flake ~/nixos-config#${device}
           hmswitch
-          if $env.LAST_EXIT_CODE == 0 {
-              for host in [mappo kruppe tehol samar] {
-                  ^ssh $host git -C /home/matt/nixos-config pull
-              }
-          }
       }
     '';
   };
