@@ -185,5 +185,44 @@
           ) hosts
         )
       );
+
+      colmena = {
+        meta = {
+          nixpkgs = mkPkgs "x86_64-linux";
+          specialArgs = { inherit inputs; };
+        };
+      } // builtins.listToAttrs (
+        map (host: {
+          name = host.name;
+          value = {
+            deployment = {
+              targetHost = host.name;
+              targetUser = "matt";
+              allowLocalDeployment = host.name == "karsa";
+            };
+            _module.args = {
+              inherit host;
+              mypkgs = mkPkgs host.system;
+            };
+            imports = host.modules ++ [
+              inputs.stylix.nixosModules.stylix
+              inputs.home-manager.nixosModules.home-manager
+              {
+                nixpkgs.hostPlatform = host.system;
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  extraSpecialArgs = {
+                    inherit inputs host;
+                    device = host.device;
+                    claude-desktop = inputs.claude-desktop.packages.${host.system}.claude-desktop-with-fhs;
+                  };
+                  users = builtins.mapAttrs (_: file: { imports = [ file ]; }) host.users;
+                };
+              }
+            ];
+          };
+        }) hosts
+      );
     };
 }

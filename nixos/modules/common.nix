@@ -27,6 +27,8 @@
     ];
   };
 
+  security.sudo.wheelNeedsPassword = false;
+
   services.envfs.enable = true;
 
   services.udev.packages = [ pkgs.openocd ];
