@@ -63,6 +63,7 @@
       thunar
       bun
       gcc
+      colmena
     ];
   };
 
