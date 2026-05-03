@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   services = {
     printing.enable = true;
@@ -32,7 +32,7 @@
   # Reloading or restarting dbus-broker during switch deadlocks (NixOS #428577)
   # Changes take effect on next login/reboot
   systemd.user.services.dbus-broker.restartIfChanged = false;
-  systemd.user.services.dbus-broker.reloadIfChanged = false;
+  systemd.user.services.dbus-broker.reloadIfChanged = lib.mkForce false;
 
   services.envfs.enable = true;
 

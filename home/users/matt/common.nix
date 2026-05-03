@@ -8,6 +8,9 @@
 {
   programs.home-manager.enable = true;
 
+  # sd-switch can't find previous HM generation in NixOS module mode, restarts all user services (HM #7583)
+  systemd.user.startServices = false;
+
   home.stateVersion = "24.05";
 
   home.activation.report-changes = config.lib.dag.entryAnywhere ''

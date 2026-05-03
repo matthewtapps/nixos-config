@@ -37,7 +37,7 @@
       git_branch = {
         style = "bold yellow";
         symbol = " ";
-        format = "[$symbol$branch]($style) ";
+        format = "[$symbol$branch]($style)";
       };
       git_status = {
         style = "bold yellow";
@@ -48,7 +48,7 @@
         modified = "*";
         staged = "+";
         untracked = "?";
-        format = "[$all_status$ahead_behind]($style) ";
+        format = "[$all_status$ahead_behind]($style)";
       };
       nix_shell = {
         symbol = "󱄅";
@@ -76,7 +76,7 @@
       cmd_duration = {
         style = "bold #d8a657";
         min_time = 1;
-        format = "[$duration]($style) ";
+        format = "[$duration]($style)";
       };
       time = {
         disabled = false;
@@ -123,7 +123,9 @@
 
       def fleetswitch [] {
           cd ~/nixos-config
-          ^colmena apply --impure
+          ^colmena apply --impure err> /dev/null
+          sudo nixos-rebuild switch --flake ~/nixos-config#${device}
+          hmswitch
           if $env.LAST_EXIT_CODE == 0 {
               ^colmena exec -- git -C /home/matt/nixos-config pull
           }
