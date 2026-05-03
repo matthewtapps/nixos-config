@@ -83,6 +83,7 @@
       thunar
       bun
       gcc
+      colmena
       (callPackage ../packages/gloriousctl.nix { })
     ];
   };
