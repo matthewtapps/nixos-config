@@ -48,7 +48,7 @@
         modified = "*";
         staged = "+";
         untracked = "?";
-        format = "[$all_status$ahead_behind]($style)";
+        format = "[$all_status$ahead_behind]($style) ";
       };
       nix_shell = {
         symbol = "󱄅";
@@ -76,7 +76,7 @@
       cmd_duration = {
         style = "bold #d8a657";
         min_time = 1;
-        format = "[$duration]($style)";
+        format = "[$duration]($style) ";
       };
       time = {
         disabled = false;
@@ -127,7 +127,9 @@
           sudo nixos-rebuild switch --flake ~/nixos-config#${device}
           hmswitch
           if $env.LAST_EXIT_CODE == 0 {
-              ^colmena exec -- git -C /home/matt/nixos-config pull
+              for host in [mappo kruppe tehol samar] {
+                  ^ssh $host git -C /home/matt/nixos-config pull
+              }
           }
       }
     '';
