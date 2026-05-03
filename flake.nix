@@ -154,11 +154,14 @@
           value = nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs host;
-              mypkgs = mkPkgs host.system;
             };
             modules = host.modules ++ [
               inputs.stylix.nixosModules.stylix
-              { nixpkgs.hostPlatform = host.system; }
+              {
+                nixpkgs.hostPlatform = host.system;
+                nixpkgs.config.allowUnfree = true;
+                nixpkgs.overlays = overlays;
+              }
             ];
           };
 
@@ -201,7 +204,7 @@
 
       colmena = {
         meta = {
-          nixpkgs = mkPkgs "x86_64-linux";
+          nixpkgs = import nixpkgs { localSystem = "x86_64-linux"; };
           specialArgs = { inherit inputs; };
         };
       } // builtins.listToAttrs (
@@ -209,20 +212,20 @@
           name = host.name;
           value = {
             deployment = {
-              targetHost = host.name;
+              targetHost = if host.name == "karsa" then null else host.name;
               targetUser = "matt";
               allowLocalDeployment = host.name == "karsa";
-              buildOnTarget = true;
             };
             _module.args = {
               inherit host;
-              mypkgs = mkPkgs host.system;
             };
             imports = host.modules ++ [
               inputs.stylix.nixosModules.stylix
               inputs.home-manager.nixosModules.home-manager
               {
                 nixpkgs.hostPlatform = host.system;
+                nixpkgs.config.allowUnfree = true;
+                nixpkgs.overlays = overlays;
                 home-manager = {
                   useGlobalPkgs = true;
                   useUserPackages = true;
@@ -232,7 +235,6 @@
                     claude-desktop = inputs.claude-desktop.packages.${host.system}.claude-desktop-with-fhs;
                   };
                   sharedModules = [
-                    inputs.stylix.homeModules.stylix
                     inputs.noctalia.homeModules.default
                   ];
                   users = builtins.mapAttrs (_: file: { imports = [ file ]; }) host.users;

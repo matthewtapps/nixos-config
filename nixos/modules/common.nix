@@ -29,8 +29,10 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  # Restarting dbus-broker during switch deadlocks — changes take effect on next login/reboot
+  # Reloading or restarting dbus-broker during switch deadlocks (NixOS #428577)
+  # Changes take effect on next login/reboot
   systemd.user.services.dbus-broker.restartIfChanged = false;
+  systemd.user.services.dbus-broker.reloadIfChanged = false;
 
   services.envfs.enable = true;
 

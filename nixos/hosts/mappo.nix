@@ -1,4 +1,4 @@
-{ mypkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -20,8 +20,6 @@
   #   enable = true;
   #   users = [ "matt" ];
   # };
-
-  nixpkgs.pkgs = mypkgs;
 
   boot.loader = {
     efi.canTouchEfiVariables = true;
@@ -58,13 +56,13 @@
     };
     nix-ld = {
       enable = true;
-      libraries = with mypkgs; [ stdenv.cc.cc ];
+      libraries = with pkgs; [ stdenv.cc.cc ];
     };
 
   };
 
   environment = {
-    systemPackages = with mypkgs; [
+    systemPackages = with pkgs; [
       openssl
       thunar
       bun

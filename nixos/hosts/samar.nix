@@ -1,4 +1,4 @@
-{ mypkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -14,8 +14,6 @@
     ../modules/wireguard.nix
     ../modules/avahi.nix
   ];
-
-  nixpkgs.pkgs = mypkgs;
 
   boot = {
     loader = {
@@ -48,7 +46,7 @@
     };
     nix-ld = {
       enable = true;
-      libraries = with mypkgs; [
+      libraries = with pkgs; [
         stdenv.cc.cc
       ];
     };
@@ -56,7 +54,7 @@
   };
 
   environment = {
-    systemPackages = with mypkgs; [
+    systemPackages = with pkgs; [
       openssl
       thunar
       bun

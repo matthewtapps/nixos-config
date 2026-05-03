@@ -1,5 +1,6 @@
 vim.keymap.set("i", "jj", "<Esc>")
-vim.keymap.set("i", "<C-H>", "<C-W>") -- ctrl+backspace: delete word backward
+vim.keymap.set("i", "<C-H>", "<C-W>")   -- ctrl+backspace: legacy terminals (^H)
+vim.keymap.set("i", "<C-BS>", "<C-W>") -- ctrl+backspace: kitty keyboard protocol (Ghostty+nvim)
 
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")

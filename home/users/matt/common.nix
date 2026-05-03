@@ -56,22 +56,32 @@
       "kruppe" = {
         user = "matt";
         hostname = "kruppe.local";
+        identityFile = "~/.ssh/id_ed25519";
+        identitiesOnly = true;
       };
       "karsa" = {
         user = "matt";
         hostname = "karsa.local";
+        identityFile = "~/.ssh/id_ed25519";
+        identitiesOnly = true;
       };
       "mappo" = {
         user = "matt";
         hostname = "mappo.local";
+        identityFile = "~/.ssh/id_ed25519";
+        identitiesOnly = true;
       };
       "tehol" = {
         user = "matt";
         hostname = "tehol.local";
+        identityFile = "~/.ssh/id_ed25519";
+        identitiesOnly = true;
       };
       "samar" = {
         user = "matt";
         hostname = "samar.local";
+        identityFile = "~/.ssh/id_ed25519";
+        identitiesOnly = true;
       };
     };
   };

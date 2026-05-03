@@ -60,7 +60,7 @@ $env.config.keybindings = ($env.config.keybindings | append [
     {
         name: delete_word_ctrl_backspace
         modifier: control
-        keycode: backspace
+        keycode: char_h
         mode: [emacs vi_insert]
         event: { edit: BackspaceWord }
     }

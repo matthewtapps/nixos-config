@@ -1,5 +1,26 @@
-{ device, ... }:
+{ device, pkgs, ... }:
 {
+  programs.atuin = {
+    enable = true;
+    enableNushellIntegration = true;
+    settings = {
+      style = "compact";
+      show_preview = true;
+      filter_mode_shell_up_key_behavior = "session";
+    };
+  };
+
+  programs.carapace = {
+    enable = true;
+    enableNushellIntegration = true;
+  };
+
+  programs.zoxide = {
+    enable = true;
+    enableNushellIntegration = true;
+    options = [ "--cmd cd" ];
+  };
+
   programs.starship = {
     enable = true;
     settings = {
@@ -23,6 +44,7 @@
         ahead = "⇡";
         behind = "⇣";
         diverged = "⇕";
+        stashed = "";
         modified = "*";
         staged = "+";
         untracked = "?";
@@ -90,6 +112,8 @@
     '';
     extraConfig = ''
       ${builtins.readFile ./config.nu}
+
+      source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/git/git-completions.nu
 
       alias nixswitch = sudo nixos-rebuild switch --flake ~/nixos-config#${device}
 

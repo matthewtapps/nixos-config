@@ -1,4 +1,4 @@
-{ mypkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -25,8 +25,6 @@
       "gcloud-emulator"
     ];
   };
-
-  nixpkgs.pkgs = mypkgs;
 
   boot.loader = {
     efi.canTouchEfiVariables = true;
@@ -70,7 +68,7 @@
     };
     nix-ld = {
       enable = true;
-      libraries = with mypkgs; [
+      libraries = with pkgs; [
         stdenv.cc.cc
       ];
     };
@@ -78,7 +76,7 @@
   };
 
   environment = {
-    systemPackages = with mypkgs; [
+    systemPackages = with pkgs; [
       openssl
       thunar
       bun
