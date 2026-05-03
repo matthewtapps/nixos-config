@@ -230,6 +230,10 @@
                     device = host.device;
                     claude-desktop = inputs.claude-desktop.packages.${host.system}.claude-desktop-with-fhs;
                   };
+                  sharedModules = [
+                    inputs.stylix.homeModules.stylix
+                    inputs.noctalia.homeModules.default
+                  ];
                   users = builtins.mapAttrs (_: file: { imports = [ file ]; }) host.users;
                 };
               }
