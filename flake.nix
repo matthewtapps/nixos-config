@@ -212,6 +212,7 @@
               targetHost = host.name;
               targetUser = "matt";
               allowLocalDeployment = host.name == "karsa";
+              buildOnTarget = true;
             };
             _module.args = {
               inherit host;
