@@ -123,9 +123,9 @@
 
       def fleetswitch [] {
           cd ~/nixos-config
-          ^colmena apply --impure err> /dev/null
           sudo nixos-rebuild switch --flake ~/nixos-config#${device}
           hmswitch
+          ^colmena apply --impure
       }
     '';
   };
