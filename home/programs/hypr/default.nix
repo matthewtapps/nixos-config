@@ -12,8 +12,14 @@
     source = ./assets/default_album.png;
   };
 
+  xdg.configFile."hypr/xdph.conf".text = ''
+    screencopy:force_shm = 1
+  '';
+
   wayland.windowManager.hyprland = {
     enable = true;
+    portalPackage = null;
+    package = null;
     extraConfig = ''
       ${builtins.readFile ./hyprland/${device}.conf}
       ${builtins.readFile ./hyprland/common.conf}

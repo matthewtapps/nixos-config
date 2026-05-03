@@ -108,7 +108,6 @@
     lsof
     cliphist
     wl-clipboard
-    xdg-desktop-portal-hyprland
     iproute2
     lm_sensors
     feh
