@@ -14,12 +14,6 @@ _: {
         locations."/" = {
           proxyPass = "http://127.0.0.1:8123";
           proxyWebsockets = true;
-          extraConfig = ''
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection $connection_upgrade;
-          '';
         };
       };
 
@@ -32,8 +26,6 @@ _: {
           extraConfig = ''
             proxy_ssl_server_name on;
             proxy_pass_header Authorization;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
             client_max_body_size 300M;
           '';
         };
