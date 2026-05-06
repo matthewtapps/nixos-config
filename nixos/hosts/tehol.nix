@@ -30,6 +30,17 @@
     "i915.enable_psr=0"
   ];
 
+  # Turn lockups into clean panic+reboot+EFI-pstore-saved oops instead of a
+  # half-frozen state. Full magic SysRq lets us dump task stacks (Alt+SysRq+L/T/W)
+  # before forcing a reboot via Alt+SysRq+B if needed.
+  boot.kernel.sysctl = {
+    "kernel.sysrq" = 1;
+    "kernel.softlockup_panic" = 1;
+    "kernel.hardlockup_panic" = 1;
+    "kernel.panic_on_oops" = 1;
+    "kernel.panic" = 10;
+  };
+
   networking = {
     hostName = "tehol";
   };
