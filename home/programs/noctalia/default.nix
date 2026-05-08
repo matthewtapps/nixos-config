@@ -92,16 +92,30 @@ let
     };
   };
 
+  powerMonitorWidget = {
+    id = "plugin:power-monitor";
+  };
+
+  laptopExtraWidgets = [ powerMonitorWidget ];
+
   withVpn = overrides: overrides // {
     bar.widgets.right = barRightWidgets ++ [ vpnWidget ];
+  };
+
+  withVpnAndLaptop = overrides: overrides // {
+    bar.widgets.right = barRightWidgets ++ laptopExtraWidgets ++ [ vpnWidget ];
+  };
+
+  withLaptop = overrides: overrides // {
+    bar.widgets.right = barRightWidgets ++ laptopExtraWidgets;
   };
 
   deviceOverrides = {
     karsa  = { audio.spectrumFrameRate = 144; systemMonitor.enableDgpuMonitoring = true;  idle = desktopIdleOverrides; };
     kruppe = { audio.spectrumFrameRate = 144; systemMonitor.enableDgpuMonitoring = true;  idle = desktopIdleOverrides; };
-    mappo  = { audio.spectrumFrameRate = 15;  systemMonitor.enableDgpuMonitoring = false; idle = laptopIdleOverrides; };
-    samar  = withVpn { audio.spectrumFrameRate = 144; systemMonitor.enableDgpuMonitoring = true;  idle = desktopIdleOverrides; };
-    tehol  = withVpn { audio.spectrumFrameRate = 15;  systemMonitor.enableDgpuMonitoring = false; idle = laptopIdleOverrides; };
+    mappo  = withLaptop { audio.spectrumFrameRate = 15;  systemMonitor.enableDgpuMonitoring = false; idle = laptopIdleOverrides; };
+    samar  = withVpn    { audio.spectrumFrameRate = 144; systemMonitor.enableDgpuMonitoring = true;  idle = desktopIdleOverrides; };
+    tehol  = withVpnAndLaptop { audio.spectrumFrameRate = 15; systemMonitor.enableDgpuMonitoring = false; idle = laptopIdleOverrides; };
   };
 
   settings = lib.recursiveUpdate defaultSettings (deviceOverrides.${device} or {});
@@ -734,6 +748,13 @@ in
     wallpapers = { };
   };
 
+  # Local Noctalia plugins. Noctalia scans this directory for manifest.json on
+  # startup, so a symlink tree shipped from the Nix store is sufficient.
+  home.file.".config/noctalia/plugins/power-monitor" = {
+    source = ./plugins/power-monitor;
+    recursive = true;
+  };
+
   programs.noctalia-shell = {
     enable = true;
 
@@ -757,6 +778,10 @@ in
         privacy-indicator = {
           enabled = true;
           sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+        };
+        power-monitor = {
+          enabled = true;
+          sourceUrl = "local";
         };
       };
       version = 2;

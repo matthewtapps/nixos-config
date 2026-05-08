@@ -12,7 +12,16 @@
       "WebFetch(domain:mynixos.com)",
       "Bash(nix eval:*)",
       "WebFetch(domain:www.home-assistant.io)",
-      "WebFetch(domain:nixos.org)"
+      "WebFetch(domain:nixos.org)",
+      "Bash(gh search *)",
+      "Bash(gh api *)",
+      "Read(//tmp/**)",
+      "Read(//home/matt/.config/noctalia/plugins/power-monitor/**)",
+      "Read(//home/matt/.config/noctalia/plugins/power-monitor/i18n/**)",
+      "Read(//nix/store/35i3ifw2dcaz6mdgc2cld7nnhc4w27kd-hm_powermonitor/i18n/**)",
+      "Read(//nix/store/35i3ifw2dcaz6mdgc2cld7nnhc4w27kd-hm_powermonitor/**)",
+      "Bash(noctalia-shell --help)",
+      "Bash(noctalia-shell log *)"
     ]
   }
 }

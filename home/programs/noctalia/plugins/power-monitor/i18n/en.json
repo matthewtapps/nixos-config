@@ -1,0 +1,123 @@
+{
+  "menu": {
+    "openPanel": "Open monitor",
+    "settings": "Widget settings"
+  },
+  "widget": {
+    "tooltip": {
+      "discharging": "Discharging",
+      "battery": "Battery",
+      "cpu": "CPU",
+      "eta": "Time left",
+      "noBattery": "No battery detected"
+    }
+  },
+  "panel": {
+    "title": "Power Monitor",
+    "close": "Close",
+    "graph": {
+      "title": "System power (W)"
+    },
+    "search": {
+      "placeholder": "Filter by name, pid, user…"
+    },
+    "caveat": "Per-process W = CPU share × system draw. GPU/wifi not modeled.",
+    "stat": {
+      "power": "Power",
+      "discharging": "Discharging",
+      "battery": "Battery",
+      "eta": "Time left",
+      "cycles": "Cycles",
+      "cpu": "CPU",
+      "load": "load",
+      "memory": "Memory",
+      "swap": "Swap",
+      "ctxt": "Context switches",
+      "systemWide": "system-wide",
+      "temp": "Temp",
+      "package": "package"
+    },
+    "col": {
+      "name": "Process",
+      "cpu": "CPU",
+      "power": "W",
+      "rss": "RSS",
+      "wakes": "wakes/s",
+      "io": "I/O"
+    },
+    "kill": {
+      "tooltip": "Send SIGTERM (Shift to confirm SIGKILL)",
+      "title": "End process?",
+      "body": "Send signal to",
+      "shiftHint": "Hold Shift while clicking Confirm to send SIGKILL.",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    }
+  },
+  "settings": {
+    "section": {
+      "sampling": {
+        "label": "Sampling",
+        "desc": "How often /proc and battery state are read."
+      },
+      "thresholds": {
+        "label": "Thresholds",
+        "desc": "Discharge ranges that color the bar widget."
+      },
+      "colors": {
+        "label": "Colors",
+        "desc": "Colors used for the bar widget, sparkline and per-process power."
+      },
+      "display": {
+        "label": "Display"
+      }
+    },
+    "intervalSeconds": {
+      "label": "Sample interval (s)",
+      "desc": "Lower is more reactive but reads more from /proc each tick."
+    },
+    "topProcesses": {
+      "label": "Top processes shown",
+      "desc": "How many processes to include in each tick's snapshot."
+    },
+    "historySamples": {
+      "label": "Sparkline history (samples)",
+      "desc": "Total points kept on the rolling power graph."
+    },
+    "thresholdGoodW": {
+      "label": "Good ≤ (W)",
+      "desc": "Discharge below this is shown in the good color."
+    },
+    "thresholdWarnW": {
+      "label": "Warn ≤ (W)",
+      "desc": "Discharge below this is shown as a warning; above is critical."
+    },
+    "colorGood": {
+      "label": "Good",
+      "desc": "Discharge ≤ \"Good\" threshold."
+    },
+    "colorWarning": {
+      "label": "Warning",
+      "desc": "Discharge between Good and Warn thresholds."
+    },
+    "colorCritical": {
+      "label": "Critical",
+      "desc": "Discharge above the Warn threshold."
+    },
+    "barShows": {
+      "label": "Bar widget shows",
+      "desc": "Primary value rendered in the bar capsule.",
+      "power": "Discharge (W)",
+      "battery": "Battery (%)",
+      "both": "Both"
+    },
+    "showSparkline": {
+      "label": "Show sparkline in bar",
+      "desc": "Tiny rolling-W graph next to the value."
+    },
+    "defaultSort": {
+      "label": "Default sort column",
+      "desc": "Process list sort key when the panel opens."
+    }
+  }
+}
