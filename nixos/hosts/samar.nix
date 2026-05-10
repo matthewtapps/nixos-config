@@ -31,7 +31,7 @@
     hostName = "samar";
   };
 
-  networking.firewall.allowedTCPPorts = [ 9090 ];
+  networking.firewall.allowedTCPPorts = [ 9192 ];
 
   nix.settings.trusted-users = [
     "matt"
