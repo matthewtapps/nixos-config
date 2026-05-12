@@ -21,7 +21,8 @@
       "Read(//nix/store/35i3ifw2dcaz6mdgc2cld7nnhc4w27kd-hm_powermonitor/i18n/**)",
       "Read(//nix/store/35i3ifw2dcaz6mdgc2cld7nnhc4w27kd-hm_powermonitor/**)",
       "Bash(noctalia-shell --help)",
-      "Bash(noctalia-shell log *)"
+      "Bash(noctalia-shell log *)",
+      "Bash(journalctl -b -1 --no-pager -k)"
     ]
   }
 }
