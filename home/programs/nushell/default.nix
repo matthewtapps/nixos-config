@@ -15,12 +15,6 @@
     enableNushellIntegration = true;
   };
 
-  programs.zoxide = {
-    enable = true;
-    enableNushellIntegration = true;
-    options = [ "--cmd cd" ];
-  };
-
   programs.starship = {
     enable = true;
     settings = {
