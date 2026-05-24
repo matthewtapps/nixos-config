@@ -920,6 +920,7 @@
         "noctalia": "noctalia",
         "noctalia-qs": "noctalia-qs",
         "sops-nix": "sops-nix",
+        "standup": "standup",
         "stylix": "stylix",
         "zen-browser": "zen-browser"
       }
@@ -960,6 +961,26 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "standup": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779609165,
+        "narHash": "sha256-RF0Ogs865CADZKAFPzopjd3soqJVkTyn5kxRqv7ocFU=",
+        "owner": "matthewtapps",
+        "repo": "standup",
+        "rev": "76301d22c08c69a7e714c12c1386ed9bedf29edf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "matthewtapps",
+        "repo": "standup",
         "type": "github"
       }
     },

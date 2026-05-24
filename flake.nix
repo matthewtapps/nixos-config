@@ -44,6 +44,11 @@
       url = "github:noctalia-dev/noctalia-qs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    standup = {
+      url = "github:matthewtapps/standup";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
