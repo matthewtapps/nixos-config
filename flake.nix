@@ -45,8 +45,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    standup = {
-      url = "github:matthewtapps/standup";
+    todone = {
+      url = "github:matthewtapps/todone";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
