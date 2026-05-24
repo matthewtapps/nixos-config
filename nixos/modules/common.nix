@@ -24,10 +24,13 @@
       ssh-to-age
       sops
       wol
+      nh
+      nix-output-monitor
+      nix-tree
+      nix-diff
+      nix-du
     ];
   };
-
-  security.sudo.wheelNeedsPassword = false;
 
   # Reloading or restarting dbus-broker during switch deadlocks (NixOS #428577)
   # Changes take effect on next login/reboot

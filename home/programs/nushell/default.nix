@@ -94,6 +94,7 @@
       $env.LANG = "en_AU.UTF-8"
       $env.MANPAGER = "nvim +Man!"
       $env.FZF_DEFAULT_COMMAND = 'ag --hidden -g""'
+      $env.NH_NOM = "1"
       $env.PATH = ($env.PATH | append [
           ($env.HOME + "/.local/scripts")
           ($env.HOME + "/.local/bin")
@@ -109,17 +110,33 @@
 
       source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/git/git-completions.nu
 
-      alias nixswitch = sudo nixos-rebuild switch --flake ~/nixos-config#${device}
-
-      def hmswitch [] {
-          ^nix run $"($env.HOME)/nixos-config#homeConfigurations.($env.USER)@${device}.activationPackage"
+      def nixos-config-hash [] {
+          let repo = $"($env.HOME)/nixos-config"
+          let commit = (git -C $repo rev-parse HEAD | str trim)
+          let diff = (git -C $repo diff HEAD | hash sha256)
+          $"($commit)/($diff)"
       }
+
+      def nixswitch [] {
+          let stamp = ($env.HOME | path join ".local/share/nixos-switch-stamp")
+          let hash = (nixos-config-hash)
+          if ($stamp | path exists) and ((open $stamp | str trim) == $hash) {
+              print "karsa up to date, skipping"
+              return
+          }
+          sudo -v
+          nh os switch ~/nixos-config
+          mkdir ($stamp | path dirname)
+          $hash | save --force $stamp
+      }
+
+      alias hmswitch = nh home switch ~/nixos-config
 
       def fleetswitch [] {
           cd ~/nixos-config
-          sudo nixos-rebuild switch --flake ~/nixos-config#${device}
-          hmswitch
-          ^colmena apply --impure
+          nixswitch
+          nh home switch ~/nixos-config
+          deploy ~/nixos-config
       }
     '';
   };

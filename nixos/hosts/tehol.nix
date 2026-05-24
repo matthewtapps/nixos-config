@@ -14,6 +14,7 @@
     ../modules/laptop.nix
     ../modules/aic8800.nix
     ../modules/avahi.nix
+    ../modules/deploy-target.nix
   ];
 
   boot.loader = {

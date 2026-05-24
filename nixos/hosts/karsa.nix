@@ -81,7 +81,7 @@
       thunar
       bun
       gcc
-      colmena
+      deploy-rs
       (callPackage ../packages/gloriousctl.nix { })
     ];
   };

@@ -13,6 +13,7 @@
     ../modules/networkmanager.nix
     ../modules/wireguard.nix
     ../modules/avahi.nix
+    ../modules/deploy-target.nix
   ];
 
   boot = {

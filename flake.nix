@@ -29,6 +29,11 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,6 +48,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       home-manager,
       foundryvtt,
@@ -162,9 +168,24 @@
                 nixpkgs.config.allowUnfree = true;
                 nixpkgs.overlays = overlays;
               }
+            ] ++ nixpkgs.lib.optionals (host.name != "karsa") [
+              inputs.home-manager.nixosModules.home-manager
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  backupFileExtension = "bak";
+                  extraSpecialArgs = {
+                    inherit inputs host;
+                    device = host.device;
+                    claude-desktop = inputs.claude-desktop.packages.${host.system}.claude-desktop-with-fhs;
+                  };
+                  sharedModules = [ inputs.noctalia.homeModules.default ];
+                  users = builtins.mapAttrs (_: file: { imports = [ file ]; }) host.users;
+                };
+              }
             ];
           };
-
         }) hosts
       );
 
@@ -202,48 +223,23 @@
         )
       );
 
-      colmena = {
-        meta = {
-          nixpkgs = import nixpkgs { localSystem = "x86_64-linux"; };
-          specialArgs = { inherit inputs; };
-        };
-      } // builtins.listToAttrs (
-        map (host: {
-          name = host.name;
-          value = {
-            deployment = {
-              targetHost = if host.name == "karsa" then null else host.name;
-              targetUser = "matt";
-              allowLocalDeployment = host.name == "karsa";
+      deploy = {
+        remoteBuild = true;
+        nodes = builtins.listToAttrs (
+          map (host: {
+            name = host.name;
+            value = {
+              hostname = host.name;
+              profiles.system = {
+                user = "root";
+                sshUser = "matt";
+                path = inputs.deploy-rs.lib.${host.system}.activate.nixos self.nixosConfigurations.${host.name};
+              };
             };
-            _module.args = {
-              inherit host;
-            };
-            imports = host.modules ++ [
-              inputs.stylix.nixosModules.stylix
-              inputs.home-manager.nixosModules.home-manager
-              {
-                nixpkgs.hostPlatform = host.system;
-                nixpkgs.config.allowUnfree = true;
-                nixpkgs.overlays = overlays;
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  backupFileExtension = "bak";
-                  extraSpecialArgs = {
-                    inherit inputs host;
-                    device = host.device;
-                    claude-desktop = inputs.claude-desktop.packages.${host.system}.claude-desktop-with-fhs;
-                  };
-                  sharedModules = [
-                    inputs.noctalia.homeModules.default
-                  ];
-                  users = builtins.mapAttrs (_: file: { imports = [ file ]; }) host.users;
-                };
-              }
-            ];
-          };
-        }) hosts
-      );
+          }) (builtins.filter (h: h.name != "karsa") hosts)
+        );
+      };
+
+      checks = builtins.mapAttrs (_: lib: lib.deployChecks self.deploy) inputs.deploy-rs.lib;
     };
 }

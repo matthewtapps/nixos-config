@@ -14,6 +14,7 @@
     # ../modules/azure-vpn.nix
     ../modules/avahi.nix
     ../modules/laptop.nix
+    ../modules/deploy-target.nix
   ];
 
   # programs.azure-vpn = {
