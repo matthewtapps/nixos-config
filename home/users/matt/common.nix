@@ -43,48 +43,48 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    matchBlocks = {
+    settings = {
       "*" = {
-        forwardAgent = false;
-        addKeysToAgent = "yes";
-        compression = false;
-        serverAliveInterval = 0;
-        serverAliveCountMax = 3;
-        hashKnownHosts = false;
-        userKnownHostsFile = "~/.ssh/known_hosts";
-        controlMaster = "no";
-        controlPath = "~/.ssh/master-%r@%n:%p";
-        controlPersist = "no";
+        ForwardAgent = false;
+        AddKeysToAgent = "yes";
+        Compression = false;
+        ServerAliveInterval = 0;
+        ServerAliveCountMax = 3;
+        HashKnownHosts = false;
+        UserKnownHostsFile = "~/.ssh/known_hosts";
+        ControlMaster = "no";
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+        ControlPersist = "no";
       };
       "kruppe" = {
-        user = "matt";
-        hostname = "kruppe.local";
-        identityFile = "~/.ssh/id_ed25519";
-        identitiesOnly = true;
+        User = "matt";
+        HostName = "kruppe.local";
+        IdentityFile = "~/.ssh/id_ed25519";
+        IdentitiesOnly = true;
       };
       "karsa" = {
-        user = "matt";
-        hostname = "karsa.local";
-        identityFile = "~/.ssh/id_ed25519";
-        identitiesOnly = true;
+        User = "matt";
+        HostName = "karsa.local";
+        IdentityFile = "~/.ssh/id_ed25519";
+        IdentitiesOnly = true;
       };
       "mappo" = {
-        user = "matt";
-        hostname = "mappo.local";
-        identityFile = "~/.ssh/id_ed25519";
-        identitiesOnly = true;
+        User = "matt";
+        HostName = "mappo.local";
+        IdentityFile = "~/.ssh/id_ed25519";
+        IdentitiesOnly = true;
       };
       "tehol" = {
-        user = "matt";
-        hostname = "tehol.local";
-        identityFile = "~/.ssh/id_ed25519";
-        identitiesOnly = true;
+        User = "matt";
+        HostName = "tehol.local";
+        IdentityFile = "~/.ssh/id_ed25519";
+        IdentitiesOnly = true;
       };
       "samar" = {
-        user = "matt";
-        hostname = "samar.local";
-        identityFile = "~/.ssh/id_ed25519";
-        identitiesOnly = true;
+        User = "matt";
+        HostName = "samar.local";
+        IdentityFile = "~/.ssh/id_ed25519";
+        IdentitiesOnly = true;
       };
     };
   };
