@@ -3,7 +3,7 @@ _: {
     enable = true;
     settings = {
       window-decoration = false;
-      scrollback-limit = 10000;
+      scrollback-limit = 104857600;
       confirm-close-surface = false;
       mouse-hide-while-typing = true;
       copy-on-select = false;
