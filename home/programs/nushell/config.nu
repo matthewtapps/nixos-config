@@ -79,6 +79,16 @@ def --env nixc [] {
     cd $prev
 }
 
+def --wrapped nix [...args] {
+    let subcmd = ($args | get -o 0)
+    let has_command = ($args | any { |a| $a == "--command" or $a == "-c" })
+    if ($subcmd in ["shell" "develop"]) and (not $has_command) {
+        ^nix ...$args --command nu
+    } else {
+        ^nix ...$args
+    }
+}
+
 def vup [] {
     let cache = $"($env.HOME)/.cache/version-checks"
     mut found = false
@@ -134,4 +144,102 @@ def vup [] {
     if not $found {
         print "All language runtimes up to date."
     }
+}
+
+# Git repo overview report (https://piechowski.io/post/git-commands-before-reading-code/)
+def git-overview [] {
+    let check = (^git rev-parse --is-inside-work-tree | complete)
+    if $check.exit_code != 0 {
+        print "Not a git repository."
+        return
+    }
+
+    let repo = (^git rev-parse --show-toplevel | str trim | path basename)
+    let sep = "────────────────────────────────────────"
+    let bold = (ansi attr_bold)
+    let cyan = (ansi cyan)
+    let reset = (ansi reset)
+
+    print ""
+    print $"($bold)($cyan)Git Overview: ($repo)($reset)"
+
+    print ""
+    print $"($bold)($cyan)($sep)($reset)"
+    print $"($bold)Most Modified Files \(past year\)($reset)"
+    print $"($cyan)($sep)($reset)"
+    ^git log --format=format: --name-only --since="1 year ago"
+    | lines
+    | where {|f| ($f | str trim) != "" }
+    | uniq --count
+    | sort-by --reverse count
+    | first 20
+    | each {|row| print $"  ($row.count) ($row.value)" }
+    | ignore
+
+    print ""
+    print $"($bold)($cyan)($sep)($reset)"
+    print $"($bold)All Contributors \(by commits\)($reset)"
+    print $"($cyan)($sep)($reset)"
+    ^git shortlog -sn --no-merges HEAD
+
+    print ""
+    print $"($bold)($cyan)($sep)($reset)"
+    print $"($bold)Recent Contributors \(past 6 months\)($reset)"
+    print $"($cyan)($sep)($reset)"
+    ^git shortlog -sn --no-merges --since="6 months ago" HEAD
+
+    print ""
+    print $"($bold)($cyan)($sep)($reset)"
+    print $"($bold)Most Bug-Fixed Files \(past year\)($reset)"
+    print $"($cyan)($sep)($reset)"
+    ^git log -i -E --grep="fix|bug|broken" --name-only --format=""
+    | lines
+    | where {|f| ($f | str trim) != "" }
+    | uniq --count
+    | sort-by --reverse count
+    | first 20
+    | each {|row| print $"  ($row.count) ($row.value)" }
+    | ignore
+
+    print ""
+    print $"($bold)($cyan)($sep)($reset)"
+    print $"($bold)Commit Velocity \(monthly\)($reset)"
+    print $"($cyan)($sep)($reset)"
+    let monthly = (
+        ^git log --format="%ad" --date=format:"%Y-%m"
+        | lines
+        | uniq --count
+        | sort-by value
+    )
+    if ($monthly | is-empty) {
+        print "  No commits found"
+    } else {
+        let max = ($monthly | get count | math max)
+        let width = 30
+        for row in $monthly {
+            let raw = ($row.count * $width / $max | math round)
+            let len = (if $raw < 1 { 1 } else { $raw })
+            let pad_w = ($width - $len)
+            let bar = (0..<$len | each {|_| "█" } | str join "")
+            let pad = (0..<$pad_w | each {|_| " " } | str join "")
+            print $"  ($row.value)  ($cyan)($bar)($reset)($pad) ($row.count)"
+        }
+    }
+
+    print ""
+    print $"($bold)($cyan)($sep)($reset)"
+    print $"($bold)Emergency Commits \(past year\)($reset)"
+    print $"($cyan)($sep)($reset)"
+    let emergency = (
+        ^git log --oneline --since="1 year ago"
+        | lines
+        | where {|line| $line =~ '(?i)revert|hotfix|emergency|rollback' }
+    )
+    if ($emergency | is-empty) {
+        print "  None found"
+    } else {
+        for line in $emergency { print $"  ($line)" }
+    }
+
+    print ""
 }
