@@ -29,6 +29,7 @@
 
   boot.kernelParams = [
     "i915.enable_psr=0"
+    "i915.enable_fbc=0"
   ];
 
   # Turn lockups into clean panic+reboot+EFI-pstore-saved oops instead of a
