@@ -95,13 +95,6 @@ return {
 			desc = "Dismiss All Notifications",
 		},
 		{
-			"<leader>gg",
-			function()
-				Snacks.lazygit()
-			end,
-			desc = "Lazygit",
-		},
-		{
 			"<leader>gB",
 			function()
 				Snacks.gitbrowse()

@@ -47,11 +47,19 @@ local function git_root()
 end
 
 if vim.fn.executable("lazygit") == 1 then
+	-- Lazygit's nvim-remote preset emits nushell syntax when $NU_VERSION is set
+	-- or $SHELL ends in nu/nushell, but in practice bash ends up executing it
+	-- from inside nvim. Force the bash variant by clearing both signals only
+	-- for the lazygit subprocess.
+	local lazygit_env = {
+		SHELL = "/run/current-system/sw/bin/bash",
+		NU_VERSION = "",
+	}
 	vim.keymap.set("n", "<leader>gg", function()
-		Snacks.lazygit({ cwd = git_root() })
+		Snacks.lazygit({ cwd = git_root(), env = lazygit_env })
 	end, { desc = "Lazygit (Root Dir)" })
 	vim.keymap.set("n", "<leader>gG", function()
-		Snacks.lazygit()
+		Snacks.lazygit({ env = lazygit_env })
 	end, { desc = "Lazygit (cwd)" })
 	vim.keymap.set("n", "<leader>gf", function()
 		Snacks.picker.git_log_file()
