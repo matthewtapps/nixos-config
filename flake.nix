@@ -246,5 +246,13 @@
       };
 
       checks = builtins.mapAttrs (_: lib: lib.deployChecks self.deploy) inputs.deploy-rs.lib;
+
+      templates = {
+        devshell = {
+          path = ./templates/devshell;
+          description = "Minimal devShell — drop packages into the array";
+        };
+        default = self.templates.devshell;
+      };
     };
 }
