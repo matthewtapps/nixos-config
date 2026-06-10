@@ -30,6 +30,7 @@
   boot.kernelParams = [
     "i915.enable_psr=0"
     "i915.enable_fbc=0"
+    "i915.enable_dc=0"
   ];
 
   # Turn lockups into clean panic+reboot+EFI-pstore-saved oops instead of a
@@ -37,6 +38,7 @@
   # before forcing a reboot via Alt+SysRq+B if needed.
   boot.kernel.sysctl = {
     "kernel.sysrq" = 1;
+    "kernel.nmi_watchdog" = 1;
     "kernel.softlockup_panic" = 1;
     "kernel.hardlockup_panic" = 1;
     "kernel.panic_on_oops" = 1;
