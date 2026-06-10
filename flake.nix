@@ -34,14 +34,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Pinned to the last v4 (QML/Quickshell) release. v5 is a ground-up rewrite
+    # with a new module name (programs.noctalia), TOML settings, and an entirely
+    # different schema — see home/programs/noctalia/default.nix before unpinning.
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
+      url = "github:noctalia-dev/noctalia-shell/052f533186e6ad8e60541760cfe3123f14108c1e";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.noctalia-qs.follows = "noctalia-qs";
     };
 
     noctalia-qs = {
-      url = "github:noctalia-dev/noctalia-qs";
+      url = "github:noctalia-dev/noctalia-qs/70fea8a39a908e395de63024a4dfdb829bff1ffe";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

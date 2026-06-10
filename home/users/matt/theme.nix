@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   fonts.fontconfig.enable = true;
   gtk = {
@@ -7,7 +7,7 @@
       package = pkgs.papirus-icon-theme;
       name = "Papirus-Dark";
     };
-    gtk4.theme = null;
+    gtk4.theme = lib.mkForce null;
     gtk3 = {
       bookmarks = [
         "file:///home/matt/documents Documents"
