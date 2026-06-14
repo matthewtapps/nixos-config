@@ -31,7 +31,15 @@
     "i915.enable_psr=0"
     "i915.enable_fbc=0"
     "i915.enable_dc=0"
+
+    # The MT7925U USB WiFi wedges its firmware in monitor mode through the dock's
+    # tunnelled USB hubs (but not on a direct port). Disabling USB3 LPM for the
+    # adapter and USB autosuspend stops control transfers stalling on that path.
+    "usbcore.quirks=0846:9072:k"
+    "usbcore.autosuspend=-1"
   ];
+
+  boot.initrd.kernelModules = [ "i915" ];
 
   # Turn lockups into clean panic+reboot+EFI-pstore-saved oops instead of a
   # half-frozen state. Full magic SysRq lets us dump task stacks (Alt+SysRq+L/T/W)
@@ -83,6 +91,22 @@
   };
 
   hardware.rasdaemon.enable = true;
+
+  # Auto-authorize the ThinkPad Thunderbolt 4 Dock so DP-alt-mode tunnels
+  # come up on hot-plug (security level is "user" on this machine).
+  services.hardware.bolt.enable = true;
+
+  # Keep NetworkManager off USB WiFi dongles (the internal card is PCI) so the
+  # sniffer can own them outright, with no managed->unmanaged handoff to bounce
+  # the netdev mid-use.
+  services.udev.extraRules = ''
+    ACTION=="add|change", SUBSYSTEM=="net", ENV{DEVTYPE}=="wlan", ENV{ID_BUS}=="usb", ENV{NM_UNMANAGED}="1"
+  '';
+
+  # Pin the shared wpa_supplicant to the internal card. Otherwise NixOS's
+  # "restart wpa_supplicant on any wlan add/remove" udev rule fires every time a
+  # USB dongle re-enumerates and drops the internal wifi with it.
+  networking.wireless.interfaces = [ "wlp0s20f3" ];
 
   hardware = {
     bluetooth.enable = true;
