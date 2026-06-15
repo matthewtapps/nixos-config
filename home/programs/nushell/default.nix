@@ -121,7 +121,7 @@
           let stamp = ($env.HOME | path join ".local/share/nixos-switch-stamp")
           let hash = (nixos-config-hash)
           if ($stamp | path exists) and ((open $stamp | str trim) == $hash) {
-              print "karsa up to date, skipping"
+              print "${device} up to date, skipping"
               return
           }
           sudo -v

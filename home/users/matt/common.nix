@@ -164,7 +164,6 @@
     wirelesstools
     iw
 
-    claude-code
     tree
   ];
 
@@ -460,6 +459,7 @@
     ../../programs/nushell/default.nix
     ../../programs/neovim/default.nix
     ../../programs/git.nix
+    ../../programs/claude-code.nix
     ../../programs/direnv.nix
     ../../programs/zathura.nix
     ./theme.nix
