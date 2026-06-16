@@ -6,17 +6,15 @@
   "repository": "local",
   "author": "matt",
   "license": "MIT",
-  "description": "Battery discharge meter with task-manager-style per-process power, CPU, RSS, wakeups and I/O. CPU-attributed; GPU/wifi power is not modeled.",
+  "description": "Bar widget showing total system power draw (W) from the battery while discharging.",
   "tags": [
     "Bar",
-    "Panel",
     "System",
     "Power"
   ],
   "entryPoints": {
     "main": "Main.qml",
     "barWidget": "BarWidget.qml",
-    "panel": "Panel.qml",
     "settings": "Settings.qml"
   },
   "dependencies": {
@@ -25,16 +23,11 @@
   "metadata": {
     "defaultSettings": {
       "intervalSeconds": 2,
-      "topProcesses": 25,
-      "historySamples": 120,
       "thresholdGoodW": 8,
       "thresholdWarnW": 15,
       "colorGood": "#A7C080",
       "colorWarning": "#DBBC7F",
-      "colorCritical": "#E67E80",
-      "showSparkline": true,
-      "barShows": "power_w",
-      "defaultSort": "power_w"
+      "colorCritical": "#E67E80"
     }
   }
 }
