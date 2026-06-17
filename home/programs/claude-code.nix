@@ -128,6 +128,10 @@ let
 
   settings = {
     model = "opus";
+    tui = "fullscreen";
+    permissions = {
+      defaultMode = "auto";
+    };
     statusLine = {
       type = "command";
       command = "claude-powerline --config ~/.claude/claude-powerline.json";
@@ -180,7 +184,11 @@ in
       src="$1"; dest="$2"
       $DRY_RUN_CMD rm -rf "$dest"
       $DRY_RUN_CMD mkdir -p "$(dirname "$dest")"
-      $DRY_RUN_CMD ${cp} -rT --no-preserve=mode,ownership "$src" "$dest"
+      # Preserve source modes (some plugin hooks ship +x, e.g. superpowers'
+      # run-hook.cmd which Claude invokes directly) but not ownership. Then add
+      # u+w so Claude can write runtime markers into the otherwise read-only
+      # store-derived tree.
+      $DRY_RUN_CMD ${cp} -rT --no-preserve=ownership "$src" "$dest"
       $DRY_RUN_CMD chmod -R u+w "$dest"
     }
 
