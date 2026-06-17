@@ -11,9 +11,12 @@
         energy_performance_preference = "power";
       };
       charger = {
-        governor = "performance";
+        # amd-pstate-epp: "powersave" is the DYNAMIC governor (full turbo under
+        # load, clocks down at idle). "performance" pins max clock+voltage even
+        # idle -> constant heat + fan never rests while on AC.
+        governor = "powersave";
         turbo = "auto";
-        energy_performance_preference = "performance";
+        energy_performance_preference = "balance_performance";
       };
     };
   };
