@@ -28,6 +28,11 @@ let
   claude-code = pkgs.callPackage ../../nixos/packages/claude-code.nix { };
   claude-powerline = pkgs.callPackage ../../nixos/packages/claude-powerline.nix { };
 
+  cclaude = pkgs.writeShellScriptBin "cclaude" ''
+    export CLAUDE_CONFIG_DIR="${home}/.claude-alt"
+    exec ${claude-code}/bin/claude "$@"
+  '';
+
   home = config.home.homeDirectory;
   pluginsDir = "${home}/.claude/plugins";
 
@@ -225,6 +230,7 @@ in
   home.packages = [
     claude-code
     claude-powerline
+    cclaude
   ];
 
   home.activation.claudeCode = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -250,5 +256,13 @@ in
     $DRY_RUN_CMD ${install} -m644 ${knownMarketplacesJson} "$root/plugins/known_marketplaces.json"
     $DRY_RUN_CMD ${install} -m644 ${settingsPersonalJson} "$root/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$root/claude-powerline.json"
+
+    # Work profile dir: own settings + powerline, plugins symlinked to the
+    # shared tree (installPaths in installed_plugins.json are absolute).
+    alt="${home}/.claude-alt"
+    $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "$alt"
+    $DRY_RUN_CMD ln -sfn "$root/plugins" "$alt/plugins"
+    $DRY_RUN_CMD ${install} -m644 ${settingsAltJson} "$alt/settings.json"
+    $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
   '';
 }
