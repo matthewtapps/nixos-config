@@ -192,23 +192,22 @@ let
     };
 
   # Default ~/.claude (plain `claude`) holds the WORK account login -> ahvi :8421
-  # (standard ahvi ports). Named personalDir for historical reasons; the account
-  # logged in here is work.
-  personalDir = "${home}/.claude";
+  # (standard ahvi ports).
+  workDir = "${home}/.claude";
   # ~/.claude-alt (via cclaude wrapper) holds the PERSONAL account login -> ahvi
   # :8431 (nonstandard ports).
-  altDir = "${home}/.claude-alt";
+  personalDir = "${home}/.claude-alt";
 
-  settingsAltJson = pkgs.writeText "claude-settings.json" (
+  settingsPersonalJson = pkgs.writeText "claude-settings-personal.json" (
     builtins.toJSON (mkSettings {
       endpoint = "http://192.168.0.170:8431";
-      dir = altDir;
+      dir = personalDir;
     })
   );
-  settingsPersonalJson = pkgs.writeText "claude-settings-alt.json" (
+  settingsWorkJson = pkgs.writeText "claude-settings-work.json" (
     builtins.toJSON (mkSettings {
       endpoint = "http://192.168.0.170:8421";
-      dir = personalDir;
+      dir = workDir;
     })
   );
   installedPluginsJson = pkgs.writeText "installed_plugins.json" (builtins.toJSON installedPlugins);
@@ -257,16 +256,17 @@ in
 
     $DRY_RUN_CMD ${install} -m644 ${installedPluginsJson} "$root/plugins/installed_plugins.json"
     $DRY_RUN_CMD ${install} -m644 ${knownMarketplacesJson} "$root/plugins/known_marketplaces.json"
-    $DRY_RUN_CMD ${install} -m644 ${settingsPersonalJson} "$root/settings.json"
+    $DRY_RUN_CMD ${install} -m644 ${settingsWorkJson} "$root/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$root/claude-powerline.json"
 
-    # Work profile dir: own settings + powerline, plugins symlinked to the
-    # shared tree (installPaths in installed_plugins.json are absolute).
+    # Personal profile dir (~/.claude-alt, via cclaude): own settings + powerline,
+    # plugins symlinked to the shared tree (installPaths in
+    # installed_plugins.json are absolute).
     alt="${home}/.claude-alt"
     $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "$alt"
     $DRY_RUN_CMD rm -rf "$alt/plugins"
     $DRY_RUN_CMD ln -sfn "$root/plugins" "$alt/plugins"
-    $DRY_RUN_CMD ${install} -m644 ${settingsAltJson} "$alt/settings.json"
+    $DRY_RUN_CMD ${install} -m644 ${settingsPersonalJson} "$alt/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
   '';
 }
