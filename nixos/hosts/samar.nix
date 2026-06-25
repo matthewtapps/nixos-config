@@ -32,13 +32,20 @@
     hostName = "samar";
   };
 
-  # 9192 existing; 8420/8421 personal ahvi (UI/ingest), 8430/8431 work ahvi.
+  # 9192 existing. ahvi dev-instances (see ahvi justfile `dev-instance`):
+  #   work (default): api 8420, otlp-ingest 8421, vite UI 5173
+  #   personal:       api 8430, otlp-ingest 8431, vite UI 5174
+  # The vite UI ports (5173/5174) must be open for the browser to reach the
+  # frontend over the LAN; 8421/8431 for LAN OTLP ingest; 8420/8430 for direct
+  # query-API hits (the browser doesn't need these — vite proxies /api itself).
   networking.firewall.allowedTCPPorts = [
     9192
     8420
     8421
     8430
     8431
+    5173
+    5174
   ];
 
   nix.settings.trusted-users = [
