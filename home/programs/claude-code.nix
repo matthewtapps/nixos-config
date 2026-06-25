@@ -191,21 +191,21 @@ let
       skipAutoPermissionPrompt = true;
     };
 
-  # Personal profile (default ~/.claude) -> ahvi :8421.
+  # Personal profile (default ~/.claude) -> ahvi :8431.
   personalDir = "${home}/.claude";
-  # Work profile (~/.claude-alt, via cclaude wrapper) -> ahvi :8431.
+  # Work profile (~/.claude-alt, via cclaude wrapper) -> ahvi :8421.
   altDir = "${home}/.claude-alt";
 
-  settingsPersonalJson = pkgs.writeText "claude-settings.json" (
+  settingsAltJson = pkgs.writeText "claude-settings.json" (
     builtins.toJSON (mkSettings {
       endpoint = "http://192.168.0.170:8421";
-      dir = personalDir;
+      dir = altDir;
     })
   );
-  settingsAltJson = pkgs.writeText "claude-settings-alt.json" (
+  settingsPersonalJson = pkgs.writeText "claude-settings-alt.json" (
     builtins.toJSON (mkSettings {
       endpoint = "http://192.168.0.170:8431";
-      dir = altDir;
+      dir = personalDir;
     })
   );
   installedPluginsJson = pkgs.writeText "installed_plugins.json" (builtins.toJSON installedPlugins);
