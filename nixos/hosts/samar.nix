@@ -32,7 +32,14 @@
     hostName = "samar";
   };
 
-  networking.firewall.allowedTCPPorts = [ 9192 ];
+  # 9192 existing; 8420/8421 personal ahvi (UI/ingest), 8430/8431 work ahvi.
+  networking.firewall.allowedTCPPorts = [
+    9192
+    8420
+    8421
+    8430
+    8431
+  ];
 
   nix.settings.trusted-users = [
     "matt"
