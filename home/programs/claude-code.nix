@@ -31,6 +31,38 @@ let
   home = config.home.homeDirectory;
   pluginsDir = "${home}/.claude/plugins";
 
+  # Full-telemetry OTel env for ahvi: logs + traces + prompts + tool content,
+  # no raw API bodies. http/json because ahvi parses JSON not protobuf; metrics
+  # off because ahvi has no /v1/metrics route. Endpoint is per-profile.
+  mkEnv = endpoint: {
+    CLAUDE_CODE_ENABLE_TELEMETRY = "1";
+    CLAUDE_CODE_ENHANCED_TELEMETRY_BETA = "1";
+    OTEL_LOGS_EXPORTER = "otlp";
+    OTEL_TRACES_EXPORTER = "otlp";
+    OTEL_METRICS_EXPORTER = "none";
+    OTEL_EXPORTER_OTLP_PROTOCOL = "http/json";
+    OTEL_EXPORTER_OTLP_ENDPOINT = endpoint;
+    OTEL_LOG_TOOL_DETAILS = "1";
+    OTEL_LOG_TOOL_CONTENT = "1";
+    OTEL_LOG_USER_PROMPTS = "1";
+    OTEL_LOG_RAW_API_BODIES = "0";
+    OTEL_LOGS_EXPORT_INTERVAL = "2000";
+  };
+
+  # Statusline wrapper: tee the hook payload to ahvi as an ahvi.quota_sample OTel
+  # log (best-effort, bounded — never stalls or breaks the statusline), then run
+  # the real claude-powerline with the config in this profile's dir.
+  mkStatusline =
+    { endpoint, dir }:
+    pkgs.writeShellScript "ahvi-statusline" ''
+      input="$(cat)"
+      ts="$(${pkgs.coreutils}/bin/date +%s%N)"
+      ${pkgs.jq}/bin/jq -cn --arg hd "$input" --arg ts "$ts" \
+        '{resourceLogs:[{scopeLogs:[{logRecords:[{timeUnixNano:$ts,body:{stringValue:"ahvi.quota_sample"},attributes:[{key:"ahvi.hookdata",value:{stringValue:$hd}}]}]}]}]}' \
+        | ${pkgs.curl}/bin/curl -s -m 1 -XPOST "${endpoint}/v1/logs" -H 'content-type: application/json' --data-binary @- >/dev/null 2>&1 || true
+      exec ${claude-powerline}/bin/claude-powerline --config ${dir}/claude-powerline.json <<<"$input"
+    '';
+
   # Pinned marketplace repos (full repo content, cloned into plugins/marketplaces).
   mp = {
     caveman = pkgs.fetchFromGitHub {
