@@ -22,6 +22,7 @@
   config,
   pkgs,
   lib,
+  host,
   ...
 }:
 let
@@ -35,6 +36,18 @@ let
 
   home = config.home.homeDirectory;
   pluginsDir = "${home}/.claude/plugins";
+
+  # Work machines (samar, tehol — the ones importing common-work.nix) run BOTH
+  # harnesses: `claude` (work account) + `cclaude` (personal account). Every
+  # other machine runs a single personal `claude` harness only.
+  isWorkMachine = builtins.elem host.name [ "samar" "tehol" ];
+
+  # ahvi runs on samar. Work machines reach it over the WireGuard VPN address so
+  # telemetry still flows when the machine travels off the home LAN; personal
+  # machines reach it over the home wifi LAN.
+  ahviHost = if isWorkMachine then "10.88.88.131" else "192.168.0.170";
+  workEndpoint = "http://${ahviHost}:8421"; # work server, standard ahvi ports
+  personalEndpoint = "http://${ahviHost}:8431"; # personal server, nonstandard ports
 
   # Full-telemetry OTel env for ahvi: logs + traces + prompts + tool content,
   # no raw API bodies. http/json because ahvi parses JSON not protobuf; metrics
@@ -191,23 +204,22 @@ let
       skipAutoPermissionPrompt = true;
     };
 
-  # Default ~/.claude (plain `claude`) holds the WORK account login -> ahvi :8421
-  # (standard ahvi ports).
-  workDir = "${home}/.claude";
-  # ~/.claude-alt (via cclaude wrapper) holds the PERSONAL account login -> ahvi
-  # :8431 (nonstandard ports).
-  personalDir = "${home}/.claude-alt";
-
-  settingsPersonalJson = pkgs.writeText "claude-settings-personal.json" (
+  # Default ~/.claude (plain `claude`):
+  #   - work machines    -> WORK account     -> work server (:8421)
+  #   - personal machines -> PERSONAL account -> personal server (:8431)
+  defaultEndpoint = if isWorkMachine then workEndpoint else personalEndpoint;
+  defaultSettingsJson = pkgs.writeText "claude-settings.json" (
     builtins.toJSON (mkSettings {
-      endpoint = "http://192.168.0.170:8431";
-      dir = personalDir;
+      endpoint = defaultEndpoint;
+      dir = "${home}/.claude";
     })
   );
-  settingsWorkJson = pkgs.writeText "claude-settings-work.json" (
+  # Work machines only: ~/.claude-alt (via the cclaude wrapper) holds the PERSONAL
+  # account login -> personal server (:8431).
+  altSettingsJson = pkgs.writeText "claude-settings-alt.json" (
     builtins.toJSON (mkSettings {
-      endpoint = "http://192.168.0.170:8421";
-      dir = workDir;
+      endpoint = personalEndpoint;
+      dir = "${home}/.claude-alt";
     })
   );
   installedPluginsJson = pkgs.writeText "installed_plugins.json" (builtins.toJSON installedPlugins);
@@ -232,8 +244,9 @@ in
   home.packages = [
     claude-code
     claude-powerline
-    cclaude
-  ];
+  ]
+  # cclaude (the personal work-machine harness) only exists on work machines.
+  ++ lib.optional isWorkMachine cclaude;
 
   home.activation.claudeCode = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     root="${home}/.claude"
@@ -256,17 +269,19 @@ in
 
     $DRY_RUN_CMD ${install} -m644 ${installedPluginsJson} "$root/plugins/installed_plugins.json"
     $DRY_RUN_CMD ${install} -m644 ${knownMarketplacesJson} "$root/plugins/known_marketplaces.json"
-    $DRY_RUN_CMD ${install} -m644 ${settingsWorkJson} "$root/settings.json"
+    $DRY_RUN_CMD ${install} -m644 ${defaultSettingsJson} "$root/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$root/claude-powerline.json"
+    ${lib.optionalString isWorkMachine ''
 
-    # Personal profile dir (~/.claude-alt, via cclaude): own settings + powerline,
-    # plugins symlinked to the shared tree (installPaths in
-    # installed_plugins.json are absolute).
-    alt="${home}/.claude-alt"
-    $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "$alt"
-    $DRY_RUN_CMD rm -rf "$alt/plugins"
-    $DRY_RUN_CMD ln -sfn "$root/plugins" "$alt/plugins"
-    $DRY_RUN_CMD ${install} -m644 ${settingsPersonalJson} "$alt/settings.json"
-    $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
+      # Work machines only: second ~/.claude-alt profile (personal account via the
+      # cclaude wrapper). Own settings + powerline; plugins symlinked to the shared
+      # tree (installPaths in installed_plugins.json are absolute).
+      alt="${home}/.claude-alt"
+      $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "$alt"
+      $DRY_RUN_CMD rm -rf "$alt/plugins"
+      $DRY_RUN_CMD ln -sfn "$root/plugins" "$alt/plugins"
+      $DRY_RUN_CMD ${install} -m644 ${altSettingsJson} "$alt/settings.json"
+      $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
+    ''}
   '';
 }
