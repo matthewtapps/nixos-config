@@ -261,6 +261,7 @@ in
     # shared tree (installPaths in installed_plugins.json are absolute).
     alt="${home}/.claude-alt"
     $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "$alt"
+    $DRY_RUN_CMD rm -rf "$alt/plugins"
     $DRY_RUN_CMD ln -sfn "$root/plugins" "$alt/plugins"
     $DRY_RUN_CMD ${install} -m644 ${settingsAltJson} "$alt/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
