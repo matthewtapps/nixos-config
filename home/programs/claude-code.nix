@@ -158,32 +158,51 @@ let
     );
   };
 
-  settings = {
-    model = "opus";
-    tui = "fullscreen";
-    permissions = {
-      defaultMode = "auto";
-    };
-    statusLine = {
-      type = "command";
-      command = "claude-powerline --config ~/.claude/claude-powerline.json";
-    };
-    enabledPlugins = builtins.listToAttrs (
-      map (p: {
-        name = "${p.plugin}@${p.mp}";
-        value = true;
-      }) pluginCaches
-    );
-    extraKnownMarketplaces = lib.mapAttrs (_: repo: {
-      source = {
-        source = "github";
-        inherit repo;
+  mkSettings =
+    { endpoint, dir }:
+    {
+      model = "opus";
+      tui = "fullscreen";
+      permissions = {
+        defaultMode = "auto";
       };
-    }) marketplaceRepos;
-    skipAutoPermissionPrompt = true;
-  };
+      env = mkEnv endpoint;
+      statusLine = {
+        type = "command";
+        command = "${mkStatusline { inherit endpoint dir; }}";
+      };
+      enabledPlugins = builtins.listToAttrs (
+        map (p: {
+          name = "${p.plugin}@${p.mp}";
+          value = true;
+        }) pluginCaches
+      );
+      extraKnownMarketplaces = lib.mapAttrs (_: repo: {
+        source = {
+          source = "github";
+          inherit repo;
+        };
+      }) marketplaceRepos;
+      skipAutoPermissionPrompt = true;
+    };
 
-  settingsJson = pkgs.writeText "claude-settings.json" (builtins.toJSON settings);
+  # Personal profile (default ~/.claude) -> ahvi :8421.
+  personalDir = "${home}/.claude";
+  # Work profile (~/.claude-alt, via cclaude wrapper) -> ahvi :8431.
+  altDir = "${home}/.claude-alt";
+
+  settingsPersonalJson = pkgs.writeText "claude-settings.json" (
+    builtins.toJSON (mkSettings {
+      endpoint = "http://192.168.0.170:8421";
+      dir = personalDir;
+    })
+  );
+  settingsAltJson = pkgs.writeText "claude-settings-alt.json" (
+    builtins.toJSON (mkSettings {
+      endpoint = "http://192.168.0.170:8431";
+      dir = altDir;
+    })
+  );
   installedPluginsJson = pkgs.writeText "installed_plugins.json" (builtins.toJSON installedPlugins);
   knownMarketplacesJson = pkgs.writeText "known_marketplaces.json" (builtins.toJSON knownMarketplaces);
 
@@ -229,7 +248,7 @@ in
 
     $DRY_RUN_CMD ${install} -m644 ${installedPluginsJson} "$root/plugins/installed_plugins.json"
     $DRY_RUN_CMD ${install} -m644 ${knownMarketplacesJson} "$root/plugins/known_marketplaces.json"
-    $DRY_RUN_CMD ${install} -m644 ${settingsJson} "$root/settings.json"
+    $DRY_RUN_CMD ${install} -m644 ${settingsPersonalJson} "$root/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$root/claude-powerline.json"
   '';
 }
