@@ -191,20 +191,23 @@ let
       skipAutoPermissionPrompt = true;
     };
 
-  # Personal profile (default ~/.claude) -> ahvi :8431.
+  # Default ~/.claude (plain `claude`) holds the WORK account login -> ahvi :8421
+  # (standard ahvi ports). Named personalDir for historical reasons; the account
+  # logged in here is work.
   personalDir = "${home}/.claude";
-  # Work profile (~/.claude-alt, via cclaude wrapper) -> ahvi :8421.
+  # ~/.claude-alt (via cclaude wrapper) holds the PERSONAL account login -> ahvi
+  # :8431 (nonstandard ports).
   altDir = "${home}/.claude-alt";
 
   settingsAltJson = pkgs.writeText "claude-settings.json" (
     builtins.toJSON (mkSettings {
-      endpoint = "http://192.168.0.170:8421";
+      endpoint = "http://192.168.0.170:8431";
       dir = altDir;
     })
   );
   settingsPersonalJson = pkgs.writeText "claude-settings-alt.json" (
     builtins.toJSON (mkSettings {
-      endpoint = "http://192.168.0.170:8431";
+      endpoint = "http://192.168.0.170:8421";
       dir = personalDir;
     })
   );
