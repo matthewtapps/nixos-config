@@ -13,11 +13,11 @@ let
   # 1. Host colleagues type in the browser — samar's address/name ON the
   #    WireGuard network (an IP like "10.0.0.2", or a VPN DNS name). Becomes both
   #    nginx server_name and vite's allowedHosts entry.
-  publicHost = "REPLACE_ME";
+  publicHost = "10.88.88.131";
   # 2. samar's WireGuard interface name. Find it on samar with `wg show` or
   #    `ip -br link` (e.g. "wg0", or a NetworkManager device name). Port 80 is
   #    opened ONLY on this interface.
-  wgInterface = "REPLACE_ME";
+  wgInterface = "wg0";
   # ─────────────────────────────────────────────────────────────────────────────
 
   # Work dev-instance vite port (the justfile `dev-instance` default).
