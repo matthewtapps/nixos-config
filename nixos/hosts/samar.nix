@@ -14,6 +14,10 @@
     ../modules/wireguard.nix
     ../modules/avahi.nix
     ../modules/deploy-target.nix
+    # ahvi work dev-instance reverse proxy (clean port-less URL over WireGuard).
+    # TODO: fill publicHost + wgInterface in the module, then uncomment + rebuild
+    # once samar's WireGuard config lands.
+    # ../modules/ahvi-dev-proxy.nix
   ];
 
   boot = {
