@@ -239,8 +239,8 @@
             value = {
               hostname = host.name;
               profiles.system = {
-                user = "root";
-                sshUser = "matt";
+                sshUser = "root";
+                magicRollback = false; # temporary: re-enable once root SSH is bootstrapped on all remotes
                 path = inputs.deploy-rs.lib.${host.system}.activate.nixos self.nixosConfigurations.${host.name};
               };
             };

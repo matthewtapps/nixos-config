@@ -1,11 +1,5 @@
 _: {
-  security.sudo.extraRules = [
-    {
-      users = [ "matt" ];
-      commands = [
-        { command = "/nix/store/*/activate"; options = [ "NOPASSWD" ]; }
-        { command = "/nix/store/*/bin/switch-to-configuration"; options = [ "NOPASSWD" ]; }
-      ];
-    }
+  users.users.root.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPm051kBWmtEh3hM2ajmxTTd6wd/70GdspJMSlfBC5DT matt@Matt-DESKTOP-NIXOS"
   ];
 }
