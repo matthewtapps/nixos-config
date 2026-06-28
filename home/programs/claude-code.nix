@@ -1,8 +1,9 @@
 # Declarative Claude Code setup.
 #
 # Encodes the local ~/.claude state into Nix:
-#   - the wrapped claude binary (node on PATH) and the claude-powerline renderer
-#   - settings.json (model, statusline, enabled plugins, marketplaces)
+#   - the wrapped claude binary (node on PATH, ahvi MCP via --mcp-config) and the
+#     claude-powerline renderer
+#   - settings.json (model, statusline, hooks, env, enabled plugins, marketplaces)
 #   - claude-powerline.json (statusline theme)
 #   - the plugin tree under ~/.claude/plugins
 #
@@ -29,9 +30,16 @@ let
   claude-code = pkgs.callPackage ../../nixos/packages/claude-code.nix { };
   claude-powerline = pkgs.callPackage ../../nixos/packages/claude-powerline.nix { };
 
+  # Personal harness on work machines: own config dir + personal-server MCP.
   cclaude = pkgs.writeShellScriptBin "cclaude" ''
     export CLAUDE_CONFIG_DIR="${home}/.claude-alt"
-    exec ${claude-code}/bin/claude "$@"
+    exec ${claude-code}/bin/claude --mcp-config ${personalMcpJson} "$@"
+  '';
+
+  # Default `claude`: wrap the real binary to load the ahvi feedback MCP server
+  # declaratively (see mkMcpJson). Endpoint follows the default profile.
+  claudeWrapped = pkgs.writeShellScriptBin "claude" ''
+    exec ${claude-code}/bin/claude --mcp-config ${defaultMcpJson} "$@"
   '';
 
   home = config.home.homeDirectory;
@@ -46,40 +54,86 @@ let
   # telemetry still flows when the machine travels off the home LAN; personal
   # machines reach it over the home wifi LAN.
   ahviHost = if isWorkMachine then "10.88.88.131" else "192.168.0.170";
-  workEndpoint = "http://${ahviHost}:8421"; # work server, standard ahvi ports
-  personalEndpoint = "http://${ahviHost}:8431"; # personal server, nonstandard ports
+
+  # ahvi exposes two ports per instance: an OTLP/HTTP ingest port (telemetry in)
+  # and a query-API port (the should_sample veto + the MCP feedback server). The
+  # feedback hooks + statusline + inventory tee to OTLP; the Stop nudge veto and
+  # the MCP elicitation server live on the API port.
+  #   work server:     otlp 8421, api 8420
+  #   personal server: otlp 8431, api 8430
+  mkEndpoints = { otlpPort, apiPort }: {
+    otlp = "http://${ahviHost}:${toString otlpPort}";
+    api = "http://${ahviHost}:${toString apiPort}";
+  };
+  workEndpoints = mkEndpoints {
+    otlpPort = 8421;
+    apiPort = 8420;
+  };
+  personalEndpoints = mkEndpoints {
+    otlpPort = 8431;
+    apiPort = 8430;
+  };
+
+  # ahvi feedback MCP server. Claude Code does NOT read `mcpServers` from
+  # settings.json — it loads MCP servers from ~/.claude.json (volatile, rewritten
+  # by Claude) or from files passed via `--mcp-config`. We use the latter so the
+  # registration is declarative and non-volatile; the launcher wrappers above
+  # pass the per-profile file. `--mcp-config` is additive to any user-scope
+  # servers, so it won't clobber `claude mcp add` entries.
+  mkMcpJson =
+    endpoints:
+    pkgs.writeText "ahvi-mcp.json" (
+      builtins.toJSON {
+        mcpServers.ahvi = {
+          type = "http";
+          url = "${endpoints.api}/mcp";
+        };
+      }
+    );
+  defaultMcpJson = mkMcpJson defaultEndpoints;
+  personalMcpJson = mkMcpJson personalEndpoints;
+
+  # Path to the ahvi binary that backs the statusline + the four hooks
+  # (inventory / feedback-nudge / feedback-mark / feedback-capture). NOT built by
+  # this config — built out of the ahvi dev project to this fixed dist path; just
+  # rebuild there to update. Absolute so the hooks resolve it regardless of the
+  # inherited PATH.
+  ahviBin = "${home}/dev/ahvi/dist/ahvi";
 
   # Full-telemetry OTel env for ahvi: logs + traces + prompts + tool content,
   # no raw API bodies. http/json because ahvi parses JSON not protobuf; metrics
-  # off because ahvi has no /v1/metrics route. Endpoint is per-profile.
-  mkEnv = endpoint: {
+  # off because ahvi has no /v1/metrics route. Endpoints are per-profile.
+  #
+  # The OTEL_* vars steer Claude Code's own exporter (telemetry out). The AHVI_*
+  # vars steer the ahvi-server hooks: AHVI_OTLP_ENDPOINT is where inventory +
+  # statusline + feedback events POST, AHVI_API_ENDPOINT is where the Stop nudge
+  # asks should_sample. Both default to localhost in the binary, so they MUST be
+  # set here for the remote (samar) instance.
+  mkEnv = endpoints: {
     CLAUDE_CODE_ENABLE_TELEMETRY = "1";
     CLAUDE_CODE_ENHANCED_TELEMETRY_BETA = "1";
     OTEL_LOGS_EXPORTER = "otlp";
     OTEL_TRACES_EXPORTER = "otlp";
     OTEL_METRICS_EXPORTER = "none";
     OTEL_EXPORTER_OTLP_PROTOCOL = "http/json";
-    OTEL_EXPORTER_OTLP_ENDPOINT = endpoint;
+    OTEL_EXPORTER_OTLP_ENDPOINT = endpoints.otlp;
     OTEL_LOG_TOOL_DETAILS = "1";
     OTEL_LOG_TOOL_CONTENT = "1";
     OTEL_LOG_USER_PROMPTS = "1";
     OTEL_LOG_RAW_API_BODIES = "0";
     OTEL_LOGS_EXPORT_INTERVAL = "2000";
+    AHVI_OTLP_ENDPOINT = endpoints.otlp;
+    AHVI_API_ENDPOINT = endpoints.api;
   };
 
-  # Statusline wrapper: tee the hook payload to ahvi as an ahvi.quota_sample OTel
-  # log (best-effort, bounded — never stalls or breaks the statusline), then run
-  # the real claude-powerline with the config in this profile's dir.
-  mkStatusline =
-    { endpoint, dir }:
-    pkgs.writeShellScript "ahvi-statusline" ''
-      input="$(cat)"
-      ts="$(${pkgs.coreutils}/bin/date +%s%N)"
-      ${pkgs.jq}/bin/jq -cn --arg hd "$input" --arg ts "$ts" \
-        '{resourceLogs:[{scopeLogs:[{logRecords:[{timeUnixNano:$ts,body:{stringValue:"ahvi.quota_sample"},attributes:[{key:"ahvi.hookdata",value:{stringValue:$hd}}]}]}]}]}' \
-        | ${pkgs.curl}/bin/curl -s -m 1 -XPOST "${endpoint}/v1/logs" -H 'content-type: application/json' --data-binary @- >/dev/null 2>&1 || true
-      exec ${claude-powerline}/bin/claude-powerline --config ${dir}/claude-powerline.json <<<"$input"
-    '';
+  # statusLine: `ahvi-server statusline` tees the hook payload to ahvi as an
+  # ahvi.quota_sample OTel log (best-effort, bounded — never stalls or breaks the
+  # statusline; endpoint from AHVI_OTLP_ENDPOINT), then execs the real
+  # claude-powerline renderer after the `--`. Replaces the old hand-rolled
+  # jq/curl tee — the binary owns that behavior now (`ahvi install` parity).
+  mkStatuslineCmd =
+    dir:
+    "${ahviBin} statusline -- ${claude-powerline}/bin/claude-powerline --config ${dir}/claude-powerline.json";
 
   # Pinned marketplace repos (full repo content, cloned into plugins/marketplaces).
   mp = {
@@ -176,19 +230,33 @@ let
     );
   };
 
+  # The four ahvi hooks, all backed by ahviBin. SessionStart posts a harness
+  # inventory; the trio Stop/SessionEnd/ElicitationResult drive session-feedback
+  # collection (nudge → mark carry-over → capture the elicitation result).
+  ahviHooks = {
+    SessionStart = [ { hooks = [ { type = "command"; command = "${ahviBin} inventory"; } ]; } ];
+    Stop = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-nudge"; } ]; } ];
+    SessionEnd = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-mark"; } ]; } ];
+    ElicitationResult = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-capture"; } ]; } ];
+  };
+
   mkSettings =
-    { endpoint, dir }:
+    { endpoints, dir }:
     {
       model = "opus";
       tui = "fullscreen";
       permissions = {
         defaultMode = "auto";
       };
-      env = mkEnv endpoint;
+      env = mkEnv endpoints;
       statusLine = {
         type = "command";
-        command = "${mkStatusline { inherit endpoint dir; }}";
+        command = mkStatuslineCmd dir;
       };
+      hooks = ahviHooks;
+      # NB: the ahvi MCP server is NOT declared here — Claude Code ignores
+      # `mcpServers` in settings.json. It's loaded via `--mcp-config` in the
+      # launcher wrappers instead (see mkMcpJson).
       enabledPlugins = builtins.listToAttrs (
         map (p: {
           name = "${p.plugin}@${p.mp}";
@@ -205,20 +273,20 @@ let
     };
 
   # Default ~/.claude (plain `claude`):
-  #   - work machines    -> WORK account     -> work server (:8421)
-  #   - personal machines -> PERSONAL account -> personal server (:8431)
-  defaultEndpoint = if isWorkMachine then workEndpoint else personalEndpoint;
+  #   - work machines    -> WORK account     -> work server (otlp 8421 / api 8420)
+  #   - personal machines -> PERSONAL account -> personal server (otlp 8431 / api 8430)
+  defaultEndpoints = if isWorkMachine then workEndpoints else personalEndpoints;
   defaultSettingsJson = pkgs.writeText "claude-settings.json" (
     builtins.toJSON (mkSettings {
-      endpoint = defaultEndpoint;
+      endpoints = defaultEndpoints;
       dir = "${home}/.claude";
     })
   );
   # Work machines only: ~/.claude-alt (via the cclaude wrapper) holds the PERSONAL
-  # account login -> personal server (:8431).
+  # account login -> personal server (otlp 8431 / api 8430).
   altSettingsJson = pkgs.writeText "claude-settings-alt.json" (
     builtins.toJSON (mkSettings {
-      endpoint = personalEndpoint;
+      endpoints = personalEndpoints;
       dir = "${home}/.claude-alt";
     })
   );
@@ -242,7 +310,7 @@ let
 in
 {
   home.packages = [
-    claude-code
+    claudeWrapped # `claude` wrapper (adds --mcp-config); pulls in claude-code
     claude-powerline
   ]
   # cclaude (the personal work-machine harness) only exists on work machines.
