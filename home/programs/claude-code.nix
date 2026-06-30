@@ -100,8 +100,8 @@ let
   # inherited PATH.
   ahviBin = "${home}/dev/ahvi/dist/ahvi";
 
-  # Full-telemetry OTel env for ahvi: logs + traces + prompts + tool content,
-  # no raw API bodies. http/json because ahvi parses JSON not protobuf; metrics
+  # Full-telemetry OTel env for ahvi: logs + traces + prompts + tool content +
+  # raw API bodies. http/json because ahvi parses JSON not protobuf; metrics
   # off because ahvi has no /v1/metrics route. Endpoints are per-profile.
   #
   # The OTEL_* vars steer Claude Code's own exporter (telemetry out). The AHVI_*
@@ -120,7 +120,7 @@ let
     OTEL_LOG_TOOL_DETAILS = "1";
     OTEL_LOG_TOOL_CONTENT = "1";
     OTEL_LOG_USER_PROMPTS = "1";
-    OTEL_LOG_RAW_API_BODIES = "0";
+    OTEL_LOG_RAW_API_BODIES = "1";
     OTEL_LOGS_EXPORT_INTERVAL = "2000";
     AHVI_OTLP_ENDPOINT = endpoints.otlp;
     AHVI_API_ENDPOINT = endpoints.api;
