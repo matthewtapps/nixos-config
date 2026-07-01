@@ -27,20 +27,25 @@
   ...
 }:
 let
-  claude-code = pkgs.callPackage ../../nixos/packages/claude-code.nix { };
+  # ahvi MCP endpoints + launcher wrappers, shared with flake.nix's `packages`
+  # output (so the ~/cs work devshell can wrap the same ahvi-aware binary).
+  ahvi = import ../../nixos/packages/claude-ahvi.nix { inherit pkgs; };
+  claude-code = ahvi.claude-code;
   claude-powerline = pkgs.callPackage ../../nixos/packages/claude-powerline.nix { };
 
   # Personal harness on work machines: own config dir + personal-server MCP.
-  cclaude = pkgs.writeShellScriptBin "cclaude" ''
-    export CLAUDE_CONFIG_DIR="${home}/.claude-alt"
-    exec ${claude-code}/bin/claude --mcp-config ${personalMcpJson} "$@"
-  '';
+  cclaude = ahvi.mkWrapper {
+    name = "cclaude";
+    apiUrl = personalEndpoints.api;
+    configSubdir = ".claude-alt";
+  };
 
   # Default `claude`: wrap the real binary to load the ahvi feedback MCP server
-  # declaratively (see mkMcpJson). Endpoint follows the default profile.
-  claudeWrapped = pkgs.writeShellScriptBin "claude" ''
-    exec ${claude-code}/bin/claude --mcp-config ${defaultMcpJson} "$@"
-  '';
+  # declaratively. Endpoint follows the default profile.
+  claudeWrapped = ahvi.mkWrapper {
+    name = "claude";
+    apiUrl = defaultEndpoints.api;
+  };
 
   home = config.home.homeDirectory;
   pluginsDir = "${home}/.claude/plugins";
@@ -58,40 +63,11 @@ let
   # ahvi exposes two ports per instance: an OTLP/HTTP ingest port (telemetry in)
   # and a query-API port (the should_sample veto + the MCP feedback server). The
   # feedback hooks + statusline + inventory tee to OTLP; the Stop nudge veto and
-  # the MCP elicitation server live on the API port.
-  #   work server:     otlp 8421, api 8420
-  #   personal server: otlp 8431, api 8430
-  mkEndpoints = { otlpPort, apiPort }: {
-    otlp = "http://${ahviHost}:${toString otlpPort}";
-    api = "http://${ahviHost}:${toString apiPort}";
-  };
-  workEndpoints = mkEndpoints {
-    otlpPort = 8421;
-    apiPort = 8420;
-  };
-  personalEndpoints = mkEndpoints {
-    otlpPort = 8431;
-    apiPort = 8430;
-  };
-
-  # ahvi feedback MCP server. Claude Code does NOT read `mcpServers` from
-  # settings.json — it loads MCP servers from ~/.claude.json (volatile, rewritten
-  # by Claude) or from files passed via `--mcp-config`. We use the latter so the
-  # registration is declarative and non-volatile; the launcher wrappers above
-  # pass the per-profile file. `--mcp-config` is additive to any user-scope
-  # servers, so it won't clobber `claude mcp add` entries.
-  mkMcpJson =
-    endpoints:
-    pkgs.writeText "ahvi-mcp.json" (
-      builtins.toJSON {
-        mcpServers.ahvi = {
-          type = "http";
-          url = "${endpoints.api}/mcp";
-        };
-      }
-    );
-  defaultMcpJson = mkMcpJson defaultEndpoints;
-  personalMcpJson = mkMcpJson personalEndpoints;
+  # the MCP elicitation server live on the API port. Port constants + the ahvi
+  # MCP wiring live in nixos/packages/claude-ahvi.nix (shared with flake.nix).
+  endpoints = ahvi.mkEndpoints ahviHost;
+  workEndpoints = endpoints.work;
+  personalEndpoints = endpoints.personal;
 
   # Path to the ahvi binary that backs the statusline + the four hooks
   # (inventory / feedback-nudge / feedback-mark / feedback-capture). NOT built by
@@ -256,7 +232,7 @@ let
       hooks = ahviHooks;
       # NB: the ahvi MCP server is NOT declared here — Claude Code ignores
       # `mcpServers` in settings.json. It's loaded via `--mcp-config` in the
-      # launcher wrappers instead (see mkMcpJson).
+      # launcher wrappers instead (see nixos/packages/claude-ahvi.nix).
       enabledPlugins = builtins.listToAttrs (
         map (p: {
           name = "${p.plugin}@${p.mp}";
