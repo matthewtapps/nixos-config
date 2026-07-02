@@ -27,6 +27,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Independently-bumpable Claude Code (hourly npm tracking, prebuilt via
+    # claude-code.cachix.org). Overlay sets pkgs.claude-code, which the whole
+    # node-wrapper / ahvi / home / packages chain inherits. Deliberately NOT
+    # following nixpkgs: the flake pins its own Node 22 and caches binaries
+    # against its locked nixpkgs; following unstable would force a source
+    # rebuild. Bump with `nix flake update claude-code`.
+    claude-code.url = "github:sadjow/claude-code-nix";
+
     sops-nix.url = "github:Mic92/sops-nix";
 
     deploy-rs = {
@@ -66,6 +74,8 @@
     let
       overlays = [
         inputs.noctalia.overlays.default
+        # Swap pkgs.claude-code to the independently-tracked flake (see input).
+        inputs.claude-code.overlays.default
         (final: prev: {
           zen-browser = inputs.zen-browser.packages.${final.stdenv.hostPlatform.system}.default;
         })
