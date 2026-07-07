@@ -27,7 +27,13 @@ let
         # snapshot: drop any existing snapshot(s) with this tag first so repeated
         # runs never stack duplicates. VM must be off (qcow2 write lock).
         TAG="''${2:-clean}"
-        while ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --snapshot delete "$TAG" >/dev/null 2>&1; do :; done
+        DISK="''${CONF%.conf}/disk.qcow2"
+        # List-driven delete: loop only while the tag still appears, so this
+        # terminates regardless of qemu-img's exit code (deleting a missing tag
+        # errors -> break). Operate on the disk directly with qemu-img.
+        while ${pkgs.qemu-utils}/bin/qemu-img snapshot -l "$DISK" | awk '{print $2}' | grep -qx "$TAG"; do
+          ${pkgs.qemu-utils}/bin/qemu-img snapshot -d "$TAG" "$DISK" || break
+        done
         ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --snapshot create "$TAG"
         echo "Snapshot '$TAG' saved."
         ;;
