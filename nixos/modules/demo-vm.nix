@@ -17,9 +17,10 @@ let
         echo "Created. Run 'demo-vm start' to boot and install Ubuntu."
         ;;
       start)
-        # SPICE display: full GNOME desktop in a spicy window, clipboard sync,
-        # drag-and-drop, and $SHARE exposed to the guest over spice-webdav.
-        ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --display spice --public-dir "$SHARE"
+        # SDL display: spicy/VirGL renders black on this Intel Arc iGPU, so use
+        # SDL. $SHARE is still exposed to the guest (mount in-guest via 9p:
+        # sudo mount -t 9p -o trans=virtio,version=9p2000.L Public-matt ~/shared).
+        ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --display sdl --public-dir "$SHARE"
         ;;
       snapshot)
         # Run once after a clean install to mark the pristine state.
