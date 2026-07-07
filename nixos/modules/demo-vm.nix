@@ -23,19 +23,25 @@ let
         ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --display sdl --public-dir "$SHARE"
         ;;
       snapshot)
-        # Run once after a clean install to mark the pristine state.
-        ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --snapshot create clean
+        # Save current disk state under TAG (default 'clean'). One tag == one
+        # snapshot: drop any existing snapshot(s) with this tag first so repeated
+        # runs never stack duplicates. VM must be off (qcow2 write lock).
+        TAG="''${2:-clean}"
+        while ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --snapshot delete "$TAG" >/dev/null 2>&1; do :; done
+        ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --snapshot create "$TAG"
+        echo "Snapshot '$TAG' saved."
         ;;
       reset)
-        # Throwaway: roll the disk back to the 'clean' snapshot.
-        ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --snapshot apply clean
+        # Throwaway: roll the disk back to snapshot TAG (default 'clean').
+        TAG="''${2:-clean}"
+        ${pkgs.quickemu}/bin/quickemu --vm "$CONF" --snapshot apply "$TAG"
         ;;
       *)
-        echo "usage: demo-vm {create|start|snapshot|reset}"
-        echo "  create   - download Ubuntu 24.04 into ~/VMs"
-        echo "  start    - boot with SPICE + ~/VMs/shared exposed to guest"
-        echo "  snapshot - save current disk state as 'clean' (run after install)"
-        echo "  reset    - restore the 'clean' snapshot (throwaway)"
+        echo "usage: demo-vm {create|start|snapshot [tag]|reset [tag]}"
+        echo "  create        - download Ubuntu 24.04 into ~/VMs"
+        echo "  start         - boot with SDL + ~/VMs/shared exposed to guest"
+        echo "  snapshot [tag]- save disk state as [tag] (default 'clean'); replaces same tag"
+        echo "  reset [tag]   - restore snapshot [tag] (default 'clean'); throwaway"
         exit 1
         ;;
     esac
