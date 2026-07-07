@@ -56,6 +56,15 @@ in
 {
   environment.systemPackages = [ pkgs.quickemu demo-vm ];
 
+  # Expose the demo VM's prod wtk-web to the LAN (e.g. samar's remote agent).
+  # quickemu forwards these host ports into the guest via qemu hostfwd, bound on
+  # all interfaces, so peers reach the VM at <tehol-lan-ip>:<port>. Requires
+  # matching port_forwards=("9192:9192" "8443:443") in ~/VMs/ubuntu-24.04.conf.
+  #   9192 -> guest 9192 : wtk grpc (agent provisioning channel; already open)
+  #   8443 -> guest 443  : wtk web UI over HTTPS (443 is privileged on the host,
+  #                        so qemu-as-user forwards from 8443 instead).
+  networking.firewall.allowedTCPPorts = [ 8443 ];
+
   # quickemu needs /dev/kvm, which is owned by the kvm group.
   users.users = lib.genAttrs (builtins.attrNames host.users) (_: {
     extraGroups = lib.mkAfter [ "kvm" ];
