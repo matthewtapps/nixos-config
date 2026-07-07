@@ -7,6 +7,7 @@
     ../modules/stylix.nix
     ../modules/wayland.nix
     ../modules/virtualization.nix
+    ../modules/demo-vm.nix
     ../modules/audio.nix
     ../modules/thunar.nix
     ../modules/networkmanager.nix
