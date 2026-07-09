@@ -7,6 +7,21 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
+-- Move by visual (screen) lines through wrapped lines, but keep counted jumps
+-- logical so relativenumber targets still work: bare j/k glide across wrapped
+-- rows; `5j` (read off the gutter) moves 5 real lines. Left unmapped in
+-- operator-pending mode, so dj/yk still act on whole logical lines.
+for _, k in ipairs({ "j", "<Down>" }) do
+	vim.keymap.set({ "n", "x" }, k, function()
+		return vim.v.count == 0 and "gj" or "j"
+	end, { expr = true, silent = true, desc = "Down (visual line)" })
+end
+for _, k in ipairs({ "k", "<Up>" }) do
+	vim.keymap.set({ "n", "x" }, k, function()
+		return vim.v.count == 0 and "gk" or "k"
+	end, { expr = true, silent = true, desc = "Up (visual line)" })
+end
+
 -- Terminal navigation (for when inside nvim terminals)
 vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h")
 vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j")

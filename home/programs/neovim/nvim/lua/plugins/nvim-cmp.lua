@@ -25,15 +25,26 @@ return {
           luasnip.lsp_expand(args.body)
         end,
       },
+      -- Never auto-highlight a candidate: `noselect` stops the menu selecting on
+      -- open, `PreselectMode.None` ignores the LSP's `preselect` hint. Combined
+      -- with the <CR> mapping below, this means an item is only ever "selected"
+      -- when you deliberately Tab/C-j/C-k onto it, so <CR> in prose is always a
+      -- newline and never fills an unwanted completion.
+      preselect = cmp.PreselectMode.None,
       completion = {
-        completeopt = "menu,menuone,noinsert",
+        completeopt = "menu,menuone,noinsert,noselect",
       },
       mapping = cmp.mapping.preset.insert({
         ["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
         ["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
         ["<C-Space>"] = cmp.mapping.complete(),
         ["<C-e>"] = cmp.mapping.abort(),
-        ["<CR>"] = cmp.mapping.confirm({ select = false }),
+        -- <CR> never accepts a completion — always a plain newline, even with the
+        -- menu open. Accept via <Tab> (below). Cmdline <CR> is unaffected (it uses
+        -- the separate preset.cmdline setup further down).
+        ["<CR>"] = cmp.mapping(function(fallback)
+          fallback()
+        end, { "i", "s" }),
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.confirm({ select = true })

@@ -54,6 +54,25 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     end,
 })
 
+-- Soft-wrap prose files. Global `wrap = false` (options.lua) keeps code files
+-- unwrapped, but markdown player-sheets hold long unbroken paragraphs (and raw
+-- HTML blocks like the pandoc banner) that otherwise run off-screen. linebreak
+-- wraps at word boundaries; breakindent keeps wrapped lines visually indented.
+vim.api.nvim_create_autocmd("FileType", {
+	group = augroup("prose_wrap"),
+	pattern = { "markdown", "markdown.mdx", "text" },
+	callback = function()
+		vim.opt_local.wrap = true
+		vim.opt_local.linebreak = true
+		vim.opt_local.breakindent = true
+		-- render-markdown.nvim's recommended wrap settings: keep wrapped rows
+		-- indented under their start and reserve a 2-space hang so rendered
+		-- icons/bars line up on continuation lines.
+		vim.opt_local.breakindentopt = ""
+		vim.opt_local.showbreak = "  "
+	end,
+})
+
 -- Enable treesitter highlighting + indent (nvim-treesitter main branch is
 -- provided by Nix; it does not auto-enable highlighting).
 vim.api.nvim_create_autocmd("FileType", {
