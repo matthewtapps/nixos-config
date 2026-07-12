@@ -7,15 +7,15 @@
 
   nix = {
     settings = {
+      # cache.nixos.org + its key are provided by the NixOS defaults; listing
+      # them here again only duplicates the entries in the generated nix.conf.
       substituters = [
-        "https://cache.nixos.org/"
         "https://nix-community.cachix.org"
         "https://hyprland.cachix.org"
         "https://neovim.cachix.org"
         "https://claude-code.cachix.org"
       ];
       trusted-public-keys = [
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "neovim.cachix.org-1:iyQ3Blw1uJODzY8+LXkDBnCpulPGrqJ+mOQGpok6Iyw="
@@ -31,14 +31,13 @@
         "kvm"
       ];
 
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
+      # experimental-features is set in nix-options.nix; don't duplicate it here.
 
       use-xdg-base-directories = true;
-      auto-optimise-store = true;
-
+      # Inline hard-linking on every store write serialises builds and leaves
+      # the daemon in uninterruptible-sleep (D) with the CPU idle. Do it out of
+      # band via nix.optimise (see nix-options.nix) instead.
+      auto-optimise-store = false;
     };
   };
 }

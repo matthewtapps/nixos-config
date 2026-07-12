@@ -13,7 +13,7 @@ let
           "networkmanager"
           "video"
         ];
-        shell = pkgs.nushell;
+        shell = pkgs.zsh;
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPm051kBWmtEh3hM2ajmxTTd6wd/70GdspJMSlfBC5DT matt@Matt-DESKTOP-NIXOS"
         ];
@@ -24,4 +24,7 @@ let
 in
 {
   users.users = userConfigs;
+
+  # Enable zsh system-wide so it's a valid login shell (adds it to /etc/shells).
+  programs.zsh.enable = true;
 }

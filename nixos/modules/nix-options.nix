@@ -8,5 +8,11 @@
       dates = "weekly";
       options = "--delete-older-than 10d";
     };
+    # Replaces inline auto-optimise-store (see cachix.nix): dedupe the store on a
+    # timer instead of stalling every build on hard-linking.
+    optimise = {
+      automatic = true;
+      dates = [ "weekly" ];
+    };
   };
 }

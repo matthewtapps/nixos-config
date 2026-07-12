@@ -452,11 +452,10 @@
   '';
 
   imports = [
-    # ../../programs/zsh/default.nix      # kept for easy rollback
     # ../../programs/wezterm/default.nix  # kept for easy rollback
     ../../programs/zsh/version-check.nix
+    ../../programs/zsh/default.nix
     ../../programs/ghostty.nix
-    ../../programs/nushell/default.nix
     ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/claude-code.nix

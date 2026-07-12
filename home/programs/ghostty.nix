@@ -2,6 +2,13 @@ _: {
   programs.ghostty = {
     enable = true;
     settings = {
+      # Launch the login shell via the stable system-profile path rather than
+      # inheriting $SHELL. Ghostty reads $SHELL from its own env, captured at
+      # compositor login — a stale value there (e.g. an old login shell whose
+      # store path was GC'd) makes every new window fail to spawn. This path
+      # always resolves to the current zsh and is never GC'd while it's the
+      # active system, so it tracks the login shell without the staleness.
+      command = "/run/current-system/sw/bin/zsh";
       window-decoration = false;
       scrollback-limit = 104857600;
       confirm-close-surface = false;

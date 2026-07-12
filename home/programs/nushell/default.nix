@@ -126,8 +126,14 @@
           }
           sudo -v
           nh os switch ~/nixos-config
-          mkdir ($stamp | path dirname)
-          $hash | save --force $stamp
+          # Ctrl-C only kills `nh`; nushell keeps running the block, so guard the
+          # stamp write on a real success or a cancelled build false-positives next run.
+          if $env.LAST_EXIT_CODE == 0 {
+              mkdir ($stamp | path dirname)
+              $hash | save --force $stamp
+          } else {
+              print "nixswitch: build failed or cancelled, stamp not updated"
+          }
       }
 
       alias hmswitch = nh home switch ~/nixos-config

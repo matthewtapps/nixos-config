@@ -8,13 +8,21 @@
     home-manager.url = "github:nix-community/home-manager";
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
 
     foundryvtt.url = "github:reckenrode/nix-foundryvtt";
+    foundryvtt.inputs.nixpkgs.follows = "nixpkgs";
 
     matugen.url = "github:InioX/matugen?ref=v2.2.0";
+    matugen.inputs.nixpkgs.follows = "nixpkgs";
 
     lan-mouse.url = "github:feschber/lan-mouse";
+    lan-mouse.inputs.nixpkgs.follows = "nixpkgs";
 
+    # hyprland deliberately does NOT follow nixpkgs: it caches binaries on
+    # hyprland.cachix.org built against its own pinned nixpkgs. Following unstable
+    # would miss that cache and force a full source rebuild. Same rationale as
+    # claude-code below.
     hyprland.url = "github:hyprwm/Hyprland";
 
     stylix = {
@@ -36,6 +44,7 @@
     claude-code.url = "github:sadjow/claude-code-nix";
 
     sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     deploy-rs = {
       url = "github:serokell/deploy-rs";

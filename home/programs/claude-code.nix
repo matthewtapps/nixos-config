@@ -6,6 +6,7 @@
 #   - settings.json (model, statusline, hooks, env, enabled plugins, marketplaces)
 #   - claude-powerline.json (statusline theme)
 #   - the plugin tree under ~/.claude/plugins
+#   - plain skills under ~/.claude/skills (Matt Pocock's skills)
 #
 # Claude Code normally clones plugin/marketplace repos from GitHub at runtime.
 # Instead we pin them with fetchFromGitHub (reproducible, offline) and an
@@ -125,20 +126,86 @@ let
       rev = "28deff67a4f380ddb1d4590caa24b854c4f7c5dd";
       sha256 = "sha256-8c68N6Ty/7E6Vt35EBH0IbtEn9rQ2bxtTrKwZqHHmjs=";
     };
-    superpowers-marketplace = pkgs.fetchFromGitHub {
-      owner = "obra";
-      repo = "superpowers-marketplace";
-      rev = "af4c8d88b6d99926493709ade76f4369f9132390";
-      sha256 = "0s801av9db45rbc2jxxzm4bdf5b3rwh4jfbjn57wnngaplymd44m";
-    };
   };
 
-  # superpowers' plugin source is a separate repo from its marketplace.
-  superpowersPlugin = pkgs.fetchFromGitHub {
-    owner = "obra";
-    repo = "superpowers";
-    rev = "6fd4507659784c351abbd2bc264c7162cfd386dc";
-    sha256 = "0fjbbnzsf3vk3wc64rpsqjry6sxzfvq07dy7phry8fyhfkq47w9z";
+  # Matt Pocock's skills (github.com/mattpocock/skills). Not a Claude Code plugin
+  # in this setup: the repo ships a plugin.json but no marketplace.json, so rather
+  # than fabricate a marketplace we install the chosen skill dirs as *plain*
+  # skills under ~/.claude/skills/<name> (bare command names, e.g. /tdd). This
+  # replaces the old obra/superpowers plugin. Curated set + pin tracked against
+  # ~/cs/slop-cop's vendored submodule (its manifest.json is the "prefer" list).
+  mattPocockSkills = pkgs.fetchFromGitHub {
+    owner = "mattpocock";
+    repo = "skills";
+    rev = "391a2701dd948f94f56a39f7533f8eea9a859c87";
+    sha256 = "04fdsfmd5xkmlga342923b2gyf19iyw6md46bl6hl553pf7f8lw0";
+  };
+
+  # The skills we install, {cat, name}. slop-cop vendors all of engineering/ +
+  # productivity/ (22); we add personal/edit-article (generic, command-only).
+  # Deliberately NOT installed: deprecated/*, in-progress/*, personal/obsidian-vault
+  # (hardcoded WSL path), misc/* (Node/Husky/course tooling). misc/git-guardrails
+  # is reimplemented as a nix-managed hook below instead of installed as a skill.
+  # NB: code-review shadows the built-in /code-review harness skill (by choice).
+  mpSkills = [
+    { cat = "engineering"; name = "ask-matt"; }
+    { cat = "engineering"; name = "codebase-design"; }
+    { cat = "engineering"; name = "code-review"; }
+    { cat = "engineering"; name = "diagnosing-bugs"; }
+    { cat = "engineering"; name = "domain-modeling"; }
+    { cat = "engineering"; name = "grill-with-docs"; }
+    { cat = "engineering"; name = "implement"; }
+    { cat = "engineering"; name = "improve-codebase-architecture"; }
+    { cat = "engineering"; name = "prototype"; }
+    { cat = "engineering"; name = "research"; }
+    { cat = "engineering"; name = "resolving-merge-conflicts"; }
+    { cat = "engineering"; name = "setup-matt-pocock-skills"; }
+    { cat = "engineering"; name = "tdd"; }
+    { cat = "engineering"; name = "to-spec"; }
+    { cat = "engineering"; name = "to-tickets"; }
+    { cat = "engineering"; name = "triage"; }
+    { cat = "engineering"; name = "wayfinder"; }
+    { cat = "productivity"; name = "grilling"; }
+    { cat = "productivity"; name = "grill-me"; }
+    { cat = "productivity"; name = "handoff"; }
+    { cat = "productivity"; name = "teach"; }
+    { cat = "productivity"; name = "writing-great-skills"; }
+    { cat = "personal"; name = "edit-article"; }
+  ];
+
+  # git guardrails: a PreToolUse(Bash) hook that blocks destructive git before it
+  # runs (exit 2 => Claude sees the stderr and is refused). Ported from Matt
+  # Pocock's misc/git-guardrails-claude-code skill; here it's a nix-built script
+  # wired into settings.json (the skill's own installer would edit settings.json,
+  # which this config owns and overwrites on switch).
+  blockDangerousGit = pkgs.writeShellApplication {
+    name = "block-dangerous-git";
+    runtimeInputs = [ pkgs.jq pkgs.gnugrep ];
+    text = ''
+      INPUT=$(cat)
+      COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command')
+
+      DANGEROUS_PATTERNS=(
+        "git push"
+        "git reset --hard"
+        "git clean -fd"
+        "git clean -f"
+        "git branch -D"
+        "git checkout \."
+        "git restore \."
+        "push --force"
+        "reset --hard"
+      )
+
+      for pattern in "''${DANGEROUS_PATTERNS[@]}"; do
+        if echo "$COMMAND" | grep -qE "$pattern"; then
+          echo "BLOCKED: '$COMMAND' matches dangerous pattern '$pattern'. The user has prevented you from doing this." >&2
+          exit 2
+        fi
+      done
+
+      exit 0
+    '';
   };
 
   ts = "2026-06-15T00:00:00.000Z";
@@ -147,7 +214,6 @@ let
   # `source` each marketplace.json declares for the plugin:
   #   caveman          source "./"        -> marketplace repo root
   #   claude-powerline source "./plugin"  -> the repo's plugin/ subdir
-  #   superpowers      source url         -> its own separate repo
   pluginCaches = [
     {
       mp = "caveman";
@@ -163,19 +229,11 @@ let
       sha = "28deff67a4f380ddb1d4590caa24b854c4f7c5dd";
       src = "${mp.claude-powerline}/plugin";
     }
-    {
-      mp = "superpowers-marketplace";
-      plugin = "superpowers";
-      version = "5.1.0";
-      sha = "6fd4507659784c351abbd2bc264c7162cfd386dc";
-      src = superpowersPlugin;
-    }
   ];
 
   marketplaceRepos = {
     caveman = "JuliusBrussee/caveman";
     claude-powerline = "Owloops/claude-powerline";
-    superpowers-marketplace = "obra/superpowers-marketplace";
   };
 
   knownMarketplaces = lib.mapAttrs (name: repo: {
@@ -229,7 +287,20 @@ let
         type = "command";
         command = mkStatuslineCmd dir;
       };
-      hooks = ahviHooks;
+      # ahvi telemetry/feedback hooks + the git guardrails PreToolUse block.
+      hooks = ahviHooks // {
+        PreToolUse = [
+          {
+            matcher = "Bash";
+            hooks = [
+              {
+                type = "command";
+                command = "${blockDangerousGit}/bin/block-dangerous-git";
+              }
+            ];
+          }
+        ];
+      };
       # NB: the ahvi MCP server is NOT declared here — Claude Code ignores
       # `mcpServers` in settings.json. It's loaded via `--mcp-config` in the
       # launcher wrappers instead (see nixos/packages/claude-ahvi.nix).
@@ -283,6 +354,15 @@ let
       p: ''install_tree ${p.src} "$root/plugins/cache/${p.mp}/${p.plugin}/${p.version}"''
     ) pluginCaches
   );
+
+  # Plain Matt Pocock skills: each chosen skill dir -> ~/.claude/skills/<name>.
+  # install_tree rm -rf's only the specific per-skill dest, so hand-authored or
+  # other skills in ~/.claude/skills survive a switch.
+  skillCmds = lib.concatStringsSep "\n" (
+    map (
+      s: ''install_tree ${mattPocockSkills}/skills/${s.cat}/${s.name} "$root/skills/${s.name}"''
+    ) mpSkills
+  );
 in
 {
   home.packages = [
@@ -294,22 +374,22 @@ in
 
   home.activation.claudeCode = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     root="${home}/.claude"
-    $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "$root/plugins/marketplaces" "$root/plugins/cache"
+    $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "$root/plugins/marketplaces" "$root/plugins/cache" "$root/skills"
 
     install_tree() {
       src="$1"; dest="$2"
       $DRY_RUN_CMD rm -rf "$dest"
       $DRY_RUN_CMD mkdir -p "$(dirname "$dest")"
-      # Preserve source modes (some plugin hooks ship +x, e.g. superpowers'
-      # run-hook.cmd which Claude invokes directly) but not ownership. Then add
-      # u+w so Claude can write runtime markers into the otherwise read-only
-      # store-derived tree.
+      # Preserve source modes (some plugin hooks ship +x and Claude invokes them
+      # directly) but not ownership. Then add u+w so Claude can write runtime
+      # markers into the otherwise read-only store-derived tree.
       $DRY_RUN_CMD ${cp} -rT --no-preserve=ownership "$src" "$dest"
       $DRY_RUN_CMD chmod -R u+w "$dest"
     }
 
     ${marketplaceCmds}
     ${cacheCmds}
+    ${skillCmds}
 
     $DRY_RUN_CMD ${install} -m644 ${installedPluginsJson} "$root/plugins/installed_plugins.json"
     $DRY_RUN_CMD ${install} -m644 ${knownMarketplacesJson} "$root/plugins/known_marketplaces.json"
@@ -324,6 +404,9 @@ in
       $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "$alt"
       $DRY_RUN_CMD rm -rf "$alt/plugins"
       $DRY_RUN_CMD ln -sfn "$root/plugins" "$alt/plugins"
+      # Share the nix-managed skills tree with the personal profile too.
+      $DRY_RUN_CMD rm -rf "$alt/skills"
+      $DRY_RUN_CMD ln -sfn "$root/skills" "$alt/skills"
       $DRY_RUN_CMD ${install} -m644 ${altSettingsJson} "$alt/settings.json"
       $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
     ''}
