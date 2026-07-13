@@ -39,24 +39,9 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # --- functions ---
 
-nixos-config-hash() {
-    local repo="$HOME/nixos-config" commit diff
-    commit=$(git -C "$repo" rev-parse HEAD)
-    diff=$(git -C "$repo" diff HEAD | sha256sum | cut -d' ' -f1)
-    printf '%s/%s\n' "$commit" "$diff"
-}
-
 nixswitch() {
-    local stamp="$HOME/.local/share/nixos-switch-stamp" hash
-    hash=$(nixos-config-hash)
-    if [[ -f "$stamp" && "$(cat "$stamp")" == "$hash" ]]; then
-        echo "@DEVICE@ up to date, skipping"
-        return
-    fi
     sudo -v
     nh os switch ~/nixos-config
-    mkdir -p "$(dirname "$stamp")"
-    printf '%s' "$hash" > "$stamp"
 }
 
 fleetswitch() {

@@ -110,30 +110,9 @@
 
       source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/git/git-completions.nu
 
-      def nixos-config-hash [] {
-          let repo = $"($env.HOME)/nixos-config"
-          let commit = (git -C $repo rev-parse HEAD | str trim)
-          let diff = (git -C $repo diff HEAD | hash sha256)
-          $"($commit)/($diff)"
-      }
-
       def nixswitch [] {
-          let stamp = ($env.HOME | path join ".local/share/nixos-switch-stamp")
-          let hash = (nixos-config-hash)
-          if ($stamp | path exists) and ((open $stamp | str trim) == $hash) {
-              print "${device} up to date, skipping"
-              return
-          }
           sudo -v
           nh os switch ~/nixos-config
-          # Ctrl-C only kills `nh`; nushell keeps running the block, so guard the
-          # stamp write on a real success or a cancelled build false-positives next run.
-          if $env.LAST_EXIT_CODE == 0 {
-              mkdir ($stamp | path dirname)
-              $hash | save --force $stamp
-          } else {
-              print "nixswitch: build failed or cancelled, stamp not updated"
-          }
       }
 
       alias hmswitch = nh home switch ~/nixos-config
