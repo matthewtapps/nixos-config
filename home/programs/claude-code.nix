@@ -70,11 +70,11 @@ let
   workEndpoints = endpoints.work;
   personalEndpoints = endpoints.personal;
 
-  # Path to the ahvi binary that backs the statusline + the four hooks
-  # (inventory / feedback-nudge / feedback-mark / feedback-capture). NOT built by
-  # this config — built out of the ahvi dev project to this fixed dist path; just
-  # rebuild there to update. Absolute so the hooks resolve it regardless of the
-  # inherited PATH.
+  # Path to the ahvi binary that backs the statusline + the five hooks
+  # (inventory / feedback-start / feedback-nudge / feedback-mark /
+  # feedback-capture). NOT built by this config — built out of the ahvi dev
+  # project to this fixed dist path; just rebuild there to update. Absolute so
+  # the hooks resolve it regardless of the inherited PATH.
   ahviBin = "${home}/dev/ahvi/dist/ahvi";
 
   # Full-telemetry OTel env for ahvi: logs + traces + prompts + tool content +
@@ -264,11 +264,16 @@ let
     );
   };
 
-  # The four ahvi hooks, all backed by ahviBin. SessionStart posts a harness
-  # inventory; the trio Stop/SessionEnd/ElicitationResult drive session-feedback
-  # collection (nudge → mark carry-over → capture the elicitation result).
+  # The five ahvi hooks, all backed by ahviBin. SessionStart runs two separate
+  # groups (matching `ahvi install`): `inventory` posts a harness snapshot, and
+  # `feedback-start` records session start + arms the post-clear feedback window.
+  # The trio Stop/SessionEnd/ElicitationResult drive session-feedback collection
+  # (nudge → mark carry-over → capture the elicitation result).
   ahviHooks = {
-    SessionStart = [ { hooks = [ { type = "command"; command = "${ahviBin} inventory"; } ]; } ];
+    SessionStart = [
+      { hooks = [ { type = "command"; command = "${ahviBin} inventory"; } ]; }
+      { hooks = [ { type = "command"; command = "${ahviBin} feedback-start"; } ]; }
+    ];
     Stop = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-nudge"; } ]; } ];
     SessionEnd = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-mark"; } ]; } ];
     ElicitationResult = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-capture"; } ]; } ];
