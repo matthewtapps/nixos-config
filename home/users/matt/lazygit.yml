@@ -1,5 +1,13 @@
 disableStartupPopups: true
 promptToReturnFromSubprocess: false
+gui:
+  theme:
+    # Dark grey selection bg (everforest bg3) instead of default palette
+    # highlight, which resolved to aqua and left text unreadable.
+    selectedLineBgColor:
+      - "#4d5960"
+    selectedRangeBgColor:
+      - "#4d5960"
 customCommands:
   - key: "C"
     command: 'git commit -m "{{ .Form.Type }}{{if .Form.Scopes}}({{ .Form.Scopes }}){{end}}{{if eq .Form.Breaking `yes`}}!{{end}}: {{ .Form.Description }}"'
