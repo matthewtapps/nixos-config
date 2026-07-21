@@ -28,6 +28,9 @@ bindkey '^N' down-line-or-history
 # ctrl+w / ctrl+h: delete word backward
 bindkey '^W' backward-kill-word
 bindkey '^H' backward-kill-word
+# ctrl+left / ctrl+right: move backward/forward one word
+bindkey '^[[1;5D' backward-word
+bindkey '^[[1;5C' forward-word
 # ctrl+space: accept the autosuggestion (ghost text)
 bindkey '^ ' autosuggest-accept
 # ctrl+r fuzzy history search is provided by the atuin zsh integration.
