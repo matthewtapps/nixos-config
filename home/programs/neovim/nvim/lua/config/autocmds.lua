@@ -2,6 +2,18 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("lazyvim_" .. name, { clear = true })
 end
 
+-- Treat Jinja2-templated TOML (*.toml.j2) as plain toml so it gets treesitter
+-- highlighting (via the FileType autocmd below) and taplo tooling.
+vim.filetype.add({
+	extension = {
+		j2 = function(path)
+			if path:match("%.toml%.j2$") then
+				return "toml"
+			end
+		end,
+	},
+})
+
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = augroup("highlight_yank"),
