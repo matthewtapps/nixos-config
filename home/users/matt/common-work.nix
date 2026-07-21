@@ -20,5 +20,6 @@
     wayland = {
       xwaylandOptimizations = true;
     };
+    notificationMethod = "electron";
   };
 }
