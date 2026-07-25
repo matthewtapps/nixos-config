@@ -22,6 +22,10 @@ vim.opt.shiftround = true
 vim.opt.shiftwidth = 2
 vim.opt.showmode = false
 vim.opt.sidescrolloff = 8
+-- Scroll by screen lines, not buffer lines. Without this, <C-d>/<C-u> treat a
+-- line plus its virt_lines (transclude.nvim embeds, etc.) as one unit — a
+-- block taller than half the window wedges the view in place.
+vim.opt.smoothscroll = true
 vim.opt.signcolumn = "yes"
 vim.opt.smartindent = true
 vim.opt.ignorecase = true

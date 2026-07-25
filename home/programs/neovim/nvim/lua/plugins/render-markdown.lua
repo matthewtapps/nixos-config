@@ -10,6 +10,10 @@ return {
 		-- Keep the rendered view up even while typing; only the line under the
 		-- cursor drops back to raw markdown so you can edit it.
 		anti_conceal = { enabled = true },
+		-- Pipe tables are rendered by markdown-table-wrap.nvim instead (see
+		-- markdown-table-wrap.lua) — two renderers concealing the same lines fight
+		-- over extmarks.
+		pipe_table = { enabled = false },
 		-- Custom callouts that mirror the pdf-gen sheet.css blocks. `note` is a
 		-- built-in callout already; `play` (action/maneuver blocks) is ours. The
 		-- pandoc callouts.lua filter turns these `> [!play]` / `> [!note]`

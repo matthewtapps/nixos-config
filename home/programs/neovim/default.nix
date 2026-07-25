@@ -94,6 +94,14 @@
     ];
   };
 
+  # markdown-oxide global settings. Unresolved-reference diagnostics are off:
+  # the heuristic false-positives on subfolder / block-ref / apostrophe links
+  # (upstream issues #274, #404, #412) and squiggles perfectly valid embeds;
+  # obsidian.nvim owns link navigation anyway.
+  xdg.configFile."moxide/settings.toml".text = ''
+    unresolved_diagnostics = false
+  '';
+
   home.file."./.config/nvim/" = {
     source = ./nvim;
     recursive = true;
