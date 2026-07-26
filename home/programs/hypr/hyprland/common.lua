@@ -97,6 +97,11 @@ hl.bind(mainMod .. " + X", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("noctalia-shell ipc call controlCenter toggle"))
 hl.bind("SUPER + V", hl.dsp.exec_cmd("noctalia-shell ipc call launcher clipboard"))
 
+-- Keybind cheatsheet (hold f/j + `/`, or + shift+`/` = "?"). kanata emits
+-- ctrl+alt(+shift)+slash from the herdr layer; both open the floating sheet.
+hl.bind("CTRL + ALT + slash", hl.dsp.exec_cmd("keybind-cheatsheet toggle"))
+hl.bind("CTRL + ALT + SHIFT + slash", hl.dsp.exec_cmd("keybind-cheatsheet toggle"))
+
 -- Sound
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ +1%"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ -1%"), { locked = true, repeating = true })
@@ -194,6 +199,14 @@ hl.window_rule({
     match = { class = "ghostty-btop" },
     float = true,
     size = { 1000, 800 },
+})
+
+-- Keybind cheatsheet
+hl.window_rule({
+    match = { class = "cheatsheet" },
+    float = true,
+    size = { 900, 950 },
+    center = true,
 })
 
 -- GCS

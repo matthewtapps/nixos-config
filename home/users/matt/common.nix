@@ -456,6 +456,8 @@
     ../../programs/zsh/version-check.nix
     ../../programs/zsh/default.nix
     ../../programs/ghostty.nix
+    ../../programs/herdr/default.nix
+    ../../programs/keybind-cheatsheet/default.nix
     ../../programs/neovim/default.nix
     ../../programs/git.nix
     ../../programs/claude-code.nix

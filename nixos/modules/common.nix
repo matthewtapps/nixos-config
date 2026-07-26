@@ -51,5 +51,6 @@
     ./linux-kernel.nix
     ./cachix.nix
     ./tailscale.nix
+    ./kanata.nix
   ];
 }

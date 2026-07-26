@@ -52,6 +52,14 @@
     "kernel.hardlockup_panic" = 1;
     "kernel.panic_on_oops" = 1;
     "kernel.panic" = 10;
+
+    # Disable Energy Aware Scheduling. Runtime CPU-capacity updates
+    # (em_adjust_new_capacity, driven by auto-cpufreq flipping EPP/turbo) race
+    # the load balancer walking sched-domain topology, GP-faulting on a stale
+    # sched_group in update_sd_lb_stats -> panic in IRQ. Recurring on Meteor
+    # Lake + kernel 7.x. Detaching perf-domains removes the raced path. Costs
+    # some idle battery efficiency (E/LP-E core packing).
+    "kernel.sched_energy_aware" = 0;
   };
 
   networking = {

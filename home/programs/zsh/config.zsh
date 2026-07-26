@@ -42,6 +42,30 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # --- functions ---
 
+# Herdr shares one "default" server across every pane, so changing the space in
+# one pane changes it everywhere. Scope each instance to the Hyprland workspace
+# it launches in (HERDR_SESSION -> its own socket + spaces under
+# ~/.config/herdr/sessions/<name>): panes in the same workspace share, different
+# workspaces are independent. Explicit `herdr --session x` / $HERDR_SESSION win.
+herdr() {
+    local -a envv
+    # Under ~/cs, use config-cs.toml (worktrees -> ~/cs/.herdr) so the shared
+    # ~/cs/flake.nix stays an ancestor of each worktree. Explicit env wins.
+    if [[ -z "$HERDR_CONFIG_PATH" && ( "$PWD" == "$HOME/cs" || "$PWD" == "$HOME/cs/"* ) ]]; then
+        envv+=("HERDR_CONFIG_PATH=$HOME/.config/herdr/config-cs.toml")
+    fi
+    if [[ -z "$HERDR_SESSION" && -n "$HYPRLAND_INSTANCE_SIGNATURE" && "$*" != *--session* ]]; then
+        local ws
+        ws=$(hyprctl activeworkspace 2>/dev/null | awk 'NR==1{print $3; exit}')
+        [[ -n "$ws" ]] && envv+=("HERDR_SESSION=ws$ws")
+    fi
+    if (( ${#envv} )); then
+        env "${envv[@]}" herdr "$@"
+    else
+        command herdr "$@"
+    fi
+}
+
 nixswitch() {
     sudo -v
     nh os switch ~/nixos-config

@@ -1,4 +1,10 @@
-{ device, pkgs, ... }:
+{
+  device,
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 {
   # PATH additions (shell-agnostic).
   home.sessionPath = [
@@ -36,6 +42,15 @@
 
   programs.starship = {
     enable = true;
+    # Disable the built-in zsh init: starship's `init` embeds the FIRST `starship`
+    # found in PATH into its precmd/prompt hooks (falling back to its real path
+    # only if none is on PATH). PATH has the mutable ~/.local/state/nix/profile/bin
+    # first, so the default init baked THAT path — and `nh` rebuilds that profile on
+    # every switch (hmswitch directly, nixswitch via the HM service), dangling the
+    # symlink for an instant. The prompt then fails with
+    # "no such file or directory: .../profile/bin/starship". We re-add the init
+    # below with the immutable /nix/store path resolving first (see initContent).
+    enableZshIntegration = false;
     settings = {
       add_newline = false;
       format = "$directory$git_branch$git_status$nix_shell$character";
@@ -148,8 +163,16 @@
     };
 
     # Interactive setup + functions. `@DEVICE@` is baked in for nixswitch.
-    initContent = builtins.replaceStrings [ "@DEVICE@" ] [ device ] (
-      builtins.readFile ./config.zsh
-    );
+    initContent = lib.mkMerge [
+      (builtins.replaceStrings [ "@DEVICE@" ] [ device ] (builtins.readFile ./config.zsh))
+      # starship init, run with its immutable store bin resolving first so the
+      # prompt hooks bake the /nix/store path (never dangles) instead of the
+      # mutable profile path. See programs.starship.enableZshIntegration above.
+      (lib.mkOrder 1000 ''
+        if [[ $TERM != "dumb" ]]; then
+          eval "$(PATH="${config.programs.starship.package}/bin:$PATH" starship init zsh)"
+        fi
+      '')
+    ];
   };
 }
