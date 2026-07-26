@@ -284,6 +284,10 @@ let
     {
       model = "opus";
       tui = "fullscreen";
+      # Both are in-app-togglable (/vim, /verbose) but this file is rewritten on
+      # every switch, so anything set in the UI is lost. Pin them here instead.
+      verbose = false;
+      editorMode = "normal"; # i.e. vim mode off
       permissions = {
         defaultMode = "auto";
       };
