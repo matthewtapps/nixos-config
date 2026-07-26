@@ -1,9 +1,12 @@
 return {
 	"matthewtapps/markdown-table-wrap.nvim",
-	-- Private fork (upstream: ice345) adding focus-mode table editing; the
-	-- local checkout is authoritative — edits go live on nvim restart, no
-	-- rebuild needed. Push to github.com/matthewtapps/markdown-table-wrap.nvim.
-	dir = "/home/matt/dev/markdown-table-wrap.nvim",
+	-- Private fork (upstream: ice345) adding focus-mode table editing. The
+	-- source is vendored in this repo under neovim/nvim/localplugins/ so every
+	-- machine gets it from the flake; that copy is authoritative. Edits need a
+	-- `home-manager switch` (or nixos-rebuild) before nvim sees them, since the
+	-- config tree is symlinked read-only out of the Nix store. Mirror to
+	-- github.com/matthewtapps/markdown-table-wrap.nvim when publishing.
+	dir = vim.fn.stdpath("config") .. "/localplugins/markdown-table-wrap.nvim",
 	ft = { "markdown", "markdown.mdx" },
 	-- View-only overlay renderer for pipe tables: wraps long cell content to fit
 	-- the window without touching the buffer. render-markdown.nvim's own table
@@ -14,7 +17,15 @@ return {
 		pipe_table = {
 			enabled = false,
 		},
-    auto_preview = true,
+		auto_preview = true,
+		-- Hide the table's source lines with `conceal_lines` and draw the table as
+		-- one virt_lines block, rather than overlaying virt_text on the source
+		-- lines. The old overlay needed 'nowrap' on the whole window — Neovim
+		-- wraps a line by its RAW character count regardless of conceal, so 200+
+		-- char table rows blew out to 3-4 screen rows each — and that killed the
+		-- prose soft-wrap from autocmds.lua for every note containing a table.
+		-- Zero-height source lines need no such thing.
+		inline_conceal_lines = true,
 		-- Seamless focus: landing on a table auto-enters the rendered view for
 		-- native navigation; j/k past the edges sail out, <Esc> drops to raw
 		-- source until the cursor leaves the table.
@@ -44,7 +55,12 @@ return {
 		-- whenever the cursor sits inside a table, so ]c/[c/]r/[r navigation has
 		-- feedback without dropping the rendered view.
 		local function cell_indicator()
-			if not vim.bo.filetype:find("^markdown") then
+			-- Exact match, not a prefix: the focus float's buffer is filetype
+			-- "markdown-table-wrap", which "^markdown" also matches. This would then
+			-- run against the float's rendered buffer as though it were the document
+			-- — echoing on every cursor move inside a table, off the wrong lines.
+			local ft = vim.bo.filetype
+			if ft ~= "markdown" and ft ~= "markdown.mdx" then
 				return
 			end
 			local parser = require("markdown-table-wrap.parser")
@@ -77,14 +93,25 @@ return {
 			local header_cell = info.header[index]
 			local header = vim.trim(type(header_cell) == "table" and header_cell.text or header_cell or ("col " .. index))
 			local text = vim.trim(line:sub(span.start_col + 1, span.end_col))
-			if #text > 60 then
-				text = text:sub(1, 57) .. "…"
-			end
 			local where = lnum <= info.separator_lnum and "header" or ("row %d"):format(lnum - info.separator_lnum)
+			local prefix = ("%s · %s"):format(where, header)
+
+			-- Budget the WHOLE message against v:echospace — the columns available
+			-- before Neovim decides a message needs its own line and stops with
+			-- "Press ENTER". Capping the cell text alone at 60 still overflows a
+			-- narrow split once the row/header prefix is added, which made entering
+			-- a table with a long cell hit that prompt on every keypress.
+			local budget = (vim.v.echospace or vim.o.columns) - vim.fn.strdisplaywidth(prefix) - 3
+			if budget < 1 then
+				text = ""
+			elseif vim.fn.strdisplaywidth(text) > budget then
+				text = vim.fn.strcharpart(text, 0, math.max(1, budget - 1)) .. "…"
+			end
+
 			vim.b.mtw_cell_echoed = true
 			vim.api.nvim_echo({
-				{ ("%s · %s"):format(where, header), "Title" },
-				{ " ▸ " .. text, "Normal" },
+				{ prefix, "Title" },
+				{ text ~= "" and (" ▸ " .. text) or "", "Normal" },
 			}, false, {})
 		end
 
