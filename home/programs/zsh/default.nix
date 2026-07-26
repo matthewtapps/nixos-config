@@ -26,10 +26,12 @@
     enableZshIntegration = true;
   };
 
-  # fzf: Ctrl-T file picker, Alt-C cd. Ctrl-R is owned by atuin.
+  # fzf: Ctrl-T file picker, Alt-C cd. Ctrl-R is owned by atuin, so drop fzf's
+  # competing history widget instead of letting source order decide it.
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
+    historyWidget.zsh.command = "";
   };
 
   programs.starship = {

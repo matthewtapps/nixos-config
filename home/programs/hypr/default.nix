@@ -1,4 +1,12 @@
-{ device, pkgs, ... }:
+{
+  device,
+  pkgs,
+  inputs,
+  ...
+}:
+let
+  hyprlandPkg = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+in
 {
   home.file."./.config/hypr/bg3.jpg" = {
     source = ./bg3.jpg;
@@ -16,14 +24,29 @@
     screencopy:force_shm = 1
   '';
 
+  # Real Lua config files, symlinked as-is. Hyprland's package.path is
+  # "<configdir>/?.lua", so these are reachable as `lua.<name>`.
+  xdg.configFile."hypr/lua" = {
+    source = ./hyprland;
+    recursive = true;
+  };
+
+  # lua-language-server picks up Hyprland's generated `hl` API stubs. Home
+  # Manager only writes this itself when it manages the package, which it
+  # doesn't here (the NixOS module owns Hyprland).
+  xdg.configFile."hypr/.luarc.json".text = builtins.toJSON {
+    workspace.library = [ "${hyprlandPkg}/share/hypr/stubs" ];
+    diagnostics.globals = [ "hl" ];
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
-    configType = "hyprlang";
+    configType = "lua";
     portalPackage = null;
     package = null;
     extraConfig = ''
-      ${builtins.readFile ./hyprland/${device}.conf}
-      ${builtins.readFile ./hyprland/common.conf}
+      require("lua.${device}")
+      require("lua.common")
     '';
   };
 

@@ -1,5 +1,9 @@
 { pkgs, ... }:
 {
+  # Stylix populates `home.pointerCursor` but never sets `.enable`. Home Manager
+  # deprecated inferring enablement from the option being defined, so set it here.
+  home.pointerCursor.enable = true;
+
   stylix = {
     enable = true;
 
