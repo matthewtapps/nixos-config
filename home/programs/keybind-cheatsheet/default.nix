@@ -1,9 +1,9 @@
 { pkgs, lib, ... }:
 let
   # Floating keybind cheatsheet: the Herdr home-row layer plus the live Hyprland
-  # binds (read from the running config, so hypr stays authoritative and never
-  # drifts). Bound in hypr to CTRL+ALT+(SHIFT+)slash, which kanata emits from
-  # hold-f/j + `/` — see nixos/modules/kanata.nix and hypr common.conf.
+  # binds (read from the running compositor, so hypr stays authoritative and
+  # never drifts). Bound in hypr to CTRL+ALT+(SHIFT+)slash, which kanata emits
+  # from hold-f/j + `/` — see nixos/modules/kanata.nix and hypr common.lua.
   #
   # `toggle` opens a floating ghostty (class "cheatsheet", floated+centered by a
   # windowrule) running `view`; if one is already open it closes it. `view`
@@ -28,27 +28,34 @@ let
       printf '%s\n' "$body" | column -t -s "$(printf '\t')" | sed 's/^/  /'
     }
 
-    # All Hyprland binds as "MODS + KEY<TAB>action", $mainMod resolved, exec/
-    # trailing-comma noise stripped. Read once, then split into categories.
+    # All Hyprland binds as "CATEGORY<TAB>MODS + KEY<TAB>description", from the
+    # running compositor. Lua dispatchers all surface as `__lua` in hyprctl, so
+    # the description is the only readable action text and a bind without one is
+    # dropped. Categories use first-match priority so each bind lands in exactly
+    # one section ("window to workspace 3" is a workspace bind).
     hypr_rows() {
-      local f varmap
-      # Build a sed program from the configs' own `$name = value` definitions so
-      # $mainMod / $terminal / $menu / … show resolved, not as raw variables.
-      varmap=$(grep -hE '^\$[A-Za-z_]+[[:space:]]*=' "$HOME"/.config/hypr/*.conf 2>/dev/null \
-        | sed -E 's/^\$([A-Za-z_]+)[[:space:]]*=[[:space:]]*(.*)$/s@[$]\1@\2@g/')
-      for f in "$HOME"/.config/hypr/*.conf; do
-        [ -e "$f" ] || continue
-        grep -hE '^bind[a-z]* *=' "$f" || true
-      done | sed -E 's/^bind[a-z]* *= *//' \
-        | if [ -n "$varmap" ]; then sed -E "$varmap"; else cat; fi \
-        | awk -F',' '{
-            mods=$1; key=$2; act=$3;
-            for (i=4; i<=NF; i++) act=act "," $i;
-            gsub(/^ +| +$/,"",mods); gsub(/^ +| +$/,"",key); gsub(/^ +| +$/,"",act);
-            sub(/^exec, */,"",act); sub(/,+ *$/,"",act);
-            lhs = (mods=="" ? key : mods " + " key);
-            printf "%s\t%s\n", lhs, act;
-          }'
+      hyprctl binds -j 2>/dev/null | jq -r '
+        # Hyprland modmask bits, listed in conventional display order.
+        def mods($m): [
+          {b:64, n:"SUPER"}, {b:4, n:"CTRL"},
+          {b:8,  n:"ALT"},   {b:1, n:"SHIFT"}
+        ] | map(select($m / .b | floor % 2 == 1) | .n) | join(" + ");
+
+        .[]
+        | select(.description != "" and .description != null)
+        | (if mods(.modmask) == "" then .key else mods(.modmask) + " + " + .key end) as $lhs
+        | (.description | ascii_downcase) as $d
+        | (if   $d | test("volume|mute|track|play|brightness|display")  then "media"
+           elif $d | test("workspace|scratchpad|monitor")               then "workspace"
+           elif $d | test("focus|window|float|fullscreen|pseudo|tile")  then "window"
+           else "action" end) as $cat
+        | [$cat, $lhs, .description] | @tsv
+      '
+    }
+
+    # section_cat TITLE ROWS CATEGORY — render one hypr category as a table.
+    section_cat() {
+      section "$1" "$(printf '%s\n' "$2" | awk -F'\t' -v c="$3" '$1 == c { print $2 "\t" $3 }')"
     }
 
     render() {
@@ -98,16 +105,12 @@ let
         'Ctrl+b then Shift+<key>\tDOES NOT WORK -- shift exits prefix mode' \
         'Ctrl+b then Tab\tcycle pane next (no home-row equivalent)')"
 
-      # Hyprland, categorised by dispatcher / target.
+      # Hyprland, categorised by hypr_rows.
       local rows; rows="$(hypr_rows || true)"
-      section "HYPRLAND · WINDOWS & FOCUS" \
-        "$(printf '%s\n' "$rows" | grep -E 'movefocus|movewindow|swapwindow|killactive|fullscreen|togglefloating|pseudo|centerwindow' || true)"
-      section "HYPRLAND · WORKSPACES" \
-        "$(printf '%s\n' "$rows" | grep -Ei 'workspace' || true)"
-      section "HYPRLAND · MEDIA & HARDWARE" \
-        "$(printf '%s\n' "$rows" | grep -Ei 'pactl|playerctl|brightnessctl|xf86' || true)"
-      section "HYPRLAND · LAUNCH & ACTIONS" \
-        "$(printf '%s\n' "$rows" | grep -Eiv 'movefocus|movewindow|swapwindow|killactive|fullscreen|togglefloating|pseudo|centerwindow|workspace|pactl|playerctl|brightnessctl|xf86' || true)"
+      section_cat "HYPRLAND · WINDOWS & FOCUS" "$rows" window
+      section_cat "HYPRLAND · WORKSPACES"      "$rows" workspace
+      section_cat "HYPRLAND · MEDIA & HARDWARE" "$rows" media
+      section_cat "HYPRLAND · LAUNCH & ACTIONS" "$rows" action
 
       printf '\n  Press q or Esc to close.\n'
     }
