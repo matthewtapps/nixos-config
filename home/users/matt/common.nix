@@ -137,6 +137,7 @@
     feh
 
     libreoffice
+    onlyoffice-desktopeditors
     vlc
     btop
     fastfetch
