@@ -5,6 +5,7 @@
 #     claude-powerline renderer
 #   - settings.json (model, statusline, hooks, env, enabled plugins, marketplaces)
 #   - claude-powerline.json (statusline theme)
+#   - CLAUDE.md (user-level memory, from ./claude-user-memory.md)
 #   - the plugin tree under ~/.claude/plugins
 #   - plain skills under ~/.claude/skills (Matt Pocock's skills)
 #
@@ -404,6 +405,7 @@ in
     $DRY_RUN_CMD ${install} -m644 ${knownMarketplacesJson} "$root/plugins/known_marketplaces.json"
     $DRY_RUN_CMD ${install} -m644 ${defaultSettingsJson} "$root/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$root/claude-powerline.json"
+    $DRY_RUN_CMD ${install} -m644 ${./claude-user-memory.md} "$root/CLAUDE.md"
     ${lib.optionalString isWorkMachine ''
 
       # Work machines only: second ~/.claude-alt profile (personal account via the
@@ -418,6 +420,7 @@ in
       $DRY_RUN_CMD ln -sfn "$root/skills" "$alt/skills"
       $DRY_RUN_CMD ${install} -m644 ${altSettingsJson} "$alt/settings.json"
       $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
+      $DRY_RUN_CMD ${install} -m644 ${./claude-user-memory.md} "$alt/CLAUDE.md"
     ''}
   '';
 }
