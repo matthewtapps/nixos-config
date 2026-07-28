@@ -16,6 +16,12 @@ _: {
       push = {
         autoSetupRemote = true;
       };
+      branch = {
+        # Only inherit upstream when the new branch name matches the remote
+        # branch name; avoids worktree branches created off origin/main
+        # silently tracking origin/main.
+        autoSetupMerge = "simple";
+      };
       merge = {
         conflictstyle = "diff3";
       };
