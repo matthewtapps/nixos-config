@@ -66,6 +66,31 @@ herdr() {
     fi
 }
 
+# lazygit can't run in a bare-repo parent (the "worktrees level 2" layout used by
+# ~/cs repos: ~/cs/<repo>/.bare + a .git pointer file). It needs a work tree, so
+# `git rev-parse --show-toplevel` fails at the parent with "must be run in a work
+# tree". When cwd is such a parent, launch lazygit inside one of its worktrees
+# instead — prefer a sibling named `main`, else the first sibling worktree, else
+# any worktree. Runs in a subshell so the shell's own cwd doesn't move.
+lg() {
+    emulate -L zsh
+    if [[ $(git rev-parse --is-bare-repository 2>/dev/null) == true ]]; then
+        local -a wts
+        wts=(${(f)"$(git worktree list --porcelain | sed -n 's/^worktree //p')"})
+        local w target
+        for w in $wts; do [[ $w == $PWD/main ]] && target=$w && break; done
+        [[ -z $target ]] && for w in $wts; do
+            [[ $w == $PWD/* && $w != $PWD/*/* && $w != */.bare ]] && target=$w && break
+        done
+        [[ -z $target ]] && for w in $wts; do [[ $w != */.bare ]] && target=$w && break; done
+        if [[ -n $target ]]; then
+            ( cd $target && command lazygit "$@" )
+            return
+        fi
+    fi
+    command lazygit "$@"
+}
+
 nixswitch() {
     sudo -v
     nh os switch ~/nixos-config

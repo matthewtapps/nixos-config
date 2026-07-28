@@ -156,7 +156,6 @@
     shellAliases = {
       v = "nvim";
       la = "ls -a";
-      lg = "lazygit";
       ldo = "lazydocker";
       aliases = "alias";
       hmswitch = "nh home switch ~/nixos-config";
