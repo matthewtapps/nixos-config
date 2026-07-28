@@ -7,8 +7,8 @@
     "+${pkgs.acl}/bin/setfacl -m g:uinput:rw /dev/uinput";
 
   # Home-row modifier for Herdr (home/programs/herdr), which has no hold-vs-tap
-  # of its own: tap f/j -> the letter, hold f/j -> layer emitting Herdr's
-  # `ctrl+b <key>` prefix. Both keys enter one layer, so hold with the hand
+  # of its own. Tap f/j -> the letter; hold f/j (+ optional shift) -> a layer
+  # driving Herdr's bindings. Both keys enter one layer, so hold with the hand
   # opposite the action key. Applies to every keyboard, system-wide.
   services.kanata = {
     enable = true;
@@ -20,9 +20,18 @@
 
       config = ''
         (defalias
+          ;; Hold action for f/j. Shift pressed first was already resolved in
+          ;; base and is a real shift in the output, which would corrupt the
+          ;; chord's modifiers; release it and enter herdr-shift directly.
+          ;; Shift pressed after f/j is captured by @sft instead.
+          hrd (fork
+                (layer-while-held herdr)
+                (multi (release-key lsft) (release-key rsft) (layer-while-held herdr-shift))
+                (lsft rsft))
+
           ;; 200 200 = (tap-timeout, hold-timeout) ms.
-          hrf (tap-hold-release 200 200 f (layer-while-held herdr))
-          hrj (tap-hold-release 200 200 j (layer-while-held herdr))
+          hrf (tap-hold-release 200 200 f @hrd)
+          hrj (tap-hold-release 200 200 j @hrd)
 
           ;; Ctrl+b survives terminals; ctrl+alt would leak to the shell as Meta.
           ph (macro C-b h)  pj (macro C-b j)  pk (macro C-b k)  pl (macro C-b l)
@@ -31,16 +40,18 @@
           pg (macro C-b g)  po (macro C-b o)  pe (macro C-b e)  pr (macro C-b r)
           pb (macro C-b b)  px (macro C-b x)  pz (macro C-b z)  pd (macro C-b d)
 
-          ;; kanata emits the shift itself; a raw OS shift would leak.
-          sh (macro C-b S-h)  sj (macro C-b S-j)  sk (macro C-b S-k)  sl (macro C-b S-l)
-          sn (macro C-b S-n)  sw (macro C-b S-w)  st (macro C-b S-t)  sp (macro C-b S-p)
-          sd (macro C-b S-d)  sg (macro C-b S-g)  sr (macro C-b S-r)  ss (macro C-b S-s)
-          sx (macro C-b S-x)  so (macro C-b S-o)  sb (macro C-b S-b)
+          ;; Shift-family: direct chords, not `C-b S-<key>` — a shift press
+          ;; between prefix and letter drops Herdr out of prefix mode. See
+          ;; home/programs/herdr.
+          sh C-A-h  sj C-A-j  sk C-A-k  sl C-A-l
+          sn C-A-n  sw C-A-w  st C-A-t  sp C-A-p
+          sd C-A-d  sg C-A-g  sr C-A-r  ss C-A-s
+          sx C-A-x  so C-A-o  sb C-A-b
 
           ;; Cycle spaces.
           wsp (macro C-b lbrc)  wsn (macro C-b rbrc)
 
-          ;; Press f/j BEFORE shift, else shift is a raw OS shift in base.
+          ;; Shift pressed while already in the herdr layer.
           sft (layer-while-held herdr-shift))
 
         ;; lsft/rsft are listed so the herdr layer can capture shift.
@@ -56,7 +67,7 @@
 
         ;; f/j + shift: swap panes (h/j/k/l), new/rename/close workspace (n/w/d),
         ;; rename tab (t) / pane (p), new/open/remove worktree (g/o/b), reload (r),
-        ;; settings (s), close tab (x), / -> ctrl+alt+shift+/ (? full list).
+        ;; settings (s), close tab (x), / -> the cheatsheet.
         (deflayer herdr-shift
           _ @sj @sh @sk @sl _ @ss _ @sn @sp _ _ @sw @sg @so _ @sr @sb @sx _ @sd C-A-S-/ @st _ _ _ _)
       '';

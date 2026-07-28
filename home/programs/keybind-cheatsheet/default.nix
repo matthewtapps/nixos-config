@@ -52,7 +52,7 @@ let
     }
 
     render() {
-      printf '  \033[1mKEYBINDS\033[0m   Herdr home-row: hold  f (left) or j (right), then key (opposite hand). Shift-family is on the Ctrl+b prefix.\n'
+      printf '  \033[1mKEYBINDS\033[0m   Herdr home-row: hold  f (left) or j (right), then key (opposite hand). Add Shift for the shift-family; either press order works.\n'
 
       section "HERDR · PANES  (hold f/j + key)" "$(printf '%b\n' \
         'h  j  k  l\tfocus pane  left / down / up / right' \
@@ -77,11 +77,11 @@ let
         'b\ttoggle sidebar' \
         'hold + / (or ?)\tthis cheatsheet')"
 
-      section "HERDR · VIA Ctrl+b PREFIX  (press Ctrl+b, then key)" "$(printf '%b\n' \
+      section "HERDR · SHIFT-FAMILY  (hold f/j + Shift, then key)" "$(printf '%b\n' \
         'Shift + h/j/k/l\tswap pane in direction' \
-        'Tab  /  Shift+Tab\tcycle pane  next / previous' \
         'Shift + p\trename pane' \
         'Shift + t\trename tab' \
+        'Shift + x\tclose tab' \
         'Shift + n\tnew workspace' \
         'Shift + w\trename workspace' \
         'Shift + d\tclose workspace' \
@@ -90,8 +90,13 @@ let
         'Shift + b\tremove worktree checkout' \
         'Shift + r\treload config' \
         'Shift + s\tsettings' \
-        '?\tHerdr full binding list' \
-        '<any layer key>\tprefix form works for every action too')"
+        'Shift + / (?)\tthis cheatsheet')"
+
+      section "HERDR · TYPING THESE BY HAND" "$(printf '%b\n' \
+        'Ctrl+b then <key>\tworks for the plain family above' \
+        'Ctrl+alt+<key>\tworks for the shift family above (no prefix)' \
+        'Ctrl+b then Shift+<key>\tDOES NOT WORK -- shift exits prefix mode' \
+        'Ctrl+b then Tab\tcycle pane next (no home-row equivalent)')"
 
       # Hyprland, categorised by dispatcher / target.
       local rows; rows="$(hypr_rows || true)"
