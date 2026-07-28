@@ -197,23 +197,34 @@ function M.render(buf)
 	update_overlays(buf)
 end
 
+-- One long-lived timer per buffer. Restarting a pending timer just resets its
+-- deadline, so debouncing never closes a handle that still has a callback in
+-- flight — the handle is only closed once, when the buffer goes away.
 local timers = {}
-local function debounced_render(buf)
-	if timers[buf] then
-		timers[buf]:stop()
-		timers[buf]:close()
+
+local function stop_timer(buf)
+	local timer = timers[buf]
+	if timer then
+		timers[buf] = nil
+		timer:stop()
+		timer:close()
 	end
-	local timer = vim.uv.new_timer()
-	timers[buf] = timer
+end
+
+local function debounced_render(buf)
+	local timer = timers[buf]
+	if not timer then
+		timer = vim.uv.new_timer()
+		timers[buf] = timer
+	end
 	timer:start(
 		150,
 		0,
 		vim.schedule_wrap(function()
-			timer:stop()
-			timer:close()
-			timers[buf] = nil
 			if vim.api.nvim_buf_is_valid(buf) then
 				M.render(buf)
+			else
+				stop_timer(buf)
 			end
 		end)
 	)
@@ -244,6 +255,7 @@ local function attach(buf)
 		buffer = buf,
 		callback = function()
 			state[buf] = nil
+			stop_timer(buf)
 			vim.api.nvim_del_augroup_by_id(group)
 		end,
 	})
