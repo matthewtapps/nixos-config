@@ -93,13 +93,34 @@
   home.file.".local/bin/pbcopy" = {
     text = ''
       #!/usr/bin/env bash
-      data=$(cat)
-      if [ -n "$WAYLAND_DISPLAY" ]; then
-        echo "$data" | wl-copy
-      else
-        echo "$data" | xclip -selection clipboard
+      set -euo pipefail
+
+      # Buffer to a temp file rather than $(cat): command substitution strips
+      # trailing newlines and cannot carry NUL bytes.
+      tmp=$(mktemp)
+      trap 'rm -f "$tmp"' EXIT
+      cat >"$tmp"
+
+      if [ -n "''${WAYLAND_DISPLAY:-}" ]; then
+        # --type is mandatory: bare wl-copy infers the MIME type via xdg-mime,
+        # and content-sniffing misfires (e.g. text starting "FONT" is detected
+        # as application/x-font-vfont) leave the clipboard unpasteable.
+        wl-copy --type text/plain <"$tmp"
+      elif [ -n "''${DISPLAY:-}" ]; then
+        xclip -selection clipboard <"$tmp"
       fi
-      printf "\033]52;c;%s\a" "$(echo -n "$data" | base64 | tr -d '\n')"
+
+      # OSC 52 only matters when the terminal is remote; locally it duplicates
+      # the native copy above. Matches the SSH_TTY guard in the neovim config.
+      if [ -n "''${SSH_TTY:-}''${SSH_CONNECTION:-}" ]; then
+        # Terminals cap the sequence at 100000 bytes, i.e. 74994 bytes of
+        # payload. Oversized sequences are silently dropped, so skip instead.
+        if [ "$(wc -c <"$tmp")" -le 74994 ]; then
+          printf '\033]52;c;%s\a' "$(base64 <"$tmp" | tr -d '\n')" >/dev/tty 2>/dev/null || true
+        else
+          echo "pbcopy: input exceeds OSC 52 limit, not sent to remote terminal" >&2
+        fi
+      fi
     '';
     executable = true;
   };
@@ -107,8 +128,11 @@
   home.file.".local/bin/pbpaste" = {
     text = ''
       #!/usr/bin/env bash
-      if [ -n "$WAYLAND_DISPLAY" ]; then
-        wl-paste
+      set -euo pipefail
+
+      # --no-newline matches macOS pbpaste, which emits the clipboard verbatim.
+      if [ -n "''${WAYLAND_DISPLAY:-}" ]; then
+        wl-paste --no-newline
       else
         xclip -o -selection clipboard
       fi
