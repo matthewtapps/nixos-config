@@ -11,6 +11,13 @@ let
   # ~/cs so the shared ~/cs/flake.nix stays an ancestor. The zsh herdr() wrapper
   # (home/programs/zsh) selects config-cs via HERDR_CONFIG_PATH when launched
   # under ~/cs.
+  #
+  # ~/cs repos use the "worktrees level 2" bare layout (~/cs/<repo>/.bare + a
+  # .git pointer file). Herdr places new worktrees at <directory>/<repo>/<branch>,
+  # so directory = "~/cs" lands them at ~/cs/<repo>/<branch> — siblings of the
+  # bare repo's other worktrees, right inside the repo dir. Forking must start
+  # from the bare-parent workspace (cwd ~/cs/<repo>); Herdr rejects a linked
+  # worktree as the source (error: linked_worktree_source).
   mkConfig = worktreeDir: ''
     [theme]
     # Derive palette from the host terminal, so it matches ghostty/stylix.
@@ -73,5 +80,5 @@ in
   #   new/open must run from the base, not inside a worktree; Shift+b removes the
   #   current worktree (confirms). Switch base<->worktree with w or [ / ].
   xdg.configFile."herdr/config.toml".text = mkConfig "~/.herdr";
-  xdg.configFile."herdr/config-cs.toml".text = mkConfig "~/cs/.herdr";
+  xdg.configFile."herdr/config-cs.toml".text = mkConfig "~/cs";
 }
