@@ -19,6 +19,16 @@ let
   # from the bare-parent workspace (cwd ~/cs/<repo>); Herdr rejects a linked
   # worktree as the source (error: linked_worktree_source).
   mkConfig = worktreeDir: ''
+    # Herdr writes `onboarding = false` itself once the overlay is dismissed,
+    # but this file is a read-only store symlink, so without it set here the
+    # first-run overlay returns on every launch.
+    onboarding = false
+
+    [update]
+    # herdr comes from the pinned flake input and `herdr update` cannot write to
+    # the store. manifest_check stays on: those manifests are runtime data.
+    version_check = false
+
     [theme]
     # Derive palette from the host terminal, so it matches ghostty/stylix.
     name = "terminal"
