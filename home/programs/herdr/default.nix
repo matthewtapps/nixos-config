@@ -6,18 +6,20 @@
 let
   herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
-  # Config body shared by both variants; only worktrees.directory differs.
-  # config.toml is the default; config-cs.toml keeps ~/cs repos' worktrees under
-  # ~/cs so the shared ~/cs/flake.nix stays an ancestor. The zsh herdr() wrapper
-  # (home/programs/zsh) selects config-cs via HERDR_CONFIG_PATH when launched
-  # under ~/cs.
+  # Config body shared by all variants; only worktrees.directory differs.
+  # config.toml is the default; config-cs.toml / config-dev.toml keep ~/cs and
+  # ~/dev repos' worktrees under their own root (for ~/cs that also keeps the
+  # shared ~/cs/flake.nix an ancestor). The zsh herdr() wrapper
+  # (home/programs/zsh) selects the matching config via HERDR_CONFIG_PATH from
+  # the launch cwd.
   #
-  # ~/cs repos use the "worktrees level 2" bare layout (~/cs/<repo>/.bare + a
-  # .git pointer file). Herdr places new worktrees at <directory>/<repo>/<branch>,
-  # so directory = "~/cs" lands them at ~/cs/<repo>/<branch> — siblings of the
-  # bare repo's other worktrees, right inside the repo dir. Forking must start
-  # from the bare-parent workspace (cwd ~/cs/<repo>); Herdr rejects a linked
-  # worktree as the source (error: linked_worktree_source).
+  # ~/cs and ~/dev repos use the "worktrees level 2" bare layout
+  # (<root>/<repo>/.bare + a .git pointer file). Herdr places new worktrees at
+  # <directory>/<repo>/<branch>, so directory = "~/cs" lands them at
+  # ~/cs/<repo>/<branch>: siblings of the bare repo's other worktrees, right
+  # inside the repo dir. Forking must start from the bare-parent workspace (cwd
+  # <root>/<repo>); Herdr rejects a linked worktree as the source (error:
+  # linked_worktree_source).
   mkConfig = worktreeDir: ''
     # Herdr writes `onboarding = false` itself once the overlay is dismissed,
     # but this file is a read-only store symlink, so without it set here the
@@ -109,4 +111,5 @@ in
   #   current worktree (confirms). Switch base<->worktree with w or [ / ].
   xdg.configFile."herdr/config.toml".text = mkConfig "~/.herdr";
   xdg.configFile."herdr/config-cs.toml".text = mkConfig "~/cs";
+  xdg.configFile."herdr/config-dev.toml".text = mkConfig "~/dev";
 }

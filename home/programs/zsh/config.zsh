@@ -49,10 +49,17 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 # workspaces are independent. Explicit `herdr --session x` / $HERDR_SESSION win.
 herdr() {
     local -a envv
-    # Under ~/cs, use config-cs.toml (worktrees -> ~/cs/.herdr) so the shared
-    # ~/cs/flake.nix stays an ancestor of each worktree. Explicit env wins.
-    if [[ -z "$HERDR_CONFIG_PATH" && ( "$PWD" == "$HOME/cs" || "$PWD" == "$HOME/cs/"* ) ]]; then
-        envv+=("HERDR_CONFIG_PATH=$HOME/.config/herdr/config-cs.toml")
+    # Roots using the "worktrees level 2" bare layout: use config-<root>.toml so
+    # new worktrees land at ~/<root>/<repo>/<branch>, siblings of the bare repo's
+    # other worktrees, rather than under ~/.herdr. Explicit env wins.
+    local root
+    if [[ -z "$HERDR_CONFIG_PATH" ]]; then
+        for root in cs dev; do
+            if [[ "$PWD" == "$HOME/$root" || "$PWD" == "$HOME/$root/"* ]]; then
+                envv+=("HERDR_CONFIG_PATH=$HOME/.config/herdr/config-$root.toml")
+                break
+            fi
+        done
     fi
     if [[ -z "$HERDR_SESSION" && -n "$HYPRLAND_INSTANCE_SIGNATURE" && "$*" != *--session* ]]; then
         local ws
@@ -67,7 +74,7 @@ herdr() {
 }
 
 # lazygit can't run in a bare-repo parent (the "worktrees level 2" layout used by
-# ~/cs repos: ~/cs/<repo>/.bare + a .git pointer file). It needs a work tree, so
+# ~/cs and ~/dev repos: <root>/<repo>/.bare + a .git pointer file). It needs a work tree, so
 # `git rev-parse --show-toplevel` fails at the parent with "must be run in a work
 # tree". When cwd is such a parent, launch lazygit inside one of its worktrees
 # instead — prefer a sibling named `main`, else the first sibling worktree, else
