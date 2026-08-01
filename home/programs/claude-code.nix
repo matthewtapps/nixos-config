@@ -104,6 +104,9 @@ let
     OTEL_LOGS_EXPORT_INTERVAL = "2000";
     AHVI_OTLP_ENDPOINT = endpoints.otlp;
     AHVI_API_ENDPOINT = endpoints.api;
+    # ahvi-native redaction knob read by `ahvi statusline`: "1" strips
+    # `session_name` from hookData before POST. Off = session titles captured.
+    AHVI_REDACT_SESSION_NAME = "0";
   };
 
   # statusLine: `ahvi-server statusline` tees the hook payload to ahvi as an
@@ -267,14 +270,16 @@ let
     );
   };
 
-  # The five ahvi hooks, all backed by ahviBin. SessionStart runs two separate
-  # groups (matching `ahvi install`): `inventory` posts a harness snapshot, and
-  # `feedback-start` records session start + arms the post-clear feedback window.
-  # The trio Stop/SessionEnd/ElicitationResult drive session-feedback collection
-  # (nudge → mark carry-over → capture the elicitation result).
+  # The six ahvi hooks, all backed by ahviBin. SessionStart runs three separate
+  # groups (matching `ahvi install`): `inventory` posts a harness snapshot,
+  # `churn` posts default-branch commit churn for the repo, and `feedback-start`
+  # records session start + arms the post-clear feedback window. The trio
+  # Stop/SessionEnd/ElicitationResult drive session-feedback collection
+  # (nudge -> mark carry-over -> capture the elicitation result).
   ahviHooks = {
     SessionStart = [
       { hooks = [ { type = "command"; command = "${ahviBin} inventory"; } ]; }
+      { hooks = [ { type = "command"; command = "${ahviBin} churn"; } ]; }
       { hooks = [ { type = "command"; command = "${ahviBin} feedback-start"; } ]; }
     ];
     Stop = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-nudge"; } ]; } ];
