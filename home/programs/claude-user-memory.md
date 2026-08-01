@@ -14,7 +14,14 @@
 
 ## Comment style
 
-- Keep your comments extremely concise.
-- Only comment where necessary: When the reason for code is not clear from the code itself, or an outcome was unintuitive to arrive at.
-- Phrase your comments so that they are aimed at future project maintainers.
-- Never comment in a "dev diary" style, like "No longer need to start the network service" as a comment where code was deleted.
+- Default to no comments.
+- If you do comment:
+    - Keep the comment extremely concise.
+    - Phrase the comment towards future maintainers of the code.
+    - Never comment only explaining what the code does.
+    - Never comment why you chose this architecture over another.
+    - Never comment for status or history ("no longer needed", "now handled by X").
+- Do not mirror the comment density of the surrounding code, it may predate these rules.
+- If touching existing long comments, take the opportunity to clean them up while we're editing this code. Commit these as separate logical doc: commits.
+- Only comment file headers when the file's role is not obvious from its path. File header comments should only be two sentences at most.
+- Before reporting a change done, re-read every comment that you added and delete or rewrite any that do not conform to these rules.
