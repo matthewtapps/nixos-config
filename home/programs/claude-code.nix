@@ -6,6 +6,9 @@
 #   - settings.json (model, statusline, hooks, env, enabled plugins, marketplaces)
 #   - claude-powerline.json (statusline theme)
 #   - CLAUDE.md (user-level memory, from ./claude-user-memory.md)
+#   - Herdr's Claude Code integration (hooks/herdr-agent-state.sh + its
+#     settings.json entry), which Herdr's own installer cannot own because
+#     settings.json is rewritten on every switch
 #   - the plugin tree under ~/.claude/plugins
 #   - plain skills under ~/.claude/skills (Matt Pocock's skills)
 #
@@ -26,6 +29,7 @@
   pkgs,
   lib,
   host,
+  inputs,
   ...
 }:
 let
@@ -52,6 +56,23 @@ let
   home = config.home.homeDirectory;
   pluginsDir = "${home}/.claude/plugins";
 
+  herdrClaudeHook = pkgs.callPackage ../../nixos/packages/herdr-claude-hook.nix {
+    herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  };
+
+  # The hook script exits silently unless python3 is on PATH; prefix it here
+  # rather than patch the script, which Herdr version-checks by content.
+  mkHerdrHook = dir: {
+    matcher = "*";
+    hooks = [
+      {
+        type = "command";
+        timeout = 10;
+        command = "PATH=${pkgs.python3}/bin:$PATH ${pkgs.bash}/bin/bash '${dir}/hooks/herdr-agent-state.sh' session";
+      }
+    ];
+  };
+
   # Work machines (samar, tehol — the ones importing common-work.nix) run BOTH
   # harnesses: `claude` (work account) + `cclaude` (personal account). Every
   # other machine runs a single personal `claude` harness only.
@@ -71,13 +92,12 @@ let
   workEndpoints = endpoints.work;
   personalEndpoints = endpoints.personal;
 
-  # Path to the ahvi binary that backs the statusline + the five hooks
-  # (inventory / feedback-start / feedback-nudge / feedback-mark /
-  # feedback-capture). NOT built by this config — built out of the ahvi dev
-  # project (`just dist`) to this fixed dist path; just rebuild there to update.
-  # ~/dev/ahvi is a bare-repo worktree layout, so the primary worktree (and its
-  # dist/) sits under main/. Absolute so the hooks resolve it regardless of the
-  # inherited PATH.
+  # Path to the ahvi binary that backs the statusline + the six hooks (inventory /
+  # churn / feedback-start / feedback-nudge / feedback-mark / feedback-capture).
+  # NOT built by this config — built out of the ahvi dev project (`just dist`) to
+  # this fixed dist path; just rebuild there to update. ~/dev/ahvi is a bare-repo
+  # worktree layout, so the primary worktree (and its dist/) sits under main/.
+  # Absolute so the hooks resolve it regardless of the inherited PATH.
   ahviBin = "${home}/dev/ahvi/main/dist/ahvi";
 
   # Full-telemetry OTel env for ahvi: logs + traces + prompts + tool content +
@@ -304,8 +324,10 @@ let
         type = "command";
         command = mkStatuslineCmd dir;
       };
-      # ahvi telemetry/feedback hooks + the git guardrails PreToolUse block.
+      # ahvi telemetry/feedback hooks + Herdr's agent-state reporter + the git
+      # guardrails PreToolUse block.
       hooks = ahviHooks // {
+        SessionStart = ahviHooks.SessionStart ++ [ (mkHerdrHook dir) ];
         PreToolUse = [
           {
             matcher = "Bash";
@@ -413,6 +435,7 @@ in
     $DRY_RUN_CMD ${install} -m644 ${defaultSettingsJson} "$root/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$root/claude-powerline.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-user-memory.md} "$root/CLAUDE.md"
+    $DRY_RUN_CMD ${install} -Dm755 ${herdrClaudeHook} "$root/hooks/herdr-agent-state.sh"
     ${lib.optionalString isWorkMachine ''
 
       # Work machines only: second ~/.claude-alt profile (personal account via the
@@ -428,6 +451,7 @@ in
       $DRY_RUN_CMD ${install} -m644 ${altSettingsJson} "$alt/settings.json"
       $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
       $DRY_RUN_CMD ${install} -m644 ${./claude-user-memory.md} "$alt/CLAUDE.md"
+      $DRY_RUN_CMD ${install} -Dm755 ${herdrClaudeHook} "$alt/hooks/herdr-agent-state.sh"
     ''}
   '';
 }
