@@ -79,17 +79,17 @@ in
     # Systemd-resolved configuration
     services.resolved = {
       enable = true;
-      dnssec = "false";
-      domains = [ "~." ];
-      fallbackDns = [
-        "1.1.1.1"
-        "8.8.8.8"
-      ];
-      extraConfig = ''
-        DNSStubListener=yes
-        ResolveUnicastSingleLabel=yes
-        Cache=yes
-      '';
+      settings.Resolve = {
+        DNSSEC = false;
+        Domains = [ "~." ];
+        FallbackDNS = [
+          "1.1.1.1"
+          "8.8.8.8"
+        ];
+        DNSStubListener = true;
+        ResolveUnicastSingleLabel = true;
+        Cache = true;
+      };
     };
 
     # D-Bus permissions for Azure VPN

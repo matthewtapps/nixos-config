@@ -12,6 +12,6 @@
   # auto-switches to the resolved backend when this is enabled.
   services.resolved = {
     enable = true;
-    dnssec = "false";
+    settings.Resolve.DNSSEC = false;
   };
 }
