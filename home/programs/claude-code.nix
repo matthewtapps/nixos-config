@@ -74,9 +74,11 @@ let
   # Path to the ahvi binary that backs the statusline + the five hooks
   # (inventory / feedback-start / feedback-nudge / feedback-mark /
   # feedback-capture). NOT built by this config — built out of the ahvi dev
-  # project to this fixed dist path; just rebuild there to update. Absolute so
-  # the hooks resolve it regardless of the inherited PATH.
-  ahviBin = "${home}/dev/ahvi/dist/ahvi";
+  # project (`just dist`) to this fixed dist path; just rebuild there to update.
+  # ~/dev/ahvi is a bare-repo worktree layout, so the primary worktree (and its
+  # dist/) sits under main/. Absolute so the hooks resolve it regardless of the
+  # inherited PATH.
+  ahviBin = "${home}/dev/ahvi/main/dist/ahvi";
 
   # Full-telemetry OTel env for ahvi: logs + traces + prompts + tool content +
   # raw API bodies. http/json because ahvi parses JSON not protobuf; metrics
