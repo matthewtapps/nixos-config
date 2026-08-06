@@ -224,6 +224,65 @@ h.test("scrolloff holds deep inside a table taller than the window", function()
   end
 end)
 
+h.test("cursor tracking leaves soft-wrapped prose alone", function()
+  -- Tracking runs on every motion in a markdown buffer, table or not, and its
+  -- (topline, topfill) view cannot express a top line scrolled part-way through
+  -- its own wrapped rows: it zeroes 'skipcol'. Correcting a motion Neovim had
+  -- already placed correctly therefore threw the part-scrolled row away and
+  -- jumped the document by the rest of that line. With no block anywhere in the
+  -- document, tracking must reproduce Neovim's own scrolling exactly.
+  local lines = {}
+  for i = 1, 60 do
+    lines[#lines + 1] = ("prose %02d"):format(i)
+  end
+  lines[11] = "a wrapped prose line long enough to take three screen rows once it is soft wrapped, "
+    .. "carrying on well past the second row and into a third one so the walk crosses all of them"
+
+  local function walk(tracking)
+    local chan = ui.start({
+      rows = 24,
+      cols = 80,
+      scrolloff = 8,
+      wrap = true,
+      screen_line_motion = true,
+      auto_focus = tracking,
+    })
+    local ok, out = pcall(function()
+      ui.open(chan, lines)
+      -- 'smoothscroll' is what lets the top line be scrolled one of its own rows
+      -- at a time; without it Neovim jumps by whole lines here on its own.
+      ui.exec(chan, [[
+        vim.wo.smoothscroll = true
+        vim.api.nvim_win_set_cursor(0, { 1, 0 })
+        vim.fn.winrestview({ topline = 1, skipcol = 0 })
+      ]])
+      ui.settle(chan)
+
+      local seen = {}
+      for i = 0, 28 do
+        if i > 0 then
+          ui.feed(chan, "j")
+        end
+        seen[#seen + 1] = ui.exec(chan, [[
+          local v = vim.fn.winsaveview()
+          return ("line %d row %d top %d skip %d"):format(vim.fn.line("."), vim.fn.winline(), v.topline, v.skipcol or 0)
+        ]])
+      end
+      return seen
+    end)
+    ui.stop(chan)
+    if not ok then
+      error(out, 0)
+    end
+    return out
+  end
+
+  local tracked, plain = walk(true), walk(false)
+  for i = 1, #plain do
+    h.assert_eq("step " .. (i - 1) .. " matches untracked scrolling", tracked[i], plain[i])
+  end
+end)
+
 h.test("the scrolloff margin still holds at a table's edge", function()
   local chan = ui.start({ rows = 40, scrolloff = 8 })
   local ok, err = pcall(function()

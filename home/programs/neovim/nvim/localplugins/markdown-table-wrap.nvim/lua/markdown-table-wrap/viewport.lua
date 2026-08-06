@@ -170,6 +170,21 @@ function M.place_block(win, bufnr, table_info, rendered_rows, want_row, config)
   return above and (got - rendered_rows) or (got + 1)
 end
 
+--- Screen rows between the cursor's row and the first text row of the line it
+--- sits on. With 'wrap' the cursor can sit part-way down a line, and every row
+--- this module computes is measured from a line's FIRST row.
+function M.cursor_offset(win)
+  return vim.api.nvim_win_call(win, function()
+    local lnum, col = unpack(vim.api.nvim_win_get_cursor(win))
+    local here = vim.fn.screenpos(win, lnum, col + 1)
+    local first = vim.fn.screenpos(win, lnum, 1)
+    if here.row == 0 or first.row == 0 then
+      return 0
+    end
+    return math.max(0, here.row - first.row)
+  end)
+end
+
 --- The scrolloff margin actually in force for `win`, capped the way Neovim caps
 --- it on a short window.
 function M.margin(win)
@@ -209,6 +224,7 @@ function M.note(win)
     return
   end
   prev.row = vim.api.nvim_win_call(win, vim.fn.winline)
+  prev.offset = M.cursor_offset(win)
   prev.view = vim.api.nvim_win_call(win, vim.fn.winsaveview)
 end
 
@@ -262,6 +278,7 @@ function M.follow(win, bufnr)
       buf = bufnr,
       lnum = lnum,
       row = vim.api.nvim_win_call(win, vim.fn.winline),
+      offset = M.cursor_offset(win),
       view = vim.api.nvim_win_call(win, vim.fn.winsaveview),
     }
     return
@@ -269,22 +286,37 @@ function M.follow(win, bufnr)
 
   local margin, win_h = M.margin(win)
   local delta = M.distance(win, bufnr, prev.lnum, lnum)
+  -- `distance` runs first text row to first text row, so the cursor's own offset
+  -- into a soft-wrapped line belongs to neither end of it: drop the offset it
+  -- had, add the offset it has now.
+  local offset = M.cursor_offset(win)
+  local from = prev.row - (prev.offset or 0)
   local want
   if math.abs(delta) >= win_h then
     -- Off-screen jump (G, a search hit): Neovim centres, and so do we.
     want = math.floor(win_h / 2)
   else
-    want = math.max(margin + 1, math.min(prev.row + delta, win_h - margin))
+    want = math.max(margin + 1 - offset, math.min(from + delta, win_h - margin - offset))
   end
 
-  adjusting = true
-  local ok = pcall(M.place, win, bufnr, lnum, want, { margin, win_h - margin - 1 })
-  adjusting = false
+  local row = vim.api.nvim_win_call(win, vim.fn.winline)
+  local ok = true
+  -- Neovim already landed on the wanted row: leave the view alone. Placing it
+  -- again would be a no-op in (topline, topfill) but not on screen: `place`
+  -- zeroes 'skipcol', which throws away a part-scrolled soft-wrapped top line
+  -- and jumps the document by that line's remaining rows.
+  if row ~= want + offset then
+    adjusting = true
+    ok = pcall(M.place, win, bufnr, lnum, want, { margin - offset, win_h - margin - 1 - offset })
+    adjusting = false
+    row = ok and vim.api.nvim_win_call(win, vim.fn.winline) or (want + offset)
+  end
 
   last[win] = {
     buf = bufnr,
     lnum = lnum,
-    row = ok and vim.api.nvim_win_call(win, vim.fn.winline) or want,
+    row = row,
+    offset = M.cursor_offset(win),
     view = vim.api.nvim_win_call(win, vim.fn.winsaveview),
   }
 end
@@ -296,6 +328,7 @@ function M.set_last(win, bufnr, lnum, row)
     buf = bufnr,
     lnum = lnum,
     row = row,
+    offset = M.cursor_offset(win),
     view = vim.api.nvim_win_call(win, vim.fn.winsaveview),
   }
 end
@@ -317,6 +350,7 @@ function M.jump(win, bufnr, lnum, want_row)
     buf = bufnr,
     lnum = lnum,
     row = vim.api.nvim_win_call(win, vim.fn.winline),
+    offset = M.cursor_offset(win),
     view = vim.api.nvim_win_call(win, vim.fn.winsaveview),
   }
   claimed[win] = true
