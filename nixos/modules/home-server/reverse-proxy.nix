@@ -57,8 +57,18 @@ _: {
           '';
         };
       };
+
+      # Static player-facing character sheets, published by sync-sheets on
+      # mappo/karsa. Unauthenticated: anyone with the URL can read them.
+      "sheets.mattys.cloud" = {
+        forceSSL = true;
+        enableACME = true;
+        root = "/var/lib/gcs-sheets";
+      };
     };
   };
+
+  systemd.tmpfiles.rules = [ "d /var/lib/gcs-sheets 0755 matt users -" ];
 
   security.acme = {
     acceptTerms = true;
