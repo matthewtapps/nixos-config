@@ -140,12 +140,6 @@ let
 
   # Pinned marketplace repos (full repo content, cloned into plugins/marketplaces).
   mp = {
-    caveman = pkgs.fetchFromGitHub {
-      owner = "JuliusBrussee";
-      repo = "caveman";
-      rev = "655b7d9c5431f822264b7732e9901c5578ac84cf";
-      sha256 = "1chxccncngr0syc39ykjlmzxgj669vnzkfa3xvijsspgvw9529q7";
-    };
     claude-powerline = pkgs.fetchFromGitHub {
       owner = "Owloops";
       repo = "claude-powerline";
@@ -238,16 +232,8 @@ let
 
   # cache/<marketplace>/<plugin>/<version> -> plugin content, taken from the
   # `source` each marketplace.json declares for the plugin:
-  #   caveman          source "./"        -> marketplace repo root
   #   claude-powerline source "./plugin"  -> the repo's plugin/ subdir
   pluginCaches = [
-    {
-      mp = "caveman";
-      plugin = "caveman";
-      version = "655b7d9c5431";
-      sha = "655b7d9c5431f822264b7732e9901c5578ac84cf";
-      src = mp.caveman;
-    }
     {
       mp = "claude-powerline";
       plugin = "claude-powerline";
@@ -258,7 +244,6 @@ let
   ];
 
   marketplaceRepos = {
-    caveman = "JuliusBrussee/caveman";
     claude-powerline = "Owloops/claude-powerline";
   };
 
