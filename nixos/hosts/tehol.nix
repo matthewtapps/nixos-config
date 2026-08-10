@@ -60,6 +60,16 @@
 
   networking.firewall.allowedTCPPorts = [ 9192 ];
 
+  # NetworkManager `ipv4.method shared` on the wired port runs dnsmasq for a
+  # direct-attached machine; its DHCP and DNS still hit the NixOS INPUT chain.
+  networking.firewall.interfaces.enp0s31f6 = {
+    allowedUDPPorts = [
+      67
+      53
+    ];
+    allowedTCPPorts = [ 53 ];
+  };
+
   nix.settings.trusted-users = [
     "matt"
     "root"
@@ -88,6 +98,7 @@
       bun
       gcc
       colmena
+      ethtool
     ];
   };
 

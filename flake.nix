@@ -173,6 +173,17 @@
           ];
         }
         {
+          name = "baruk";
+          system = "x86_64-linux";
+          device = "baruk";
+          users = {
+            matt = ./home/users/matt/baruk.nix;
+          };
+          modules = [
+            ./nixos/hosts/baruk.nix
+          ];
+        }
+        {
           name = "samar";
           system = "x86_64-linux";
           device = "samar";
@@ -219,7 +230,15 @@
             ];
           };
         }) hosts
-      );
+      )
+      // {
+        installer = nixpkgs.lib.nixosSystem {
+          modules = [
+            ./nixos/installer/dl380p.nix
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
+          ];
+        };
+      };
 
       homeConfigurations = builtins.listToAttrs (
         builtins.concatLists (
@@ -290,6 +309,8 @@
             apiUrl = ep.personal.api;
             configSubdir = ".claude-alt";
           };
+
+          installer-iso = self.nixosConfigurations.installer.config.system.build.isoImage;
         }
       );
 
