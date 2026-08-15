@@ -10,6 +10,9 @@
       EDITOR = "nvim";
     };
     systemPackages = with pkgs; [
+      # Terminfo for the ghostty TERM that SSH forwards from the client; needed
+      # system-wide because root has no home-manager profile.
+      ghostty.terminfo
       neovim
       wget
       git

@@ -4,6 +4,7 @@
   imports = [
     ../hardware/baruk.nix
     ../modules/common.nix
+    ../modules/stylix.nix
     ../modules/networkmanager.nix
     ../modules/avahi.nix
     ../modules/deploy-target.nix
@@ -59,6 +60,7 @@
       tcpdump
       smartmontools
       pciutils
+      usbutils
       ethtool
     ];
   };

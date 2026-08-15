@@ -86,6 +86,12 @@
         IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
       };
+      "baruk" = {
+        User = "matt";
+        HostName = "baruk.local";
+        IdentityFile = "~/.ssh/id_ed25519";
+        IdentitiesOnly = true;
+      };
     };
   };
 
