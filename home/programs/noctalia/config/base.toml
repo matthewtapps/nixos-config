@@ -34,7 +34,9 @@ launcher_position = "center"
 clipboard_placement = "floating"
 clipboard_position = "center"
 control_center_placement = "attached"
+open_near_click_control_center = true
 wallpaper_placement = "attached"
+open_near_click_wallpaper = true
 session_placement = "floating"
 session_position = "center"
 
