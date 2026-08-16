@@ -509,6 +509,7 @@
     ./theme.nix
     ../../programs/hypr/default.nix
     ../../programs/noctalia/default.nix
+    ../../programs/taildrop.nix
     ../../programs/stylix.nix
   ];
 }

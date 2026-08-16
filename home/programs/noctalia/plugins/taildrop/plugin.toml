@@ -1,0 +1,73 @@
+# Taildrop send plus a text buffer shared across the tailnet. The buffer lives
+# in taildrop-syncd; this plugin is a view onto it over localhost.
+
+id = "matt/taildrop"
+name = "Taildrop"
+version = "1.0.0"
+plugin_api = 24
+author = "matt"
+license = "MIT"
+icon = "send"
+description = "Shared text buffer across your tailnet, plus file and clipboard sending over Taildrop."
+tags = ["network", "bar", "panel"]
+dependencies = ["tailscale"]
+
+[[setting]]
+key = "syncd_port"
+type = "int"
+label_key = "settings.syncd_port.label"
+description_key = "settings.syncd_port.description"
+default = 8471
+min = 1
+max = 65535
+advanced = true
+
+[[setting]]
+key = "download_dir"
+type = "string"
+label_key = "settings.download_dir.label"
+description_key = "settings.download_dir.description"
+default = "~/Downloads/taildrop"
+
+# The panel ticks once a second, so this is whole seconds.
+[[setting]]
+key = "flush_idle_seconds"
+type = "int"
+label_key = "settings.flush_idle_seconds.label"
+description_key = "settings.flush_idle_seconds.description"
+default = 1
+min = 1
+max = 10
+
+[[setting]]
+key = "notify_on_receive"
+type = "bool"
+label_key = "settings.notify_on_receive.label"
+description_key = "settings.notify_on_receive.description"
+default = true
+
+[[setting]]
+key = "tailscale_bin"
+type = "string"
+label_key = "settings.tailscale_bin.label"
+default = "tailscale"
+advanced = true
+
+[[service]]
+id = "service"
+entry = "service.luau"
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 460
+height = 420
+placement = "attached"
+position = "auto"
+open_near_click = true
+keyboard_focus = "exclusive"
+dismiss_on_outside_click = true

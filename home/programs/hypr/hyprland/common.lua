@@ -102,6 +102,8 @@ hl.bind("SUPER + SHIFT + A", hl.dsp.exec_cmd("record-region-toggle"), { descript
 hl.bind(mainMod .. " + X", hl.dsp.window.fullscreen(), { description = "fullscreen window" })
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center"), { description = "control centre" })
 hl.bind("SUPER + V", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"), { description = "clipboard history" })
+hl.bind("SUPER + D", hl.dsp.exec_cmd("noctalia msg panel-toggle matt/taildrop:panel"), { description = "shared text buffer" })
+hl.bind("SUPER + SHIFT + D", hl.dsp.exec_cmd("taildrop-send --clipboard"), { description = "send clipboard via Taildrop" })
 hl.bind("ALT + TAB", hl.dsp.exec_cmd("noctalia msg window-switcher"), { description = "window switcher" })
 
 -- Keybind cheatsheet (hold f/j + `/`, or + shift+`/` = "?"). kanata emits

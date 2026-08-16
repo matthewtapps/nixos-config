@@ -1,0 +1,75 @@
+{
+  "settings": {
+    "syncd_port": {
+      "label": "Sync daemon port",
+      "description": "Port taildrop-syncd listens on, for both peers and this plugin."
+    },
+    "download_dir": {
+      "label": "Download directory",
+      "description": "Where the receive service writes incoming Taildrop files."
+    },
+    "flush_idle_seconds": {
+      "label": "Flush after idle",
+      "description": "Seconds without typing before an edit is pushed to your other devices."
+    },
+    "notify_on_receive": {
+      "label": "Notify on arrival",
+      "description": "Show a notification when a Taildrop file lands."
+    },
+    "tailscale_bin": {
+      "label": "Tailscale binary"
+    }
+  },
+  "status": {
+    "offline": "sync daemon unreachable",
+    "editing": "editing",
+    "synced": "synced from {origin}",
+    "synced_plain": "synced"
+  },
+  "action": {
+    "send_text": "Send this text to a device",
+    "paste": "Append the clipboard",
+    "send_path": "Send a file by path",
+    "history": "Recover a replaced version",
+    "back": "Back"
+  },
+  "editor": {
+    "placeholder": "Type here. It appears on your other devices."
+  },
+  "targets": {
+    "text": "send text",
+    "offline": "offline",
+    "none": "No devices available",
+    "files": {
+      "one": "send 1 file",
+      "other": "send {count} files"
+    }
+  },
+  "path": {
+    "hint": "Type or paste an absolute path, then press Enter.",
+    "placeholder": "~/Pictures/screenshot.png",
+    "missing": "No such file"
+  },
+  "history": {
+    "none": "Nothing to recover"
+  },
+  "tooltip": {
+    "buffer": "Buffer",
+    "sync": "Sync",
+    "devices": "Devices online",
+    "empty": "(empty)"
+  },
+  "notify": {
+    "sent": "Sent to {target}",
+    "send_failed": "Send to {target} failed",
+    "no_data_dir": "Plugin data directory unavailable",
+    "received": {
+      "one": "Taildrop received 1 file",
+      "other": "Taildrop received {count} files"
+    },
+    "files": {
+      "one": "1 file",
+      "other": "{count} files"
+    }
+  }
+}
