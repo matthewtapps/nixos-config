@@ -170,7 +170,9 @@ fleetswitch() {
 
     # deploy-rs repeats its pre-build check once per node, so --skip-checks
     # below leaves this as the only thing validating the flake.
-    nix flake check "$HOME/nixos-config" || return
+    nix build --no-link \
+        "$HOME/nixos-config#checks.x86_64-linux."{deploy-schema,deploy-activate} \
+        || return
 
     # deploy-rs revokes already-succeeded profiles when any node in a multi-node
     # run fails. Its spinner swallows nix output whenever more than one host
