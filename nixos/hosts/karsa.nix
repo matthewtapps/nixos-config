@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   imports = [
@@ -82,7 +82,10 @@
       thunar
       bun
       gcc
-      deploy-rs
+      # The nixpkgs build lags far enough behind that it lacks the concurrent
+      # build pipeline, and it would disagree with the activate binary the flake
+      # bakes into every target.
+      inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
       (callPackage ../packages/gloriousctl.nix { })
     ];
   };

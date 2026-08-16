@@ -46,10 +46,10 @@
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Deliberately does not follow nixpkgs: the CLI and the activate binary baked
+    # into every target must come from one revision, and following would rebuild
+    # both on each nixpkgs bump.
+    deploy-rs.url = "github:serokell/deploy-rs";
 
     # The cachix branch is the one published to noctalia.cachix.org. This input
     # deliberately does not follow nixpkgs: it keeps the nixpkgs upstream pins so
@@ -119,25 +119,6 @@
         import nixpkgs {
           localSystem = system;
           inherit config overlays;
-        };
-
-      # deploy-rs follows our nixpkgs, so its Rust binary matches no cached
-      # build and every target compiles it during activation. Keep the flake's
-      # activation lib, take the binary from nixpkgs where it is cached.
-      mkDeployPkgs =
-        system:
-        import nixpkgs {
-          localSystem = system;
-          inherit config;
-          overlays = overlays ++ [
-            inputs.deploy-rs.overlays.default
-            (_: prev: {
-              deploy-rs = {
-                inherit (mkPkgs system) deploy-rs;
-                inherit (prev.deploy-rs) lib;
-              };
-            })
-          ];
         };
 
       hosts = [
@@ -271,8 +252,11 @@
               profiles.system = {
                 sshUser = "root";
                 magicRollback = true;
+                # Taken from the flake's own lib, not an overlay over our
+                # nixpkgs, so this is the same build as the CLI on karsa and a
+                # nixpkgs bump does not recompile it for every target.
                 path =
-                  (mkDeployPkgs host.system).deploy-rs.lib.activate.nixos
+                  inputs.deploy-rs.lib.${host.system}.activate.nixos
                     self.nixosConfigurations.${host.name};
               };
             };
