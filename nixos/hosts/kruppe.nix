@@ -10,6 +10,7 @@
     ../modules/audio.nix
     ../modules/thunar.nix
     ../modules/networkmanager.nix
+    ../modules/home-server/dns.nix
     ../modules/home-server/homeassistant.nix
     ../modules/home-server/reverse-proxy.nix
     ../modules/home-server/fail2ban.nix

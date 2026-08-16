@@ -15,6 +15,7 @@
     ../modules/steam.nix
     ../modules/avahi.nix
     ../modules/ollama.nix
+    ../modules/harmonia.nix
   ];
 
   networking.hosts = {

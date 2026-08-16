@@ -2,6 +2,7 @@
 
 let
   domain = "home.arpa";
+  iface = "wlp2s0";
 
   hosts = {
     router = "192.168.0.1";
@@ -20,16 +21,14 @@ in
   services.dnsmasq = {
     enable = true;
 
-    # Left off so the nameserver below stays the single source of truth; the
-    # option would otherwise append 127.0.0.1 and wire up resolvconf.
     resolveLocalQueries = false;
 
     settings = {
-      # wlan0 gets its address well after dnsmasq starts, and bind-interfaces
-      # would fail on a socket that does not exist yet.
+      # The wifi interface gets its address well after dnsmasq starts, and
+      # bind-interfaces would fail on a socket that does not exist yet.
       bind-dynamic = true;
       interface = [
-        "wlan0"
+        iface
         "lo"
       ];
 
@@ -53,8 +52,10 @@ in
   };
 
   networking = {
-    nameservers = lib.mkForce [ "127.0.0.1" ];
-    firewall.interfaces.wlan0 = {
+    # NetworkManager owns resolv.conf on this host, so networking.nameservers
+    # would be overwritten by the DHCP lease.
+    networkmanager.insertNameservers = [ "127.0.0.1" ];
+    firewall.interfaces.${iface} = {
       allowedTCPPorts = [ 53 ];
       allowedUDPPorts = [ 53 ];
     };
