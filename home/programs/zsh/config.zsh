@@ -116,6 +116,40 @@ hmswitch() {
     "$out/activate"
 }
 
+fleetstatus() {
+    local nodes host dir
+    nodes=$(nix eval --raw "$HOME/nixos-config#deploy.nodes" \
+        --apply 'ns: builtins.concatStringsSep " " (builtins.attrNames ns)') || return
+    dir=$(mktemp -d) || return
+
+    for host in ${=nodes}; do
+        ssh -o ConnectTimeout=5 -o BatchMode=yes "$host" '
+            gen=$(readlink /nix/var/nix/profiles/system); gen=${gen#system-}
+            # Every switch repoints /run/current-system, so only the boot pieces
+            # say whether a reboot is actually owed.
+            reboot=-
+            for part in kernel initrd kernel-modules; do
+                [ "$(readlink -f /run/booted-system/$part 2>/dev/null)" \
+                    = "$(readlink -f /run/current-system/$part 2>/dev/null)" ] || reboot=reboot
+            done
+            printf "%s\t%s\t%s\n" "${gen%-link}" \
+                "$(stat -c %y /run/current-system | cut -d. -f1)" "$reboot"
+        ' > "$dir/$host" 2>/dev/null &
+    done
+    wait
+
+    local gen stamp reboot
+    printf '%-8s %-6s %-21s %s\n' HOST GEN ACTIVATED PENDING
+    for host in ${=nodes}; do
+        if IFS=$'\t' read -r gen stamp reboot < "$dir/$host" 2>/dev/null && [[ -n $gen ]]; then
+            printf '%-8s %-6s %-21s %s\n' "$host" "$gen" "$stamp" "$reboot"
+        else
+            printf '%-8s %s\n' "$host" "unreachable"
+        fi
+    done
+    rm -rf "$dir"
+}
+
 fleetswitch() {
     cd ~/nixos-config || return
     nixswitch

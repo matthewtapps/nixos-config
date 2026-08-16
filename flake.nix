@@ -46,9 +46,6 @@
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Deliberately does not follow nixpkgs: the CLI and the activate binary baked
-    # into every target must come from one revision, and following would rebuild
-    # both on each nixpkgs bump.
     deploy-rs.url = "github:serokell/deploy-rs";
 
     # The cachix branch is the one published to noctalia.cachix.org. This input
@@ -252,9 +249,10 @@
               profiles.system = {
                 sshUser = "root";
                 magicRollback = true;
-                # Taken from the flake's own lib, not an overlay over our
-                # nixpkgs, so this is the same build as the CLI on karsa and a
-                # nixpkgs bump does not recompile it for every target.
+                # A laptop finishing activation over wifi does not always
+                # confirm inside the 30 second default, and missing it rolls a
+                # good deploy back.
+                confirmTimeout = 120;
                 path =
                   inputs.deploy-rs.lib.${host.system}.activate.nixos
                     self.nixosConfigurations.${host.name};
