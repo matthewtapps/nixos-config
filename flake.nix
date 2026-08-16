@@ -16,9 +16,6 @@
     matugen.url = "github:InioX/matugen?ref=v2.2.0";
     matugen.inputs.nixpkgs.follows = "nixpkgs";
 
-    lan-mouse.url = "github:feschber/lan-mouse";
-    lan-mouse.inputs.nixpkgs.follows = "nixpkgs";
-
     # hyprland deliberately does not follow nixpkgs: it caches binaries on
     # hyprland.cachix.org built against the nixpkgs it pins. Following unstable
     # would miss that cache and force a full source rebuild. Same rationale as
