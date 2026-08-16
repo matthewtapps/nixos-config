@@ -297,8 +297,6 @@
         voluptuous
         pyyaml
       ];
-
-    openFirewall = false;
   };
 
   systemd.tmpfiles.rules = [
