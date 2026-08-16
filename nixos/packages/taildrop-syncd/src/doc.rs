@@ -5,9 +5,8 @@ use std::path::{Path, PathBuf};
 
 pub const HISTORY_LIMIT: usize = 10;
 
-/// One revision of the shared buffer. `lamport` plus `origin` is a total order
-/// every device computes identically, so merges need no coordinator and no
-/// agreement about wall-clock time.
+/// `lamport` paired with `origin` is a total order every device computes
+/// identically, so merges need no coordinator and no agreed wall clock.
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Doc {
     pub text: String,
@@ -20,8 +19,6 @@ impl Doc {
         Doc { text: String::new(), lamport: 0, origin: origin.to_string() }
     }
 
-    /// Total order over revisions. Ties on lamport break on origin, so two
-    /// devices that edited concurrently still agree on which revision wins.
     fn rank(&self) -> (u64, &str) {
         (self.lamport, self.origin.as_str())
     }
@@ -71,7 +68,6 @@ impl Store {
         self.doc.clone()
     }
 
-    /// Merge a revision learned from a peer.
     pub fn merge(&mut self, incoming: Doc) -> Merge {
         if !incoming.supersedes(&self.doc) {
             return Merge::Ignored;

@@ -76,8 +76,7 @@ local function scanDownloads()
     current[name] = true
   end
 
-  -- The first scan only establishes a baseline; everything already on disk
-  -- predates this session and is not an arrival.
+  -- Without this guard every file already on disk notifies at startup.
   if seenDownloads then
     local arrived = {}
     for name in pairs(current) do

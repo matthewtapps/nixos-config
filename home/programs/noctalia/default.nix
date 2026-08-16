@@ -12,8 +12,8 @@ let
   ];
   profile = if builtins.elem device laptops then "laptop" else "desktop";
 
-  # Pinned so a plugin update is a deliberate hash bump; [plugins] auto_update
-  # is off and the shell never fetches this itself.
+  # auto_update is off and the shell never fetches this, so a plugin update
+  # happens only by bumping the rev here.
   communityPlugins = pkgs.fetchFromGitHub {
     owner = "noctalia-dev";
     repo = "community-plugins";
@@ -21,9 +21,8 @@ let
     hash = "sha256-rKT7LCVKVMW9lxBNlWeh/eaQIsQuUxLLs5e5/oU73wM=";
   };
 
-  # Swaps the bundled colour PNG for a themed glyph. replace-fail is the point:
-  # a rev bump that touches this block breaks the build rather than silently
-  # restoring the green logo.
+  # --replace-fail makes a rev bump that touches this block break the build;
+  # --replace would quietly put the bundled colour PNG back on the bar.
   tailscalePlugin = pkgs.runCommand "noctalia-plugin-tailscale" { } ''
     cp -r ${communityPlugins}/tailscale $out
     chmod -R u+w $out
@@ -50,7 +49,7 @@ in
     customPalettes.Everforest = ./palettes/everforest.json;
   };
 
-  # davemhammer/tailscale declares these as dependencies and shells out to both.
+  # davemhammer/tailscale shells out to xdg-open for the admin console.
   home.packages = [ pkgs.xdg-utils ];
 
   xdg.configFile = {

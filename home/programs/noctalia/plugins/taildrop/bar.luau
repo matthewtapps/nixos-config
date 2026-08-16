@@ -1,5 +1,4 @@
 --!nonstrict
--- Bar view: a glyph tinted by sync state, with the current buffer in the tooltip.
 
 local doc = nil
 local connected = false

@@ -80,9 +80,8 @@ fn main() {
         port,
     });
 
-    // Binding every interface would be wrong anywhere but here: the host
-    // firewall trusts tailscale0 alone and default-denies the rest, so the
-    // tailnet and loopback are the only ways in.
+    // The host firewall trusts tailscale0 alone and default-denies the rest, so
+    // binding everything still leaves only the tailnet and loopback reachable.
     let bind = SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), port);
     let listener = match TcpListener::bind(bind) {
         Ok(listener) => listener,
@@ -211,8 +210,7 @@ fn handle(shared: Arc<Shared>, mut stream: TcpStream) {
     }
 }
 
-/// Holds the connection open and writes a frame per accepted revision. The
-/// heartbeat comment is what makes a dead peer detectable without polling.
+/// The heartbeat is what makes a dead subscriber detectable without polling.
 fn serve_events(shared: Arc<Shared>, mut stream: TcpStream) {
     let _ = stream.set_read_timeout(None);
     if !http::begin_event_stream(&mut stream) {
@@ -256,8 +254,8 @@ fn broadcast(shared: &Arc<Shared>, current: &Doc) {
     shared.subscribers.lock().unwrap().retain(|(_, sender)| sender.send(payload.clone()).is_ok());
 }
 
-/// Pushes a revision to every peer believed online. Failures are silent by
-/// design: an unreachable peer catches up through the pull in peer_loop.
+/// A failed push is never retried; the pull in peer_loop is what catches an
+/// unreachable peer up.
 fn fan_out(shared: Arc<Shared>, current: Doc) {
     thread::spawn(move || {
         let targets: Vec<Peer> = shared.peers.lock().unwrap().iter().filter(|p| p.online).cloned().collect();
@@ -274,8 +272,8 @@ fn fan_out(shared: Arc<Shared>, current: Doc) {
     });
 }
 
-/// Merges whatever a peer answered with, so a device that pushed a losing
-/// revision learns the winner in the same round trip.
+/// Merging the reply is how a device that pushed a losing revision learns the
+/// winner in the same round trip.
 fn absorb(shared: &Arc<Shared>, response: &[u8]) {
     let Ok(theirs) = serde_json::from_slice::<Doc>(response) else { return };
     let (accepted, current) = {
@@ -287,8 +285,8 @@ fn absorb(shared: &Arc<Shared>, response: &[u8]) {
     }
 }
 
-/// Refreshes the peer list and pulls from any peer that just came back, which
-/// is what closes the gap after this device or that one was offline.
+/// Pulling from a peer that just came back is what closes the gap after either
+/// side was offline.
 fn peer_loop(shared: Arc<Shared>) {
     let mut known: Vec<Peer> = Vec::new();
     let pinned = std::env::var("TAILDROP_SYNCD_PEERS").ok();

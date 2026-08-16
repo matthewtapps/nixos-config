@@ -1,6 +1,4 @@
 --!nonstrict
--- Opens straight into the shared text buffer. The header icons switch to the
--- device picker, the clipboard, a path entry, and the recovery list.
 
 local view = "editor"
 local buffer = ""
@@ -264,8 +262,7 @@ end
 
 noctalia.state.watch("taildrop.doc", function(value)
   doc = value
-  -- A remote revision never clobbers text being typed; it lands on the next
-  -- clean moment instead.
+  -- Without the dirty check a peer's revision overwrites text mid-type.
   if value and not dirty and value.text ~= buffer then
     buffer = value.text
     editorRev += 1

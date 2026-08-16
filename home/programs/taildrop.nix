@@ -7,8 +7,7 @@ let
 
   syncd = pkgs.callPackage ../../nixos/packages/taildrop-syncd { };
 
-  # Collects whatever is being sent into a NUL-separated queue, then hands the
-  # panel over to Noctalia. NUL is what survives filenames containing newlines.
+  # NUL separates the queue because a filename may contain a newline.
   taildrop-send = pkgs.writeShellApplication {
     name = "taildrop-send";
     runtimeInputs = [
@@ -23,9 +22,8 @@ let
       queue="${queueFile}"
       : > "$queue"
 
-      # The send is asynchronous, so staged clipboard images and archives cannot
-      # be deleted on the way out. /tmp here is disk-backed and not cleaned on
-      # boot, so each run clears what earlier runs left behind.
+      # The send is asynchronous, so staging cannot be cleaned on the way out.
+      # TMPDIR here is disk-backed and survives reboots, so it grows without this.
       base="''${TMPDIR:-/tmp}"
       find "$base" -maxdepth 1 -name 'taildrop-*' -type d -mtime +1 -exec rm -rf {} + 2>/dev/null || true
 
@@ -100,8 +98,8 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
-  # `file get` blocks in a one-hour long poll against the local tailscaled and
-  # wakes only when a file lands, so this idles at zero cost.
+  # --loop blocks in a long poll against the local tailscaled; a timer in its
+  # place would leave files in the inbox until the next tick.
   systemd.user.services.taildrop-receive = {
     Unit = {
       Description = "Receive Taildrop files as they arrive";
@@ -116,8 +114,8 @@ in
     Install.WantedBy = [ "default.target" ];
   };
 
-  # Managing this file makes it a read-only symlink, so Thunar's "Configure
-  # custom actions" dialog can no longer save. Edit it here.
+  # Managing this file makes it read-only, so Thunar's custom-actions dialog
+  # can no longer save. Edit actions here.
   xdg.configFile."Thunar/uca.xml".text = ''
     <?xml version="1.0" encoding="UTF-8"?>
     <actions>

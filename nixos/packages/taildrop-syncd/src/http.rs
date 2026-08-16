@@ -64,8 +64,8 @@ pub fn respond_text(stream: &mut TcpStream, status: u16, message: &str) {
     respond(stream, status, "text/plain; charset=utf-8", message.as_bytes());
 }
 
-/// Opens an event stream. `no-cache` and the explicit unbuffered hint keep any
-/// reverse proxy from holding events back until the connection closes.
+/// Dropping `no-cache` or the unbuffered hint lets a reverse proxy hold events
+/// back until the connection closes.
 pub fn begin_event_stream(stream: &mut TcpStream) -> bool {
     let head = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nCache-Control: no-cache\r\nX-Accel-Buffering: no\r\nConnection: keep-alive\r\n\r\n";
     stream.write_all(head.as_bytes()).and_then(|_| stream.flush()).is_ok()
@@ -81,8 +81,7 @@ pub fn send_comment(stream: &mut TcpStream, note: &str) -> bool {
     stream.write_all(frame.as_bytes()).and_then(|_| stream.flush()).is_ok()
 }
 
-/// Blocking plain-HTTP client. Peers are reached over the tailnet, which is
-/// already encrypted, so this speaks no TLS and pulls in no TLS stack.
+/// Speaks no TLS because peers are reached over the already-encrypted tailnet.
 pub fn fetch(host: &str, port: u16, method: &str, path: &str, body: Option<&[u8]>, timeout: Duration) -> Option<Vec<u8>> {
     let address = format!("{host}:{port}");
     let addresses: Vec<_> = std::net::ToSocketAddrs::to_socket_addrs(&address).ok()?.collect();

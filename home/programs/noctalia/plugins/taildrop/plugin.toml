@@ -29,7 +29,6 @@ label_key = "settings.download_dir.label"
 description_key = "settings.download_dir.description"
 default = "~/Downloads/taildrop"
 
-# The panel ticks once a second, so this is whole seconds.
 [[setting]]
 key = "flush_idle_seconds"
 type = "int"

@@ -9,9 +9,8 @@ pub struct Peer {
     pub online: bool,
 }
 
-/// Explicit peer list as `host=address:port` pairs, which replaces tailnet
-/// discovery entirely. Two daemons on one machine need this, since discovery
-/// gives every peer the same port.
+/// Replaces tailnet discovery, which gives every peer the same port and so
+/// cannot address two daemons on one machine.
 pub fn from_override(spec: &str, fallback_port: u16) -> Vec<Peer> {
     spec.split(',')
         .filter_map(|entry| {
@@ -54,8 +53,7 @@ struct Node {
     os: Option<String>,
 }
 
-/// Reads the netmap tailscaled already holds in memory over its unix socket.
-/// This makes no network request, so it is cheap enough to call on a slow tick.
+/// Reads the in-memory netmap over a unix socket, making no network request.
 pub fn discover(tailscale_bin: &str, port: u16) -> Option<(String, Vec<Peer>)> {
     let output = Command::new(tailscale_bin).args(["status", "--json"]).output().ok()?;
     if !output.status.success() {

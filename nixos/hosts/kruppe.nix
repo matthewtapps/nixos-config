@@ -36,9 +36,8 @@
     hostName = "kruppe";
   };
 
-  # Exit node for the tailnet. The routing features only set the forwarding
-  # sysctls; the advertisement itself has no module option and rides along with
-  # --ssh at enrollment. The tailnet admin still has to approve the offer.
+  # The routing features carry the forwarding sysctls; advertising without them
+  # offers an exit node that drops every packet it is handed.
   services.tailscale = {
     useRoutingFeatures = lib.mkForce "both";
     extraUpFlags = [ "--advertise-exit-node" ];
