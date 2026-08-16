@@ -1,15 +1,14 @@
 # Point-to-point link between an onboard NIC and the iLO4 dedicated management
-# port. iLO4 has unauthenticated RCE history (CVE-2017-12542) and HPE gates the
-# firmware fixes behind a support contract, so it is kept off the LAN.
+# port. iLO grants full hardware control including power and console, so it is
+# kept off the LAN and reachable only by jumping through baruk.
 { ... }:
 
 let
-  # FILL from `ip -br link` on baruk; the 331FLR enumerates as eno1..eno4.
   iface = "eno1";
 
   # Overlapping the LAN subnet here would make iLO routable from it.
-  baruk = "10.99.0.1";
-  ilo = "10.99.0.2";
+  baruk = "10.42.0.1";
+  ilo = "10.42.0.5";
 in
 
 {
@@ -30,7 +29,6 @@ in
     iptables -A FORWARD -i ${iface} -j DROP
   '';
 
-  # Addresses to enter when configuring iLO through RBSU at POST.
   environment.etc."ilo-link.info".text = ''
     baruk ${iface}: ${baruk}/24
     ilo dedicated port: ${ilo}/24

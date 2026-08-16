@@ -2,11 +2,10 @@
 
 let
   iface = "wlan0";
-  # FILL from `ip -br link` on baruk.
-  ifaceMac = "aa:bb:cc:dd:ee:ff";
+  ifaceMac = "54:c9:ff:00:07:bf";
 
-  # FILL: SSID, and an address outside the router's DHCP pool.
-  ssid = "YOUR_SSID";
+  ssid = "the gang gets wifi";
+  # Sits below the router's DHCP pool, which starts at .100.
   address = "192.168.0.10";
   prefixLength = 24;
   gateway = "192.168.0.1";
@@ -17,16 +16,15 @@ in
   # must not import ./networkmanager.nix.
   networking.wireless = {
     enable = true;
-
-    # nixpkgs only installs the udev rule that restarts wpa_supplicant on wlan
-    # hotplug while networking.wireless.interfaces is empty. Naming an interface
-    # leaves a replugged USB adapter dead until reboot.
     secretsFile = config.sops.secrets.wireless-conf.path;
     networks.${ssid}.pskRaw = "ext:psk_home";
   };
 
   sops.secrets.wireless-conf = {
     sopsFile = ../../secrets/baruk.yaml;
+    # networking.wireless.enableHardening runs wpa_supplicant as its own user,
+    # which cannot read a root-owned secret.
+    owner = "wpa_supplicant";
     restartUnits = [ "wpa_supplicant.service" ];
   };
 

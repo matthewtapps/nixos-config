@@ -7,6 +7,7 @@
     ../modules/stylix.nix
     ../modules/wireless.nix
     ../modules/ilo-link.nix
+    ../modules/home-server/dns.nix
     ../modules/avahi.nix
     ../modules/deploy-target.nix
   ];
@@ -32,6 +33,8 @@
 
   networking = {
     hostName = "baruk";
+
+    interfaces.eno2.useDHCP = true;
   };
 
   nix.settings.trusted-users = [

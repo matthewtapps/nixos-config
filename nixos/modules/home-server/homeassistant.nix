@@ -277,7 +277,7 @@
       ];
 
       lovelace = {
-        mode = "yaml";
+        resource_mode = "yaml";
         resources = [ ];
         dashboards.ac-control = {
           mode = "yaml";

@@ -107,7 +107,24 @@ fleetswitch() {
     cd ~/nixos-config || return
     nixswitch
     nh home switch ~/nixos-config
-    deploy ~/nixos-config
+
+    local nodes targets=() host
+    nodes=$(nix eval --raw "$HOME/nixos-config#deploy.nodes" \
+        --apply 'ns: builtins.concatStringsSep " " (builtins.attrNames ns)') || return
+
+    for host in ${=nodes}; do
+        if ssh -o ConnectTimeout=3 -o BatchMode=yes "root@$host" true 2>/dev/null; then
+            targets+=("$HOME/nixos-config#$host")
+        else
+            print -u2 "fleetswitch: skipping $host, unreachable"
+        fi
+    done
+
+    (( $#targets )) || { print -u2 "fleetswitch: no hosts reachable"; return 1 }
+
+    # deploy-rs revokes already-succeeded profiles when any node in a multi-node
+    # run fails.
+    deploy --rollback-succeeded false --targets "${targets[@]}"
 }
 
 nixc() {

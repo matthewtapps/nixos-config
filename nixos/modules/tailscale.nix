@@ -18,9 +18,9 @@
     extraUpFlags = [ "--ssh" ];
   };
 
-  # Enrollment is a bootstrap step, and auth keys expire after 90 days. Leaving
-  # this out of multi-user.target keeps a stale key from failing a routine
-  # deploy. On a new host, run `systemctl start tailscaled-autoconnect` once.
+  # Keeping enrollment out of multi-user.target stops a stale auth key from
+  # failing a routine deploy. Run `systemctl start tailscaled-autoconnect` once
+  # on a new host.
   systemd.services.tailscaled-autoconnect.wantedBy = lib.mkForce [ ];
 
   networking.firewall = {

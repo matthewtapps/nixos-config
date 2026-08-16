@@ -93,16 +93,17 @@
         IdentitiesOnly = true;
       };
       # The iLO4 SSH stack predates OpenSSH 8.8, which dropped SHA-1 host keys
-      # and these kex and cipher suites. Without the three re-enables the
-      # connection dies at "no matching host key type found".
+      # and these kex, cipher and MAC suites. Without all four re-enables the
+      # connection is refused during negotiation.
       "ilo" = {
         User = "Administrator";
-        HostName = "10.99.0.2";
+        HostName = "10.42.0.5";
         ProxyJump = "baruk";
         PubkeyAuthentication = false;
         HostKeyAlgorithms = "+ssh-rsa";
         KexAlgorithms = "+diffie-hellman-group14-sha1";
-        Ciphers = "+aes128-cbc";
+        Ciphers = "+aes256-cbc,aes128-cbc";
+        MACs = "+hmac-sha1";
       };
     };
   };
