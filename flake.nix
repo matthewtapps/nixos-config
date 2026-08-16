@@ -170,6 +170,7 @@
           };
           modules = [
             ./nixos/hosts/tehol.nix
+            inputs.sops-nix.nixosModules.sops
           ];
         }
         {
@@ -181,6 +182,7 @@
           };
           modules = [
             ./nixos/hosts/baruk.nix
+            inputs.sops-nix.nixosModules.sops
           ];
         }
         {
@@ -192,6 +194,7 @@
           };
           modules = [
             ./nixos/hosts/samar.nix
+            inputs.sops-nix.nixosModules.sops
           ];
         }
       ];

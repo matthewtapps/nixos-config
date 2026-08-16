@@ -1,9 +1,28 @@
 keys:
   - &kruppe age1gnkarhdg8rmy07qwt74f2aqpqyrj5cd74hqr3r0tmxnhzadea5hqt3v6ew
   - &mappo age1vkyzl5e4pafvr97rfast9w7wnt4uv6hwrscl4mgnywhtsv3spgns0hwx5d
+  # FILL each from `ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub` on that host.
+  - &baruk age1PLACEHOLDER_BARUK
+  - &karsa age1PLACEHOLDER_KARSA
+  - &tehol age1PLACEHOLDER_TEHOL
+  - &samar age1PLACEHOLDER_SAMAR
 creation_rules:
   - path_regex: secrets/kruppe.yaml$
     key_groups:
       - age:
         - *kruppe
         - *mappo
+  - path_regex: secrets/baruk.yaml$
+    key_groups:
+      - age:
+        - *baruk
+        - *mappo
+  - path_regex: secrets/tailscale.yaml$
+    key_groups:
+      - age:
+        - *baruk
+        - *karsa
+        - *kruppe
+        - *mappo
+        - *samar
+        - *tehol

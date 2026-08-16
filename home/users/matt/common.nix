@@ -92,6 +92,18 @@
         IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
       };
+      # The iLO4 SSH stack predates OpenSSH 8.8, which dropped SHA-1 host keys
+      # and these kex and cipher suites. Without the three re-enables the
+      # connection dies at "no matching host key type found".
+      "ilo" = {
+        User = "Administrator";
+        HostName = "10.99.0.2";
+        ProxyJump = "baruk";
+        PubkeyAuthentication = false;
+        HostKeyAlgorithms = "+ssh-rsa";
+        KexAlgorithms = "+diffie-hellman-group14-sha1";
+        Ciphers = "+aes128-cbc";
+      };
     };
   };
 

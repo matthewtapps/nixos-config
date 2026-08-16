@@ -5,7 +5,8 @@
     ../hardware/baruk.nix
     ../modules/common.nix
     ../modules/stylix.nix
-    ../modules/networkmanager.nix
+    ../modules/wireless.nix
+    ../modules/ilo-link.nix
     ../modules/avahi.nix
     ../modules/deploy-target.nix
   ];
