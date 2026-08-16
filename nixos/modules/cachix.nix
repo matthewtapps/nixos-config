@@ -20,7 +20,7 @@
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "neovim.cachix.org-1:iyQ3Blw1uJODzY8+LXkDBnCpulPGrqJ+mOQGpok6Iyw="
         "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
-        "karsa:iL+1/w7TWoG4Xs4uFNTyTyprMtS1T4FAAfxwAr487Og=%"
+        "karsa:iL+1/w7TWoG4Xs4uFNTyTyprMtS1T4FAAfxwAr487Og="
       ];
 
       connect-timeout = 5;
