@@ -6,20 +6,9 @@
 let
   herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
-  # Config body shared by all variants; only worktrees.directory differs.
-  # config.toml is the default; config-cs.toml / config-dev.toml keep ~/cs and
-  # ~/dev repos' worktrees under their own root (for ~/cs that also keeps the
-  # shared ~/cs/flake.nix an ancestor). The zsh herdr() wrapper
-  # (home/programs/zsh) selects the matching config via HERDR_CONFIG_PATH from
-  # the launch cwd.
-  #
-  # ~/cs and ~/dev repos use the "worktrees level 2" bare layout
-  # (<root>/<repo>/.bare + a .git pointer file). Herdr places new worktrees at
-  # <directory>/<repo>/<branch>, so directory = "~/cs" lands them at
-  # ~/cs/<repo>/<branch>: siblings of the bare repo's other worktrees, right
-  # inside the repo dir. Forking must start from the bare-parent workspace (cwd
-  # <root>/<repo>); Herdr rejects a linked worktree as the source (error:
-  # linked_worktree_source).
+  # directory = "~/cs" also keeps the shared ~/cs/flake.nix an ancestor of every
+  # worktree there. Only bare-layout repos may use a config-<root> variant; the
+  # herdr() wrapper in home/programs/zsh picks the config and documents why.
   mkConfig = worktreeDir: ''
     # Herdr writes `onboarding = false` itself once the overlay is dismissed,
     # but this file is a read-only store symlink, so without it set here the
