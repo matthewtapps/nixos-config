@@ -49,17 +49,21 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 # workspaces are independent. Explicit `herdr --session x` / $HERDR_SESSION win.
 herdr() {
     local -a envv
-    # Roots using the "worktrees level 2" bare layout: use config-<root>.toml so
-    # new worktrees land at ~/<root>/<repo>/<branch>, siblings of the bare repo's
-    # other worktrees. Explicit env wins.
-    local root
+    # Herdr builds every worktree path as <worktrees.directory>/<repo>/<branch>,
+    # and the config is fixed per server. Pointed at a plain checkout,
+    # config-<root>.toml (directory = ~/<root>) would put the new worktree inside
+    # that working tree, so only the bare layout may use it.
+    local root common
     if [[ -z "$HERDR_CONFIG_PATH" ]]; then
-        for root in cs dev; do
-            if [[ "$PWD" == "$HOME/$root" || "$PWD" == "$HOME/$root/"* ]]; then
-                envv+=("HERDR_CONFIG_PATH=$HOME/.config/herdr/config-$root.toml")
-                break
-            fi
-        done
+        common=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+        if [[ "$common" == */.bare ]]; then
+            for root in cs dev; do
+                if [[ "$common" == "$HOME/$root/"* ]]; then
+                    envv+=("HERDR_CONFIG_PATH=$HOME/.config/herdr/config-$root.toml")
+                    break
+                fi
+            done
+        fi
     fi
     if [[ -z "$HERDR_SESSION" && -n "$HYPRLAND_INSTANCE_SIGNATURE" && "$*" != *--session* ]]; then
         local ws
