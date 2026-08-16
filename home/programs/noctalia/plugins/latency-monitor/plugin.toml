@@ -93,3 +93,4 @@ width = 400
 height = 360
 placement = "attached"
 position = "auto"
+open_near_click = true
