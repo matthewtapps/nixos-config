@@ -21,6 +21,16 @@
 - Never write "actually bites", or a deferral note of any kind ("Defer until X",
   "revisit when Y", "until the cost is felt"). If it is not happening now, the
   trigger for doing it later is dev-diary noise.
+- Never capitalise a word for emphasis ("the FIRST match", "does NOT follow",
+  "baked THAT path"). Acronyms and identifiers keep their real casing. If a
+  sentence seems to need the stress, rewrite it so it does not.
+- Never announce a statement with a noun phrase and a colon ("The test for
+  writing one:", "The catch:", "Key insight:", "The tradeoff:", "One thing to
+  know:"). Say the thing directly as an ordinary sentence.
+- Never count a set and then single out a member of it ("Three separate things,
+  and one is a real bug", "Six findings, two of which are wrong", "Four options,
+  and the first is best"). The count carries no information and the singling out
+  usually misdescribes the rest. Name the things, or name the one that matters.
 - Before sending a chat reply, and before reporting a change done, re-read what you
   wrote and rewrite every line that breaks one of these.
 
@@ -33,7 +43,13 @@
 
 ## Comment style
 
-- Default to no comments.
+- Default to no comments. The threshold for writing a comment should be, would a
+  maintainer who does not know what you know about the config setting plausibly
+  want to change or delete this line, and would that break something? If yes, add
+  a comment that says what breaks in simple, concise english that conforms to all
+  comment and phrasing standards. A line that only describes a reason fails this
+  test, regardless of how interesting the reason is. Plain settings, values,
+  flags, list entries, and thresholds will almost always fail the test.
 - If you do comment:
     - Keep the comment extremely concise.
     - Phrase the comment towards future maintainers of the code.
