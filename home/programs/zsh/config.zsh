@@ -134,9 +134,13 @@ fleetswitch() {
 
     (( $#targets )) || { print -u2 "fleetswitch: no hosts reachable"; return 1 }
 
+    # deploy-rs repeats its pre-build check once per node, so --skip-checks
+    # below leaves this as the only thing validating the flake.
+    nix flake check "$HOME/nixos-config" || return
+
     # deploy-rs revokes already-succeeded profiles when any node in a multi-node
     # run fails.
-    deploy --rollback-succeeded false --targets "${targets[@]}"
+    deploy --skip-checks --rollback-succeeded false --targets "${targets[@]}"
 }
 
 nixc() {
