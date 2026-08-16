@@ -285,11 +285,7 @@ let
     SessionStart = [
       { hooks = [ { type = "command"; command = "${ahviBin} inventory"; } ]; }
       { hooks = [ { type = "command"; command = "${ahviBin} churn"; } ]; }
-      { hooks = [ { type = "command"; command = "${ahviBin} feedback-start"; } ]; }
     ];
-    Stop = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-nudge"; } ]; } ];
-    SessionEnd = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-mark"; } ]; } ];
-    ElicitationResult = [ { hooks = [ { type = "command"; command = "${ahviBin} feedback-capture"; } ]; } ];
   };
 
   mkSettings =
