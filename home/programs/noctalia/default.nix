@@ -23,10 +23,6 @@ let
   '';
 in
 {
-  # Noctalia is the notification daemon and the lock screen.
-  services.swaync.enable = false;
-  programs.hyprlock.enable = lib.mkForce false;
-
   programs.noctalia = {
     enable = true;
     customPalettes.Everforest = ./palettes/everforest.json;

@@ -194,7 +194,6 @@
     inputs.matugen.packages.${pkgs.stdenv.hostPlatform.system}.default
     fd
     dconf
-    hyprlock
     hyprshot
     wf-recorder
     slurp

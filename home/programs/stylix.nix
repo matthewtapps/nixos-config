@@ -50,7 +50,6 @@
       gtk.enable = true;
       gnome.enable = true;
       hyprland.enable = true;
-      hyprlock.enable = false;
       kitty.enable = true;
       rofi.enable = true;
       ghostty.enable = true;
@@ -62,7 +61,6 @@
       spotify-player.enable = true;
       xfce.enable = true;
       btop.enable = true;
-      waybar.enable = false;
       # Stylix writes ~/.config/noctalia/config.toml, which sorts after the
       # noctalia config files in this repo and wins the merge.
       noctalia.enable = false;

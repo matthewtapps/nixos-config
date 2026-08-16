@@ -16,10 +16,6 @@ in
     source = ./bg4.jpg;
   };
 
-  home.file."./.config/hypr/assets" = {
-    source = ./assets/default_album.png;
-  };
-
   xdg.configFile."hypr/xdph.conf".text = ''
     screencopy:force_shm = 1
   '';
@@ -50,19 +46,8 @@ in
     '';
   };
 
-  programs.hyprlock = {
-    enable = true;
-    extraConfig = ''
-      ${builtins.readFile ./hyprlock/${device}.conf}
-      ${builtins.readFile ./hyprlock/common.conf}
-    '';
-  };
-
   home.packages = with pkgs; [
     imagemagick
-    (writeShellScriptBin "music-info" ''
-      ${builtins.readFile ./scripts/music-info}
-    '')
     (writeShellScriptBin "record-region-toggle" ''
       ${builtins.readFile ./scripts/record-region-toggle.sh}
     '')
