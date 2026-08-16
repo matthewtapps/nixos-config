@@ -1,4 +1,5 @@
-_: {
+{ inputs, pkgs, ... }:
+{
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
@@ -64,6 +65,30 @@ _: {
         forceSSL = true;
         enableACME = true;
         root = "/var/lib/gcs-sheets";
+      };
+
+      # The shopping screen, unauthenticated like the sheets. The noindex
+      # header is the only thing keeping it out of search results, and it is
+      # served here so a page that never renders still carries it. Nginx holds
+      # the whole bundle, so the pages load with the cart store stopped and
+      # only saving breaks.
+      "quartermaster.mattys.cloud" = {
+        forceSSL = true;
+        enableACME = true;
+        root = inputs.lsag-quartermaster.packages.${pkgs.stdenv.hostPlatform.system}.pages;
+
+        extraConfig = ''
+          add_header x-robots-tag "noindex, nofollow" always;
+        '';
+
+        locations."/" = {
+          # The character slug is a path segment the bundle reads itself.
+          tryFiles = "$uri $uri/ /index.html";
+        };
+
+        locations."/api/" = {
+          proxyPass = "http://127.0.0.1:8081";
+        };
       };
     };
   };

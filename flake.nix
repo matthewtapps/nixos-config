@@ -66,6 +66,13 @@
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # No remote exists for this repo, so it is read from the laptop clone. The
+    # ref keeps the working copy out: a deploy carries the last commit on main.
+    lsag-quartermaster = {
+      url = "git+file:///home/matt/dev/lsag-quartermaster?ref=main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

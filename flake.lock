@@ -268,6 +268,24 @@
         "type": "github"
       }
     },
+    "flake-utils_3": {
+      "inputs": {
+        "systems": "systems_5"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "foundryvtt": {
       "inputs": {
         "nixpkgs": [
@@ -725,6 +743,30 @@
         "type": "github"
       }
     },
+    "lsag-quartermaster": {
+      "inputs": {
+        "flake-utils": "flake-utils_3",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay_3",
+        "tracker": "tracker"
+      },
+      "locked": {
+        "lastModified": 1786863008,
+        "narHash": "sha256-6S8kC9LPgq1nosC4joBCI3XxBb9ZwNrefxKiRFV6Jtg=",
+        "ref": "main",
+        "rev": "3af622097fb6c5aa82b04a5e7bac7eaf093ef47d",
+        "revCount": 24,
+        "type": "git",
+        "url": "file:///home/matt/dev/lsag-quartermaster"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "file:///home/matt/dev/lsag-quartermaster"
+      }
+    },
     "matugen": {
       "inputs": {
         "nixpkgs": [
@@ -883,6 +925,7 @@
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "lan-mouse": "lan-mouse",
+        "lsag-quartermaster": "lsag-quartermaster",
         "matugen": "matugen",
         "nixpkgs": "nixpkgs_3",
         "noctalia": "noctalia",
@@ -934,6 +977,27 @@
         "type": "github"
       }
     },
+    "rust-overlay_3": {
+      "inputs": {
+        "nixpkgs": [
+          "lsag-quartermaster",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786849542,
+        "narHash": "sha256-MS8cOa/ii1+QA8R3JWVzqEIoXimu9n50GwQDiBVTFOM=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "b211eadeba8b180da9453ec3413a8a3535c85b3f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
     "sops-nix": {
       "inputs": {
         "nixpkgs": [
@@ -967,7 +1031,7 @@
           "nixpkgs"
         ],
         "nur": "nur",
-        "systems": "systems_5",
+        "systems": "systems_6",
         "tinted-kitty": "tinted-kitty",
         "tinted-schemes": "tinted-schemes",
         "tinted-tmux": "tinted-tmux",
@@ -1048,6 +1112,21 @@
       }
     },
     "systems_5": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_6": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
@@ -1144,6 +1223,24 @@
         "owner": "matthewtapps",
         "repo": "todone",
         "type": "github"
+      }
+    },
+    "tracker": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786858000,
+        "narHash": "sha256-4Fs/K7KNzYJC2IAYbmrnS4t0wb+2eUxRfSCPXbwbL34=",
+        "ref": "main",
+        "rev": "842703fd093ea8b0354578da1e94c82acbdd5197",
+        "revCount": 521,
+        "type": "git",
+        "url": "file:///home/matt/dev/tui-combat-tracker"
+      },
+      "original": {
+        "ref": "main",
+        "rev": "842703fd093ea8b0354578da1e94c82acbdd5197",
+        "type": "git",
+        "url": "file:///home/matt/dev/tui-combat-tracker"
       }
     },
     "utils": {
