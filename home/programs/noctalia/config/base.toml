@@ -234,6 +234,14 @@ position = "top_right"
 layer = "overlay"
 show_app_name = true
 show_actions = true
+filter_order = ["spotify-player"]
+
+[notification.filter.spotify-player]
+enabled = true
+match = "spotify_player"
+show_toast = false
+save_history = false
+play_sound = false
 
 [osd]
 position = "bottom_center"
