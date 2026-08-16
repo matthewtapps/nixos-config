@@ -1,9 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:quickshell.org)",
       "WebSearch",
-      "Bash(quickshell:*)",
       "WebFetch(domain:docs.noctalia.dev)",
       "Bash(grep:*)",
       "WebFetch(domain:discourse.nixos.org)",
@@ -16,12 +14,9 @@
       "Bash(gh search *)",
       "Bash(gh api *)",
       "Read(//tmp/**)",
-      "Read(//home/matt/.config/noctalia/plugins/power-monitor/**)",
-      "Read(//home/matt/.config/noctalia/plugins/power-monitor/i18n/**)",
-      "Read(//nix/store/35i3ifw2dcaz6mdgc2cld7nnhc4w27kd-hm_powermonitor/i18n/**)",
-      "Read(//nix/store/35i3ifw2dcaz6mdgc2cld7nnhc4w27kd-hm_powermonitor/**)",
-      "Bash(noctalia-shell --help)",
-      "Bash(noctalia-shell log *)",
+      "Bash(noctalia --help)",
+      "Bash(noctalia config export *)",
+      "Bash(noctalia msg *)",
       "Bash(journalctl -b -1 --no-pager -k)"
     ]
   }
