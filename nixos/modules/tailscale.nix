@@ -21,6 +21,10 @@
     extraSetFlags = [ "--operator=matt" ];
   };
 
+  # Tailscale SSH serves the deploy connection, so restarting tailscaled kills
+  # the session running switch-to-configuration and leaves the switch half done.
+  systemd.services.tailscaled.restartIfChanged = false;
+
   # Keeping enrollment out of multi-user.target stops a stale auth key from
   # failing a routine deploy. Run `systemctl start tailscaled-autoconnect` once
   # on a new host.
