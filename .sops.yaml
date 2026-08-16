@@ -21,6 +21,12 @@ creation_rules:
         - *mappo
         - *matt
         - *karsa
+  - path_regex: secrets/karsa.yaml$
+    key_groups:
+      - age:
+        - *karsa
+        - *matt
+        - *mappo
   - path_regex: secrets/tailscale.yaml$
     key_groups:
       - age:
