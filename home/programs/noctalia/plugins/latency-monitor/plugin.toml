@@ -1,0 +1,95 @@
+# Luau port of the v4 QML latency-monitor plugin. A headless service owns the
+# sampling; the bar widget and panel are read-only views of its state.
+
+id = "matt/latency-monitor"
+name = "Latency Monitor"
+version = "1.0.0"
+plugin_api = 3
+author = "matt"
+license = "MIT"
+icon = "activity"
+description = "Network latency monitor with windowed averages and per-host sparklines."
+tags = ["network", "bar", "panel"]
+dependencies = ["ping"]
+
+[[setting]]
+key = "hosts"
+type = "string_list"
+label_key = "settings.hosts.label"
+description_key = "settings.hosts.description"
+default = ["Cloudflare=1.1.1.1", "Google=8.8.8.8"]
+
+[[setting]]
+key = "interval_seconds"
+type = "int"
+label_key = "settings.interval_seconds.label"
+description_key = "settings.interval_seconds.description"
+default = 5
+min = 1
+max = 300
+
+[[setting]]
+key = "threshold_good"
+type = "int"
+label_key = "settings.threshold_good.label"
+description_key = "settings.threshold_good.description"
+default = 20
+min = 1
+max = 5000
+
+[[setting]]
+key = "threshold_warning"
+type = "int"
+label_key = "settings.threshold_warning.label"
+description_key = "settings.threshold_warning.description"
+default = 70
+min = 1
+max = 5000
+
+[[setting]]
+key = "bar_host"
+type = "string"
+label_key = "settings.bar_host.label"
+description_key = "settings.bar_host.description"
+default = ""
+
+[[setting]]
+key = "show_host_name"
+type = "bool"
+label_key = "settings.show_host_name.label"
+description_key = "settings.show_host_name.description"
+default = true
+
+[[setting]]
+key = "color_good"
+type = "color"
+label_key = "settings.color_good.label"
+default = "primary"
+
+[[setting]]
+key = "color_warning"
+type = "color"
+label_key = "settings.color_warning.label"
+default = "tertiary"
+
+[[setting]]
+key = "color_critical"
+type = "color"
+label_key = "settings.color_critical.label"
+default = "error"
+
+[[service]]
+id = "service"
+entry = "service.luau"
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 400
+height = 360
+placement = "attached"
+position = "auto"

@@ -1,0 +1,6 @@
+# samar-specific noctalia settings.
+
+# Work VPN runs here, so surface its state next to the network glyph.
+[widget.network]
+vpn_status = "both"
+show_vpn_label = true

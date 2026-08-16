@@ -4,14 +4,14 @@
 
 local terminal = "ghostty"
 local fileManager = "thunar"
-local menu = "noctalia-shell ipc call launcher toggle"
+local menu = "noctalia msg panel-toggle launcher"
 
 -------------------
 ---- AUTOSTART ----
 -------------------
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("noctalia-shell")
+    hl.exec_cmd("noctalia")
 end)
 
 -------------------------------
@@ -25,6 +25,10 @@ hl.env("XDG_CURRENT_DESKTOP", "Hyprland")
 hl.env("XDG_SESSION_TYPE", "wayland")
 hl.env("XDG_SESSION_DESKTOP", "Hyprland")
 hl.env("HYPRSHOT_DIR", "screenshots/")
+
+-- Noctalia wraps Terminal=true desktop entries and plugin runInTerminal calls
+-- in $TERMINAL, falling back to a built-in search when it is unset.
+hl.env("TERMINAL", terminal)
 
 -----------------------
 ---- LOOK AND FEEL ----
@@ -92,12 +96,13 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager), { description = "file m
 hl.bind(mainMod .. " + SHIFT + SPACE", hl.dsp.window.float({ action = "toggle" }), { description = "toggle window floating" })
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(menu), { description = "app launcher" })
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo(), { description = "pseudo-tile window (dwindle)" })
-hl.bind("SUPER + L", hl.dsp.exec_cmd("noctalia-shell ipc call lockScreen lock"), { description = "lock screen" })
+hl.bind("SUPER + L", hl.dsp.exec_cmd("noctalia msg session lock"), { description = "lock screen" })
 hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region"), { description = "screenshot a region" })
 hl.bind("SUPER + SHIFT + A", hl.dsp.exec_cmd("record-region-toggle"), { description = "screen-record a region (toggle)" })
 hl.bind(mainMod .. " + X", hl.dsp.window.fullscreen(), { description = "fullscreen window" })
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("noctalia-shell ipc call controlCenter toggle"), { description = "control centre" })
-hl.bind("SUPER + V", hl.dsp.exec_cmd("noctalia-shell ipc call launcher clipboard"), { description = "clipboard history" })
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center"), { description = "control centre" })
+hl.bind("SUPER + V", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"), { description = "clipboard history" })
+hl.bind("ALT + TAB", hl.dsp.exec_cmd("noctalia msg window-switcher"), { description = "window switcher" })
 
 -- Keybind cheatsheet (hold f/j + `/`, or + shift+`/` = "?"). kanata emits
 -- ctrl+alt(+shift)+slash from the herdr layer; both open the floating sheet.

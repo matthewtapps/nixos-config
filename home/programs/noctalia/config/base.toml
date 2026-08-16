@@ -1,0 +1,273 @@
+# Shared noctalia config for every graphical host. Per-host overrides live in
+# devices/<host>.toml, which noctalia merges over this file.
+
+# ---------------------------------------------------------------- shell -----
+
+[accessibility]
+ui_scale = 1.0
+
+[shell]
+font_family = "Geist"
+time_format = "{:%H:%M:%S}"
+date_format = "%A, %x"
+corner_radius_scale = 1.0
+avatar_path = "/home/matt/.config/matt.jpg"
+popup_shadows = false
+card_borders = true
+telemetry_enabled = false
+setup_wizard_enabled = false
+polkit_agent = false
+clipboard_enabled = true
+clipboard_history_max_entries = 100
+clipboard_auto_paste = "off"
+
+[shell.animation]
+enabled = true
+speed = 1.0
+
+[shell.panel]
+transparency_mode = "solid"
+borders = true
+shadow = false
+launcher_placement = "floating"
+launcher_position = "center"
+clipboard_placement = "floating"
+clipboard_position = "center"
+control_center_placement = "attached"
+wallpaper_placement = "attached"
+session_placement = "floating"
+session_position = "center"
+
+[shell.launcher]
+categories = true
+show_icons = true
+compact = true
+app_grid = false
+sort_by_usage = true
+
+[shell.launcher.providers.calculator]
+global = true
+
+[shell.launcher.providers.session]
+global = true
+
+[shell.launcher.providers.windows]
+global = true
+
+[keybinds]
+validate = ["return", "kp_enter"]
+cancel = ["escape"]
+left = ["left"]
+right = ["right"]
+up = ["up"]
+down = ["down"]
+delete = ["del"]
+
+# ---------------------------------------------------------------- theme -----
+
+[theme]
+mode = "dark"
+source = "custom"
+custom_palette = "Everforest"
+
+[theme.templates]
+enable_builtin_templates = false
+enable_community_templates = false
+
+[backdrop]
+enabled = false
+
+# ------------------------------------------------------------------ bar -----
+
+[bar.main]
+position = "top"
+thickness = 34
+radius = 0
+margin_ends = 4
+margin_edge = 4
+padding = 2
+widget_spacing = 6
+background_opacity = 1.0
+border_width = 0.0
+shadow = false
+reserve_space = true
+scale = 1.3
+
+start = ["control-center", "workspaces", "cpu", "cpu-temp", "ram", "audio-vis"]
+center = ["clock", "privacy"]
+end = ["volume", "network", "latency", "bluetooth", "notifications"]
+
+# -------------------------------------------------------------- widgets -----
+
+[widget.control-center]
+custom_image = "/home/matt/.config/noctalia/nixos.svg"
+custom_image_colorize = true
+
+[widget.workspaces]
+style = "regular"
+show_labels = true
+label_source = "id"
+max_label_chars = 2
+labels_only_when_occupied = true
+hide_when_empty = false
+focused_color = "primary"
+occupied_color = "secondary"
+empty_color = "secondary"
+pill_scale = 0.85
+
+[widget.cpu]
+type = "sysmon"
+stat = "cpu_usage"
+
+[widget.cpu-temp]
+type = "sysmon"
+stat = "cpu_temp"
+
+[widget.ram]
+type = "sysmon"
+stat = "ram_used"
+
+[widget.audio-vis]
+type = "audio_visualizer"
+width = 200
+centered = true
+show_when_idle = false
+color_1 = "primary"
+
+[widget.clock]
+format = "{:%H:%M:%S %a, %b %d}"
+vertical_format = "{:%H\n%M\n%S}"
+tooltip_format = "{:%H:%M:%S %a, %b %d}"
+
+[widget.privacy]
+hide_inactive = true
+
+[widget.volume]
+device = "output"
+show_label = false
+
+[widget.network]
+show_label = false
+
+[widget.latency]
+type = "matt/latency-monitor:bar"
+
+[widget.bluetooth]
+show_label = false
+
+[widget.notifications]
+hide_when_no_unread = false
+
+[widget.battery]
+display_mode = "graphic"
+
+[widget.brightness]
+show_label = false
+
+# --------------------------------------------------------- control center ---
+
+[[control_center.shortcuts]]
+type = "wifi"
+
+[[control_center.shortcuts]]
+type = "bluetooth"
+
+[[control_center.shortcuts]]
+type = "wallpaper"
+
+[[control_center.shortcuts]]
+type = "notification"
+
+[[control_center.shortcuts]]
+type = "caffeine"
+
+[[control_center.shortcuts]]
+type = "nightlight"
+
+[control_center.calendar]
+show_events_card = true
+show_week_numbers = true
+
+# -------------------------------------------------------------- services ----
+
+[system.monitor]
+enabled = true
+cpu_usage_activity_threshold = 80
+cpu_usage_critical_threshold = 90
+cpu_temp_activity_threshold = 80
+cpu_temp_critical_threshold = 90
+ram_pct_activity_threshold = 80
+ram_pct_critical_threshold = 90
+swap_pct_activity_threshold = 80
+swap_pct_critical_threshold = 90
+disk_used_pct_activity_threshold = 80
+disk_used_pct_critical_threshold = 90
+
+[audio]
+enable_overdrive = false
+enable_sounds = false
+
+[brightness]
+enable_ddcutil = false
+
+[nightlight]
+enabled = false
+force = false
+temperature_day = 6500
+temperature_night = 4000
+
+[location]
+auto_locate = false
+address = "Melbourne, VIC"
+
+[weather]
+enabled = true
+unit = "celsius"
+effects = true
+
+[calendar]
+enabled = false
+
+[notification]
+enable_daemon = true
+position = "top_right"
+layer = "overlay"
+show_app_name = true
+show_actions = true
+
+[osd]
+position = "bottom_center"
+orientation = "horizontal"
+
+[lockscreen]
+enabled = true
+blurred_desktop = false
+
+# ------------------------------------------------------------- wallpaper ----
+
+[wallpaper]
+enabled = true
+directory = "/home/matt/.config/hypr"
+fill_mode = "crop"
+transition = ["fade", "disc", "stripes", "wipe", "pixelate", "honeycomb"]
+transition_duration = 1500
+edge_smoothness = 0.05
+transition_on_startup = false
+
+[wallpaper.default]
+path = "/home/matt/.config/hypr/bg4.jpg"
+
+[wallpaper.automation]
+enabled = false
+
+# ----------------------------------------------------------------- misc -----
+
+[dock]
+enabled = false
+
+[desktop_widgets]
+enabled = false
+
+[plugins]
+enabled = ["matt/latency-monitor"]
+auto_update = false

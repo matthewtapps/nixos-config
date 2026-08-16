@@ -1,0 +1,44 @@
+{
+  "settings": {
+    "hosts": {
+      "label": "Hosts",
+      "description": "One entry per host, written as Name=address. An entry with no = is used as both."
+    },
+    "interval_seconds": {
+      "label": "Ping interval (seconds)",
+      "description": "How often each host is pinged. The ping timeout is one second less than this."
+    },
+    "threshold_good": {
+      "label": "Good below (ms)",
+      "description": "Round trips under this are shown in the good colour."
+    },
+    "threshold_warning": {
+      "label": "Warning below (ms)",
+      "description": "Round trips under this are shown in the warning colour; anything higher is critical."
+    },
+    "bar_host": {
+      "label": "Bar host",
+      "description": "Name of the host the bar widget shows. Leave empty to show whichever host is currently worst."
+    },
+    "show_host_name": {
+      "label": "Show host name",
+      "description": "Prefix the bar reading with the host name."
+    },
+    "color_good": {
+      "label": "Good colour"
+    },
+    "color_warning": {
+      "label": "Warning colour"
+    },
+    "color_critical": {
+      "label": "Critical colour"
+    }
+  },
+  "ui": {
+    "timed_out": "timed out",
+    "no_hosts": "No hosts configured.",
+    "avg_10m": "10 min",
+    "avg_30m": "30 min",
+    "avg_60m": "60 min"
+  }
+}

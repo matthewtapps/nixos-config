@@ -63,6 +63,9 @@
       xfce.enable = true;
       btop.enable = true;
       waybar.enable = false;
+      # Stylix writes ~/.config/noctalia/config.toml, which sorts after the
+      # noctalia config files in this repo and wins the merge.
+      noctalia.enable = false;
     };
   };
 }

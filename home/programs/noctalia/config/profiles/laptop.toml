@@ -1,0 +1,32 @@
+# Laptop profile: battery and brightness on the bar, and idle timings that
+# depend on whether the machine is running off the battery.
+
+[bar.main]
+end = ["battery", "brightness", "volume", "network", "latency", "bluetooth", "notifications"]
+
+[system.monitor]
+gpu_poll_seconds = 0
+
+[idle]
+behavior_order = ["battery-lock", "ac-lock", "battery-suspend"]
+pre_action_fade_seconds = 5.0
+
+[idle.behavior.battery-lock]
+enabled = true
+timeout = 300
+action = "command"
+command = "cat /sys/class/power_supply/BAT*/status 2>/dev/null | grep -q Discharging && noctalia msg dpms-off && noctalia msg session lock"
+resume_command = "noctalia msg dpms-on"
+
+[idle.behavior.ac-lock]
+enabled = true
+timeout = 600
+action = "command"
+command = "cat /sys/class/power_supply/BAT*/status 2>/dev/null | grep -q Discharging || (noctalia msg dpms-off && noctalia msg session lock)"
+resume_command = "noctalia msg dpms-on"
+
+[idle.behavior.battery-suspend]
+enabled = true
+timeout = 1200
+action = "command"
+command = "cat /sys/class/power_supply/BAT*/status 2>/dev/null | grep -q Discharging && systemctl suspend"

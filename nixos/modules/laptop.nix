@@ -40,12 +40,14 @@
 
   services.fwupd.enable = true;
 
-  # Fingerprint reader
+  # Fingerprint reader. Noctalia claims the sensor through fprintd's D-Bus API
+  # and authenticates passwords against the login PAM service, so no noctalia
+  # PAM service is needed. Leave login.fprintAuth off: it would put the sensor
+  # in the TTY login path and compete for the device with that claim.
   services.fprintd.enable = true;
   security.pam.services.login.fprintAuth = false;
   security.pam.services.greetd.fprintAuth = true;
   security.pam.services.sudo.fprintAuth = true;
-  security.pam.services.noctalia.fprintAuth = true;
 
   environment.systemPackages = with pkgs; [ powertop ];
 }
