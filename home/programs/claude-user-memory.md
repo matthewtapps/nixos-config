@@ -56,6 +56,10 @@
     - Never comment only explaining what the code does.
     - Never comment why you chose this architecture over another.
     - Never comment for status or history ("no longer needed", "now handled by X").
+    - Never warn against a design the code does not contain ("a follow here would
+      rebuild X", "an overlay would break Y", "without this it would poll"). That
+      documents the change you just made, and is dev-diary noise from the next
+      commit onwards.
     - Delete any comment a reader could get from the line below it. If a test name,
       an assertion, or a variable name already says it, the comment adds nothing.
 - Do not mirror the comment density of the surrounding code, it may predate these rules.
