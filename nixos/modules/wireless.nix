@@ -22,8 +22,8 @@ in
 
   sops.secrets.wireless-conf = {
     sopsFile = ../../secrets/baruk.yaml;
-    # networking.wireless.enableHardening runs wpa_supplicant as its own user,
-    # which cannot read a root-owned secret.
+    # networking.wireless.enableHardening runs wpa_supplicant unprivileged, and
+    # it cannot read a secret that root holds.
     owner = "wpa_supplicant";
     restartUnits = [ "wpa_supplicant.service" ];
   };

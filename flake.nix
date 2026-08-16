@@ -19,8 +19,8 @@
     lan-mouse.url = "github:feschber/lan-mouse";
     lan-mouse.inputs.nixpkgs.follows = "nixpkgs";
 
-    # hyprland deliberately does NOT follow nixpkgs: it caches binaries on
-    # hyprland.cachix.org built against its own pinned nixpkgs. Following unstable
+    # hyprland deliberately does not follow nixpkgs: it caches binaries on
+    # hyprland.cachix.org built against the nixpkgs it pins. Following unstable
     # would miss that cache and force a full source rebuild. Same rationale as
     # claude-code below.
     hyprland.url = "github:hyprwm/Hyprland";
@@ -37,8 +37,8 @@
 
     # Independently-bumpable Claude Code (hourly npm tracking, prebuilt via
     # claude-code.cachix.org). Overlay sets pkgs.claude-code, which the whole
-    # node-wrapper / ahvi / home / packages chain inherits. Deliberately NOT
-    # following nixpkgs: the flake pins its own Node 22 and caches binaries
+    # node-wrapper / ahvi / home / packages chain inherits. Deliberately does not
+    # follow nixpkgs: the flake pins Node 22 and caches binaries
     # against its locked nixpkgs; following unstable would force a source
     # rebuild. Bump with `nix flake update claude-code`.
     claude-code.url = "github:sadjow/claude-code-nix";
@@ -53,7 +53,7 @@
 
     # Pinned to the last v4 (QML/Quickshell) release. v5 is a ground-up rewrite
     # with a new module name (programs.noctalia), TOML settings, and an entirely
-    # different schema — see home/programs/noctalia/default.nix before unpinning.
+    # different schema. See home/programs/noctalia/default.nix before unpinning.
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell/052f533186e6ad8e60541760cfe3123f14108c1e";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -98,8 +98,8 @@
           sass = final.dart-sass;
         })
         # GitLab regenerated the wireshark v4.6.5 archive tarball, so the hash
-        # locked in nixpkgs no longer matches what GitLab serves. Pin to the
-        # current upstream hash until nixpkgs bumps the version.
+        # locked in nixpkgs does not match what GitLab serves. This pins the
+        # current upstream hash.
         (final: prev: {
           wireshark = prev.wireshark.overrideAttrs (old: {
             src = prev.fetchFromGitLab {
@@ -121,6 +121,25 @@
         import nixpkgs {
           localSystem = system;
           inherit config overlays;
+        };
+
+      # deploy-rs follows our nixpkgs, so its Rust binary matches no cached
+      # build and every target compiles it during activation. Keep the flake's
+      # activation lib, take the binary from nixpkgs where it is cached.
+      mkDeployPkgs =
+        system:
+        import nixpkgs {
+          localSystem = system;
+          inherit config;
+          overlays = overlays ++ [
+            inputs.deploy-rs.overlays.default
+            (_: prev: {
+              deploy-rs = {
+                inherit (mkPkgs system) deploy-rs;
+                inherit (prev.deploy-rs) lib;
+              };
+            })
+          ];
         };
 
       hosts = [
@@ -214,12 +233,13 @@
                 nixpkgs.config.allowUnfree = true;
                 nixpkgs.overlays = overlays;
               }
-            ] ++ nixpkgs.lib.optionals (host.name != "karsa") [
               inputs.home-manager.nixosModules.home-manager
               {
                 home-manager = {
                   useGlobalPkgs = true;
-                  useUserPackages = true;
+                  # home.packages go to the home-manager profile so hmswitch can
+                  # install and remove them without a system switch.
+                  useUserPackages = false;
                   backupFileExtension = "bak";
                   extraSpecialArgs = {
                     inherit inputs host;
@@ -243,40 +263,6 @@
         };
       };
 
-      homeConfigurations = builtins.listToAttrs (
-        builtins.concatLists (
-          map (
-            host:
-            let
-              pkgs = mkPkgs host.system;
-            in
-            builtins.attrValues (
-              builtins.mapAttrs (username: file: {
-                name = "${username}@${host.name}";
-                value = home-manager.lib.homeManagerConfiguration {
-                  inherit pkgs;
-                  extraSpecialArgs = {
-                    inherit inputs host;
-                    device = host.device;
-                    claude-desktop = inputs.claude-desktop.packages.${host.system}.claude-desktop-with-fhs;
-                  };
-                  modules = [
-                    file
-                    inputs.stylix.homeModules.stylix
-                    inputs.noctalia.homeModules.default
-                    {
-                      home.homeDirectory = "/home/${username}";
-                      home.username = username;
-                    }
-                  ];
-                };
-              }) host.users
-            )
-
-          ) hosts
-        )
-      );
-
       deploy = {
         remoteBuild = true;
         nodes = builtins.listToAttrs (
@@ -286,8 +272,10 @@
               hostname = host.name;
               profiles.system = {
                 sshUser = "root";
-                magicRollback = false; # temporary: re-enable once root SSH is bootstrapped on all remotes
-                path = inputs.deploy-rs.lib.${host.system}.activate.nixos self.nixosConfigurations.${host.name};
+                magicRollback = true;
+                path =
+                  (mkDeployPkgs host.system).deploy-rs.lib.activate.nixos
+                    self.nixosConfigurations.${host.name};
               };
             };
           }) (builtins.filter (h: h.name != "karsa") hosts)
@@ -322,7 +310,7 @@
       templates = {
         devshell = {
           path = ./templates/devshell;
-          description = "Minimal devShell — drop packages into the array";
+          description = "Minimal devShell; drop packages into the array";
         };
         default = self.templates.devshell;
       };

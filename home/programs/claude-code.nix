@@ -7,23 +7,23 @@
 #   - claude-powerline.json (statusline theme)
 #   - CLAUDE.md (user-level memory, from ./claude-user-memory.md)
 #   - Herdr's Claude Code integration (hooks/herdr-agent-state.sh + its
-#     settings.json entry), which Herdr's own installer cannot own because
+#     settings.json entry), which the Herdr installer cannot own because
 #     settings.json is rewritten on every switch
 #   - the plugin tree under ~/.claude/plugins
 #   - plain skills under ~/.claude/skills (Matt Pocock's skills)
 #
 # Claude Code normally clones plugin/marketplace repos from GitHub at runtime.
-# Instead we pin them with fetchFromGitHub (reproducible, offline) and an
+# This config pins them with fetchFromGitHub (reproducible, offline) and an
 # activation script materialises them into ~/.claude. The plugin caches and the
-# JSON state files are written as *writable copies* (not read-only store
-# symlinks) because Claude writes runtime markers (e.g. .in_use/) into the cache
-# dirs and rewrites settings.json on its own; a symlink into the store would
-# break those writes and then clobber on the next home-manager switch.
+# JSON state files are written as writable copies because Claude writes runtime
+# markers (e.g. .in_use/) into the cache dirs and rewrites settings.json itself;
+# a symlink into the store would break those writes and then clobber on the next
+# home-manager switch.
 #
 # Enforcement is overwrite-on-switch: Nix is the source of truth, so the managed
 # plugin set and these files are re-asserted on every switch and any in-app drift
 # is reset. typescript-lsp / the GCS-distributed claude-plugins-official
-# marketplace are intentionally NOT managed here.
+# marketplace are intentionally not managed here.
 {
   config,
   pkgs,
@@ -60,8 +60,8 @@ let
     herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
   };
 
-  # The hook script exits silently unless python3 is on PATH; prefix it here
-  # rather than patch the script, which Herdr version-checks by content.
+  # The hook script exits silently unless python3 is on PATH; prefix it here,
+  # because patching the script breaks the content check Herdr runs against it.
   mkHerdrHook = dir: {
     matcher = "*";
     hooks = [
@@ -73,7 +73,7 @@ let
     ];
   };
 
-  # Work machines (samar, tehol — the ones importing common-work.nix) run BOTH
+  # Work machines (samar, tehol, the ones importing common-work.nix) run both
   # harnesses: `claude` (work account) + `cclaude` (personal account). Every
   # other machine runs a single personal `claude` harness only.
   isWorkMachine = builtins.elem host.name [ "samar" "tehol" ];
@@ -94,7 +94,7 @@ let
 
   # Path to the ahvi binary that backs the statusline + the six hooks (inventory /
   # churn / feedback-start / feedback-nudge / feedback-mark / feedback-capture).
-  # NOT built by this config — built out of the ahvi dev project (`just dist`) to
+  # Not built by this config; built out of the ahvi dev project (`just dist`) to
   # this fixed dist path; just rebuild there to update. ~/dev/ahvi is a bare-repo
   # worktree layout, so the primary worktree (and its dist/) sits under main/.
   # Absolute so the hooks resolve it regardless of the inherited PATH.
@@ -104,10 +104,10 @@ let
   # raw API bodies. http/json because ahvi parses JSON not protobuf; metrics
   # off because ahvi has no /v1/metrics route. Endpoints are per-profile.
   #
-  # The OTEL_* vars steer Claude Code's own exporter (telemetry out). The AHVI_*
+  # The OTEL_* vars steer the Claude Code exporter (telemetry out). The AHVI_*
   # vars steer the ahvi-server hooks: AHVI_OTLP_ENDPOINT is where inventory +
   # statusline + feedback events POST, AHVI_API_ENDPOINT is where the Stop nudge
-  # asks should_sample. Both default to localhost in the binary, so they MUST be
+  # asks should_sample. Both default to localhost in the binary, so they must be
   # set here for the remote (samar) instance.
   mkEnv = endpoints: {
     CLAUDE_CODE_ENABLE_TELEMETRY = "1";
@@ -130,10 +130,9 @@ let
   };
 
   # statusLine: `ahvi-server statusline` tees the hook payload to ahvi as an
-  # ahvi.quota_sample OTel log (best-effort, bounded — never stalls or breaks the
+  # ahvi.quota_sample OTel log (best-effort, bounded, never stalls or breaks the
   # statusline; endpoint from AHVI_OTLP_ENDPOINT), then execs the real
-  # claude-powerline renderer after the `--`. Replaces the old hand-rolled
-  # jq/curl tee — the binary owns that behavior now (`ahvi install` parity).
+  # claude-powerline renderer after the `--`.
   mkStatuslineCmd =
     dir:
     "${ahviBin} statusline -- ${claude-powerline}/bin/claude-powerline --config ${dir}/claude-powerline.json";
@@ -149,11 +148,10 @@ let
   };
 
   # Matt Pocock's skills (github.com/mattpocock/skills). Not a Claude Code plugin
-  # in this setup: the repo ships a plugin.json but no marketplace.json, so rather
-  # than fabricate a marketplace we install the chosen skill dirs as *plain*
-  # skills under ~/.claude/skills/<name> (bare command names, e.g. /tdd). This
-  # replaces the old obra/superpowers plugin. Curated set + pin tracked against
-  # ~/cs/slop-cop's vendored submodule (its manifest.json is the "prefer" list).
+  # in this setup: the repo ships a plugin.json but no marketplace.json, so the
+  # chosen skill dirs install as plain skills under ~/.claude/skills/<name> (bare
+  # command names, e.g. /tdd). Curated set + pin tracked against ~/cs/slop-cop's
+  # vendored submodule (its manifest.json is the "prefer" list).
   mattPocockSkills = pkgs.fetchFromGitHub {
     owner = "mattpocock";
     repo = "skills";
@@ -163,9 +161,9 @@ let
 
   # The skills we install, {cat, name}. slop-cop vendors all of engineering/ +
   # productivity/ (22); we add personal/edit-article (generic, command-only).
-  # Deliberately NOT installed: deprecated/*, in-progress/*, personal/obsidian-vault
+  # Deliberately not installed: deprecated/*, in-progress/*, personal/obsidian-vault
   # (hardcoded WSL path), misc/* (Node/Husky/course tooling). misc/git-guardrails
-  # is reimplemented as a nix-managed hook below instead of installed as a skill.
+  # is reimplemented as a nix-managed hook below.
   # NB: code-review shadows the built-in /code-review harness skill (by choice).
   mpSkills = [
     { cat = "engineering"; name = "ask-matt"; }
@@ -196,7 +194,7 @@ let
   # git guardrails: a PreToolUse(Bash) hook that blocks destructive git before it
   # runs (exit 2 => Claude sees the stderr and is refused). Ported from Matt
   # Pocock's misc/git-guardrails-claude-code skill; here it's a nix-built script
-  # wired into settings.json (the skill's own installer would edit settings.json,
+  # wired into settings.json (the skill installer would edit settings.json,
   # which this config owns and overwrites on switch).
   blockDangerousGit = pkgs.writeShellApplication {
     name = "block-dangerous-git";
@@ -321,9 +319,9 @@ let
           }
         ];
       };
-      # NB: the ahvi MCP server is NOT declared here — Claude Code ignores
+      # NB: the ahvi MCP server is not declared here; Claude Code ignores
       # `mcpServers` in settings.json. It's loaded via `--mcp-config` in the
-      # launcher wrappers instead (see nixos/packages/claude-ahvi.nix).
+      # launcher wrappers (see nixos/packages/claude-ahvi.nix).
       enabledPlugins = builtins.listToAttrs (
         map (p: {
           name = "${p.plugin}@${p.mp}";

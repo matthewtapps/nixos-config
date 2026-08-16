@@ -114,8 +114,8 @@
       #!/usr/bin/env bash
       set -euo pipefail
 
-      # Buffer to a temp file rather than $(cat): command substitution strips
-      # trailing newlines and cannot carry NUL bytes.
+      # Buffer to a temp file: command substitution strips trailing newlines and
+      # cannot carry NUL bytes.
       tmp=$(mktemp)
       trap 'rm -f "$tmp"' EXIT
       cat >"$tmp"
@@ -270,7 +270,7 @@
       enable = true;
 
       associations.removed = {
-        # Remove ALL Calibre applications from document types
+        # Remove all Calibre applications from document types
         "application/vnd.oasis.opendocument.text" = [
           "calibre-ebook-viewer.desktop"
           "calibre-ebook-edit.desktop"

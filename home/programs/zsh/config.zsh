@@ -1,4 +1,4 @@
-# Interactive zsh setup — ported from the bash config.
+# Interactive zsh setup.
 
 # Allow `#` comments on the interactive command line, so pasted scripts with
 # comments run as-is (bash allows this; zsh does not by default).
@@ -44,14 +44,14 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # Herdr shares one "default" server across every pane, so changing the space in
 # one pane changes it everywhere. Scope each instance to the Hyprland workspace
-# it launches in (HERDR_SESSION -> its own socket + spaces under
+# it launches in (HERDR_SESSION -> a separate socket + spaces under
 # ~/.config/herdr/sessions/<name>): panes in the same workspace share, different
 # workspaces are independent. Explicit `herdr --session x` / $HERDR_SESSION win.
 herdr() {
     local -a envv
     # Roots using the "worktrees level 2" bare layout: use config-<root>.toml so
     # new worktrees land at ~/<root>/<repo>/<branch>, siblings of the bare repo's
-    # other worktrees, rather than under ~/.herdr. Explicit env wins.
+    # other worktrees. Explicit env wins.
     local root
     if [[ -z "$HERDR_CONFIG_PATH" ]]; then
         for root in cs dev; do
@@ -77,8 +77,8 @@ herdr() {
 # ~/cs and ~/dev repos: <root>/<repo>/.bare + a .git pointer file). It needs a work tree, so
 # `git rev-parse --show-toplevel` fails at the parent with "must be run in a work
 # tree". When cwd is such a parent, launch lazygit inside one of its worktrees
-# instead — prefer a sibling named `main`, else the first sibling worktree, else
-# any worktree. Runs in a subshell so the shell's own cwd doesn't move.
+# instead, preferring a sibling named `main`, else the first sibling worktree, else
+# any worktree. Runs in a subshell so the shell cwd doesn't move.
 lg() {
     emulate -L zsh
     if [[ $(git rev-parse --is-bare-repository 2>/dev/null) == true ]]; then
@@ -103,10 +103,18 @@ nixswitch() {
     nh os switch ~/nixos-config
 }
 
+# `nh home` only accepts homeConfigurations attrs, and home-manager is part of
+# the system config here.
+hmswitch() {
+    local out
+    out=$(nom build --no-link --print-out-paths \
+        "$HOME/nixos-config#nixosConfigurations.@DEVICE@.config.home-manager.users.$USER.home.activationPackage") || return
+    "$out/activate"
+}
+
 fleetswitch() {
     cd ~/nixos-config || return
     nixswitch
-    nh home switch ~/nixos-config
 
     local nodes targets=() host
     nodes=$(nix eval --raw "$HOME/nixos-config#deploy.nodes" \
@@ -135,7 +143,7 @@ nixc() {
 }
 
 # nix wrapper: auto-append `--command zsh` to `nix shell`/`nix develop`
-# so subshells drop back into zsh instead of the default shell.
+# so subshells drop back into zsh.
 nix() {
     local subcmd="$1" a has_command=0
     if [[ "$subcmd" == "shell" || "$subcmd" == "develop" ]]; then

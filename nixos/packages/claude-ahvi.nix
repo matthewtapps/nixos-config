@@ -1,13 +1,13 @@
-# Standalone ahvi-aware `claude` launchers — the single source of the ahvi MCP
+# Standalone ahvi-aware `claude` launchers: the single source of the ahvi MCP
 # endpoint shape and the wrapper that loads it via `--mcp-config`.
 #
-# Imported by BOTH:
+# Imported by both:
 #   - home/programs/claude-code.nix   (the installed `claude` / `cclaude`)
 #   - flake.nix `packages` output     (so the ~/cs work devshell can hand the
 #                                      same ahvi-wrapped binary to slop-cop's
-#                                      mkClaudeWrapper — see that flake)
+#                                      mkClaudeWrapper, see that flake)
 #
-# Claude Code does NOT read `mcpServers` from settings.json; MCP servers are
+# Claude Code does not read `mcpServers` from settings.json; MCP servers are
 # loaded from ~/.claude.json (volatile) or files passed via `--mcp-config`. We
 # use the latter so the ahvi registration is declarative and non-volatile.
 { pkgs }:
@@ -54,7 +54,7 @@ let
   # Wrap the real binary to load the ahvi feedback MCP server. `--mcp-config` is
   # additive to any user-scope servers, so it won't clobber `claude mcp add`
   # entries. `configSubdir` (relative to $HOME) selects an alternate config dir
-  # at runtime — used by the personal `cclaude` harness (~/.claude-alt).
+  # at runtime, used by the personal `cclaude` harness (~/.claude-alt).
   mkWrapper =
     {
       name ? "claude",
