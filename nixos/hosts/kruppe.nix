@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   imports = [
@@ -34,6 +34,14 @@
 
   networking = {
     hostName = "kruppe";
+  };
+
+  # Exit node for the tailnet. The routing features only set the forwarding
+  # sysctls; the advertisement itself has no module option and rides along with
+  # --ssh at enrollment. The tailnet admin still has to approve the offer.
+  services.tailscale = {
+    useRoutingFeatures = lib.mkForce "both";
+    extraUpFlags = [ "--advertise-exit-node" ];
   };
 
   nix.settings.trusted-users = [
