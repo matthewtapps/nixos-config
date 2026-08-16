@@ -13,12 +13,14 @@ creation_rules:
         - *kruppe
         - *mappo
         - *matt
+        - *karsa
   - path_regex: secrets/baruk.yaml$
     key_groups:
       - age:
         - *baruk
         - *mappo
         - *matt
+        - *karsa
   - path_regex: secrets/tailscale.yaml$
     key_groups:
       - age:
