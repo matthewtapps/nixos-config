@@ -139,8 +139,11 @@ fleetswitch() {
     nix flake check "$HOME/nixos-config" || return
 
     # deploy-rs revokes already-succeeded profiles when any node in a multi-node
-    # run fails.
-    deploy --skip-checks --rollback-succeeded false --targets "${targets[@]}"
+    # run fails. Its spinner swallows nix output whenever more than one host
+    # builds, which is why nom needs --no-progress to have anything to render.
+    deploy --no-progress --skip-checks --rollback-succeeded false \
+        --targets "${targets[@]}" -- --log-format internal-json -v |& nom --json
+    return ${pipestatus[1]}
 }
 
 nixc() {
