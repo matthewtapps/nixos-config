@@ -17,7 +17,7 @@ key = "hosts"
 type = "string_list"
 label_key = "settings.hosts.label"
 description_key = "settings.hosts.description"
-default = ["Cloudflare=1.1.1.1", "Google=8.8.8.8"]
+default = ["1.1.1.1", "8.8.8.8"]
 
 [[setting]]
 key = "interval_seconds"
@@ -58,7 +58,7 @@ key = "show_host_name"
 type = "bool"
 label_key = "settings.show_host_name.label"
 description_key = "settings.show_host_name.description"
-default = true
+default = false
 
 [[setting]]
 key = "color_good"

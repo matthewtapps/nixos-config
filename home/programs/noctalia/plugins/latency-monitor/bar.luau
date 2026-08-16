@@ -30,17 +30,18 @@ local function label()
   if not display then
     return "--"
   end
+
+  local name = noctalia.getConfig("show_host_name") and display.name or nil
   if display.timedOut then
-    return display.name
+    return name or "--"
   end
 
   local value = display.avg10 >= 0 and display.avg10 or display.last
-  local showName = noctalia.getConfig("show_host_name")
   if value < 0 then
-    return showName and display.name or "..."
+    return name or "..."
   end
-  if showName then
-    return `{display.name} {milliseconds(value)}`
+  if name then
+    return `{name} {milliseconds(value)}`
   end
   return milliseconds(value)
 end
