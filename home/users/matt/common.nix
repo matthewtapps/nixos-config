@@ -56,6 +56,10 @@
         ControlPath = "~/.ssh/master-%r@%n:%p";
         ControlPersist = "no";
       };
+      # Giving the tailnet hosts a `.local` HostName sends them back to mDNS,
+      # where nsswitch stops at `[NOTFOUND=return]` and one dropped multicast
+      # reply fails a deploy outright. Bare names resolve through the search
+      # domain tailscaled maintains. kruppe is not enrolled yet.
       "kruppe" = {
         User = "matt";
         HostName = "kruppe.local";
@@ -64,31 +68,26 @@
       };
       "karsa" = {
         User = "matt";
-        HostName = "karsa.local";
         IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
       };
       "mappo" = {
         User = "matt";
-        HostName = "mappo.local";
         IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
       };
       "tehol" = {
         User = "matt";
-        HostName = "tehol.local";
         IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
       };
       "samar" = {
         User = "matt";
-        HostName = "samar.local";
         IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
       };
       "baruk" = {
         User = "matt";
-        HostName = "baruk.local";
         IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
       };
