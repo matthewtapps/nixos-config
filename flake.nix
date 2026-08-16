@@ -92,6 +92,19 @@
         (final: prev: {
           sass = final.dart-sass;
         })
+        # wf-recorder 0.6.0 reads AVCodec::pix_fmts, sample_fmts and ch_layouts,
+        # which ffmpeg 9 removed. Arch carries the port to
+        # avcodec_get_supported_config; upstream has none.
+        (final: prev: {
+          wf-recorder = prev.wf-recorder.overrideAttrs (old: {
+            patches = (old.patches or [ ]) ++ [
+              (final.fetchpatch {
+                url = "https://gitlab.archlinux.org/archlinux/packaging/packages/wf-recorder/-/raw/d85efa2704043e629f2c47002fea6f98b02ee497/ffmpeg-9.patch";
+                hash = "sha256-TSvBUARw9Qva2yZp7YeKr4jw5hi69wog/rsE5TRh5G4=";
+              })
+            ];
+          });
+        })
         # GitLab regenerated the wireshark v4.6.5 archive tarball, so the hash
         # locked in nixpkgs does not match what GitLab serves. This pins the
         # current upstream hash.
