@@ -712,18 +712,18 @@
         "tracker": "tracker"
       },
       "locked": {
-        "lastModified": 1786864489,
-        "narHash": "sha256-AZ75/+xUPX00qMZC7tFDTa+IUMIOxDiMQv0HvmU5eY0=",
+        "lastModified": 1786940798,
+        "narHash": "sha256-X4EO0YnViJXAa1H8yiqsZKnVqfh3o4WnUVBRj6LSau8=",
         "ref": "main",
-        "rev": "0133eacb242f8a8117022c4ab0da6a378edb5d7f",
-        "revCount": 27,
+        "rev": "30a7835af6e38f26d07e5cbd0301766e9bdb312f",
+        "revCount": 68,
         "type": "git",
-        "url": "file:///home/matt/dev/lsag-quartermaster"
+        "url": "ssh://git@github.com/matthewtapps/lsag-quartermaster.git"
       },
       "original": {
         "ref": "main",
         "type": "git",
-        "url": "file:///home/matt/dev/lsag-quartermaster"
+        "url": "ssh://git@github.com/matthewtapps/lsag-quartermaster.git"
       }
     },
     "matugen": {
@@ -1188,13 +1188,13 @@
         "rev": "842703fd093ea8b0354578da1e94c82acbdd5197",
         "revCount": 521,
         "type": "git",
-        "url": "file:///home/matt/dev/tui-combat-tracker"
+        "url": "ssh://git@github.com/matthewtapps/tui-combat-tracker.git"
       },
       "original": {
         "ref": "main",
         "rev": "842703fd093ea8b0354578da1e94c82acbdd5197",
         "type": "git",
-        "url": "file:///home/matt/dev/tui-combat-tracker"
+        "url": "ssh://git@github.com/matthewtapps/tui-combat-tracker.git"
       }
     },
     "utils": {

@@ -64,7 +64,7 @@
     # No remote exists for this repo, so it is read from the laptop clone. The
     # ref keeps the working copy out: a deploy carries the last commit on main.
     lsag-quartermaster = {
-      url = "git+file:///home/matt/dev/lsag-quartermaster?ref=main";
+      url = "git+ssh://git@github.com/matthewtapps/lsag-quartermaster.git?ref=main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
