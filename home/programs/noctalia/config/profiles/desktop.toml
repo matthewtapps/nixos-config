@@ -1,4 +1,8 @@
-# Desktop profile: lock and blank together after ten minutes, never suspend.
+# Desktop profile: a bar without the battery widgets, and lock and blank
+# together after ten minutes, never suspend.
+
+[bar.main]
+end = ["volume", "network", "latency", "tailscale", "taildrop", "bluetooth", "notifications"]
 
 [system.monitor]
 gpu_poll_seconds = 5.0

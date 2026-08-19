@@ -7,8 +7,8 @@ let
   herdr = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   # directory = "~/cs" also keeps the shared ~/cs/flake.nix an ancestor of every
-  # worktree there. Only bare-layout repos may use a config-<root> variant; the
-  # herdr() wrapper in home/programs/zsh picks the config and documents why.
+  # worktree there. A config-<root> variant is never used under a plain checkout;
+  # the herdr() wrapper in home/programs/zsh picks the config and documents why.
   mkConfig = worktreeDir: ''
     # Herdr writes `onboarding = false` itself once the overlay is dismissed,
     # but this file is a read-only store symlink, so without it set here the

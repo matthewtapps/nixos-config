@@ -2,7 +2,7 @@
 # depend on whether the machine is running off the battery.
 
 [bar.main]
-end = ["battery", "brightness", "volume", "network", "latency", "bluetooth", "notifications"]
+end = ["battery", "brightness", "volume", "network", "latency", "tailscale", "taildrop", "bluetooth", "notifications"]
 
 [system.monitor]
 gpu_poll_seconds = 0

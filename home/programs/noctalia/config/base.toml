@@ -87,7 +87,7 @@ thickness = 34
 radius = 0
 margin_ends = 0
 margin_edge = 0
-padding = 2
+padding = 5
 widget_spacing = 10
 background_opacity = 1.0
 border_width = 0.0
@@ -97,7 +97,8 @@ scale = 1.3
 
 start = ["control-center", "workspaces", "cpu", "cpu-temp", "ram", "audio-vis"]
 center = ["clock", "privacy"]
-end = ["volume", "network", "latency", "tailscale", "taildrop", "bluetooth", "notifications"]
+
+# Each profile sets `end` in full; a list here would never reach a host.
 
 # -------------------------------------------------------------- widgets -----
 

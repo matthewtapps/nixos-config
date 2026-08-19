@@ -1,8 +1,10 @@
 --!nonstrict
 
-local doc = nil
-local connected = false
-local targets = {}
+-- Watchers fire only on a change, so without this seed a widget that loads after
+-- the service published reads offline until the next edit.
+local doc = noctalia.state.get("taildrop.doc")
+local connected = noctalia.state.get("taildrop.connected") == true
+local targets = noctalia.state.get("taildrop.targets") or {}
 
 local function preview()
   if not doc or doc.text == "" then

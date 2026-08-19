@@ -42,33 +42,26 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # --- functions ---
 
-# Herdr shares one "default" server across every pane, so changing the space in
-# one pane changes it everywhere. Scope each instance to the Hyprland workspace
-# it launches in (HERDR_SESSION -> a separate socket + spaces under
-# ~/.config/herdr/sessions/<name>): panes in the same workspace share, different
-# workspaces are independent. Explicit `herdr --session x` / $HERDR_SESSION win.
+# config-<root>.toml puts new worktrees at ~/<root>/<repo>/<branch>, beside the
+# other worktrees of the bare repo. A server reads the config once at startup and
+# then serves every pane that attaches to it, so keying HERDR_SESSION by the same
+# root stops a server started elsewhere from handing those panes ~/.herdr.
 herdr() {
     local -a envv
+    local root common dir=${PWD:A}
     # Herdr builds every worktree path as <worktrees.directory>/<repo>/<branch>,
-    # and the config is fixed per server. Pointed at a plain checkout,
-    # config-<root>.toml (directory = ~/<root>) would put the new worktree inside
-    # that working tree, so only the bare layout may use it.
-    local root common
-    if [[ -z "$HERDR_CONFIG_PATH" ]]; then
-        common=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
-        if [[ "$common" == */.bare ]]; then
-            for root in cs dev; do
-                if [[ "$common" == "$HOME/$root/"* ]]; then
+    # so under a plain checkout config-<root>.toml (directory = ~/<root>) would
+    # put new worktrees inside that working tree.
+    common=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+    if [[ -z "$common" || "$common" == */.bare ]]; then
+        for root in cs dev; do
+            if [[ "$dir" == "$HOME/$root" || "$dir" == "$HOME/$root/"* ]]; then
+                [[ -z "$HERDR_CONFIG_PATH" ]] &&
                     envv+=("HERDR_CONFIG_PATH=$HOME/.config/herdr/config-$root.toml")
-                    break
-                fi
-            done
-        fi
-    fi
-    if [[ -z "$HERDR_SESSION" && -n "$HYPRLAND_INSTANCE_SIGNATURE" && "$*" != *--session* ]]; then
-        local ws
-        ws=$(hyprctl activeworkspace 2>/dev/null | awk 'NR==1{print $3; exit}')
-        [[ -n "$ws" ]] && envv+=("HERDR_SESSION=ws$ws")
+                [[ -z "$HERDR_SESSION" ]] && envv+=("HERDR_SESSION=$root")
+                break
+            fi
+        done
     fi
     if (( ${#envv} )); then
         env "${envv[@]}" herdr "$@"
