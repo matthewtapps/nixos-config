@@ -59,10 +59,9 @@
       # Giving the tailnet hosts a `.local` HostName sends them back to mDNS,
       # where nsswitch stops at `[NOTFOUND=return]` and one dropped multicast
       # reply fails a deploy outright. Bare names resolve through the search
-      # domain tailscaled maintains. kruppe is not enrolled yet.
+      # domain tailscaled maintains.
       "kruppe" = {
         User = "matt";
-        HostName = "kruppe.local";
         IdentityFile = "~/.ssh/id_ed25519";
         IdentitiesOnly = true;
       };
