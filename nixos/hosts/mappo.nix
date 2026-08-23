@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   imports = [
@@ -68,6 +68,9 @@
       thunar
       bun
       gcc
+      # The nixpkgs build would disagree with the activate binary this flake
+      # bakes into every deploy target.
+      inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
   };
 
