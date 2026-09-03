@@ -116,17 +116,6 @@
         })
       ];
 
-      config = {
-        allowUnfree = true;
-      };
-
-      mkPkgs =
-        system:
-        import nixpkgs {
-          localSystem = system;
-          inherit config overlays;
-        };
-
       hosts = [
         {
           name = "karsa";
@@ -271,28 +260,9 @@
         );
       };
 
-      # ahvi-aware `claude` launchers for the ~/cs work devshell to hand to
-      # slop-cop's mkClaudeWrapper (which execs `${claude-code}/bin/claude`), so
-      # slop-cop-wrapped harnesses keep the ahvi MCP. Work machines only (samar,
-      # tehol) reach ahvi over the WireGuard VPN host, so the work profile is
-      # pinned to it here; both inner binaries are named `claude`.
-      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" ] (
-        system:
-        let
-          pkgs = mkPkgs system;
-          ahvi = import ./nixos/packages/claude-ahvi.nix { inherit pkgs; };
-          ep = ahvi.mkEndpoints "10.88.88.131";
-        in
-        {
-          claude-ahvi-work = ahvi.mkWrapper { apiUrl = ep.work.api; };
-          claude-ahvi-personal = ahvi.mkWrapper {
-            apiUrl = ep.personal.api;
-            configSubdir = ".claude-alt";
-          };
-
-          installer-iso = self.nixosConfigurations.installer.config.system.build.isoImage;
-        }
-      );
+      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" ] (_: {
+        installer-iso = self.nixosConfigurations.installer.config.system.build.isoImage;
+      });
 
       checks = builtins.mapAttrs (_: lib: lib.deployChecks self.deploy) inputs.deploy-rs.lib;
 

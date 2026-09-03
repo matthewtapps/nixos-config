@@ -1,11 +1,7 @@
 # Standalone ahvi-aware `claude` launchers: the single source of the ahvi MCP
 # endpoint shape and the wrapper that loads it via `--mcp-config`.
 #
-# Imported by both:
-#   - home/programs/claude-code.nix   (the installed `claude` / `cclaude`)
-#   - flake.nix `packages` output     (so the ~/cs work devshell can hand the
-#                                      same ahvi-wrapped binary to slop-cop's
-#                                      mkClaudeWrapper, see that flake)
+# Imported by home/programs/claude-code.nix (the installed `claude` / `cclaude`).
 #
 # Claude Code does not read `mcpServers` from settings.json; MCP servers are
 # loaded from ~/.claude.json (volatile) or files passed via `--mcp-config`. We
