@@ -158,8 +158,7 @@ let
   # Matt Pocock's skills (github.com/mattpocock/skills). Not a Claude Code plugin
   # in this setup: the repo ships a plugin.json but no marketplace.json, so the
   # chosen skill dirs install as plain skills under ~/.claude/skills/<name> (bare
-  # command names, e.g. /tdd). Curated set + pin tracked against ~/cs/slop-cop's
-  # vendored submodule (its manifest.json is the "prefer" list).
+  # command names, e.g. /tdd).
   mattPocockSkills = pkgs.fetchFromGitHub {
     owner = "mattpocock";
     repo = "skills";
@@ -167,8 +166,8 @@ let
     sha256 = "04fdsfmd5xkmlga342923b2gyf19iyw6md46bl6hl553pf7f8lw0";
   };
 
-  # The skills we install, {cat, name}. slop-cop vendors all of engineering/ +
-  # productivity/ (22); we add personal/edit-article (generic, command-only).
+  # The skills we install, {cat, name}: the engineering/ and productivity/ sets,
+  # plus personal/edit-article (generic, command-only).
   # Deliberately not installed: deprecated/*, in-progress/*, personal/obsidian-vault
   # (hardcoded WSL path), misc/* (Node/Husky/course tooling). misc/git-guardrails
   # is reimplemented as a nix-managed hook below.
