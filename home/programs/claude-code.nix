@@ -113,7 +113,11 @@ let
   # statusline + feedback events POST, AHVI_API_ENDPOINT is where the Stop nudge
   # asks should_sample. Both default to localhost in the binary, so they must be
   # set here for the remote (samar) instance.
+  # CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC is a slop-cop blanket setting. It
+  # gates Anthropic's managed metrics reader, leaving the OTLP export to ahvi
+  # alone; that path keys off CLAUDE_CODE_ENABLE_TELEMETRY.
   mkEnv = endpoints: {
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
     CLAUDE_CODE_ENABLE_TELEMETRY = "1";
     CLAUDE_CODE_ENHANCED_TELEMETRY_BETA = "1";
     OTEL_LOGS_EXPORTER = "otlp";
@@ -299,6 +303,14 @@ let
       # every switch, so anything set in the UI is lost. Pin them here instead.
       verbose = false;
       editorMode = "normal"; # i.e. vim mode off
+      # slop-cop's blanket settings, alongside
+      # CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC in mkEnv. Dropping any of them
+      # makes a bare `slop-cop.sh` report drift and exit non-zero.
+      # "AGSM" is the `name:` field of ./claude-agsm-style.md, installed below as
+      # output-styles/agsm.md; renaming either one leaves the style unresolved.
+      outputStyle = "AGSM";
+      disableArtifact = true;
+      includeCoAuthoredBy = false;
       permissions = {
         defaultMode = "auto";
       };
