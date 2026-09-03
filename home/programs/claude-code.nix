@@ -6,6 +6,10 @@
 #   - settings.json (model, statusline, hooks, env, enabled plugins, marketplaces)
 #   - claude-powerline.json (statusline theme)
 #   - CLAUDE.md (user-level memory, from ./claude-user-memory.md)
+#   - output-styles/agsm.md (the style the outputStyle setting names, from
+#     ./claude-agsm-style.md)
+#   - standards/{slop-rules,comment-rules}.md (the shared authoring standards
+#     CLAUDE.md imports, from ./claude-slop-rules.md + ./claude-comment-rules.md)
 #   - Herdr's Claude Code integration (hooks/herdr-agent-state.sh + its
 #     settings.json entry), which the Herdr installer cannot own because
 #     settings.json is rewritten on every switch
@@ -414,6 +418,12 @@ in
     $DRY_RUN_CMD ${install} -m644 ${defaultSettingsJson} "$root/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$root/claude-powerline.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-user-memory.md} "$root/CLAUDE.md"
+    $DRY_RUN_CMD ${install} -Dm644 ${./claude-agsm-style.md} "$root/output-styles/agsm.md"
+    # slop-cop blanket assets; dropping either makes a bare `slop-cop.sh` report
+    # drift. Both are imported by absolute ~/.claude path, so this one copy also
+    # serves ~/.claude-alt.
+    $DRY_RUN_CMD ${install} -Dm644 ${./claude-slop-rules.md} "$root/standards/slop-rules.md"
+    $DRY_RUN_CMD ${install} -Dm644 ${./claude-comment-rules.md} "$root/standards/comment-rules.md"
     $DRY_RUN_CMD ${install} -Dm755 ${herdrClaudeHook} "$root/hooks/herdr-agent-state.sh"
     ${lib.optionalString isWorkMachine ''
 
@@ -430,6 +440,7 @@ in
       $DRY_RUN_CMD ${install} -m644 ${altSettingsJson} "$alt/settings.json"
       $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
       $DRY_RUN_CMD ${install} -m644 ${./claude-user-memory.md} "$alt/CLAUDE.md"
+      $DRY_RUN_CMD ${install} -Dm644 ${./claude-agsm-style.md} "$alt/output-styles/agsm.md"
       $DRY_RUN_CMD ${install} -Dm755 ${herdrClaudeHook} "$alt/hooks/herdr-agent-state.sh"
     ''}
   '';
