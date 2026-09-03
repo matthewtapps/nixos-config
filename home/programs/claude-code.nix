@@ -401,6 +401,7 @@ in
   home.packages = [
     claudeWrapped # `claude` wrapper (adds --mcp-config); pulls in claude-code
     claude-powerline
+    pkgs.ast-grep # the ast-grep skill invokes this by bare name
   ]
   # cclaude (the personal work-machine harness) only exists on work machines.
   ++ lib.optional isWorkMachine cclaude;
