@@ -28,6 +28,10 @@
         enableCryptodisk = true;
       };
     };
+
+    # Without this, dm-crypt rejects discards, fstrim silently skips / and the SSD
+    # never reclaims free blocks. Sustained write speed collapses as it garbage-collects.
+    initrd.luks.devices."cryptroot".allowDiscards = true;
   };
 
   networking = {

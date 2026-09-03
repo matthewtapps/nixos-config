@@ -42,6 +42,10 @@
 
   boot.initrd.kernelModules = [ "i915" ];
 
+  # Without this, dm-crypt rejects discards, fstrim silently skips / and the SSD
+  # never reclaims free blocks. Sustained write speed collapses as it garbage-collects.
+  boot.initrd.luks.devices."cryptroot".allowDiscards = true;
+
   # Turn lockups into clean panic+reboot+EFI-pstore-saved oops instead of a
   # half-frozen state. Full magic SysRq lets us dump task stacks (Alt+SysRq+L/T/W)
   # before forcing a reboot via Alt+SysRq+B if needed.
