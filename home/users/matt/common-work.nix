@@ -15,6 +15,11 @@
     host = "gitlab.countersight.co";
   };
 
+  programs.ssh.settings."gitlab" = {
+    HostName = "gitlab.countersight.co";
+    Port = 2200;
+  };
+
   home.packages = with pkgs; [
     thunderbird
     aerc
