@@ -6,10 +6,10 @@
   # /etc/resolv.conf, so the VPN's work DNS (172.20.20.2) ends up first and every
   # lookup gets routed over the tunnel.
   #
-  # systemd-resolved turns the wg0 connection's `dns-search` (countersight.co)
-  # into a routing domain: only *.countersight.co resolves via the work DNS,
-  # everything else goes to the LAN/wifi link's resolver. NetworkManager
-  # auto-switches to the resolved backend when this is enabled.
+  # The wg0 NetworkManager profile must set `ipv4.dns-search` to
+  # `~countersight.co`. Drop the `~` and it becomes a search domain too; the work
+  # zone answers every name under it with NODATA, so bare hostnames like `samar`
+  # stop resolving before the tailnet suffix is tried.
   services.resolved = {
     enable = true;
     settings.Resolve.DNSSEC = false;
