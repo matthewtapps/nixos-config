@@ -6,6 +6,15 @@
   ...
 }:
 {
+  imports = [
+    ../../programs/gitlab/default.nix
+  ];
+
+  programs.mrRebase = {
+    enable = true;
+    host = "gitlab.countersight.co";
+  };
+
   home.packages = with pkgs; [
     thunderbird
     aerc
