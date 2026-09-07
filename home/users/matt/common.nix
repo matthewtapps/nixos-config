@@ -508,6 +508,7 @@
     ../../programs/hypr/default.nix
     ../../programs/noctalia/default.nix
     ../../programs/taildrop.nix
+    ../../programs/notes.nix
     ../../programs/stylix.nix
   ];
 }

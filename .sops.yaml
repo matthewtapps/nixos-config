@@ -27,6 +27,16 @@ creation_rules:
         - *karsa
         - *matt
         - *mappo
+  - path_regex: secrets/notes-git-crypt.key$
+    key_groups:
+      - age:
+        - *baruk
+        - *karsa
+        - *kruppe
+        - *mappo
+        - *samar
+        - *tehol
+        - *matt
   - path_regex: secrets/tailscale.yaml$
     key_groups:
       - age:
