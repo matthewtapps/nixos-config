@@ -81,7 +81,10 @@
   boot.kernelParams = [
     "amd_pstate=active"
     "acpi_backlight=native"
+    "resume_offset=194351104"
   ];
+
+  boot.resumeDevice = "/dev/disk/by-uuid/e5e7e0a0-46af-4a36-9c2a-936bcf0f0660";
 
   # NFC chip declared in ACPI but not physically present (or broken) — driver
   # spins in an interrupt loop causing ~80% load on one core at boot.

@@ -1,6 +1,3 @@
-# Desktop profile: a bar without the battery widgets, and lock and blank
-# together after ten minutes, never suspend.
-
 [bar.main]
 end = ["volume", "network", "latency", "tailscale", "taildrop", "bluetooth", "notifications"]
 
@@ -17,5 +14,6 @@ action = "lock"
 
 [idle.behavior.screen-off]
 enabled = true
-timeout = 600
+timeout = 630
+locked_timeout = 20
 action = "screen_off"

@@ -1,6 +1,3 @@
-# Laptop profile: battery and brightness on the bar, and idle timings that
-# depend on whether the machine is running off the battery.
-
 [bar.main]
 end = ["battery", "brightness", "volume", "network", "latency", "tailscale", "taildrop", "bluetooth", "notifications"]
 
@@ -8,25 +5,22 @@ end = ["battery", "brightness", "volume", "network", "latency", "tailscale", "ta
 gpu_poll_seconds = 0
 
 [idle]
-behavior_order = ["battery-lock", "ac-lock", "battery-suspend"]
+behavior_order = ["lock", "screen-off", "battery-suspend"]
 pre_action_fade_seconds = 5.0
 
-[idle.behavior.battery-lock]
+[idle.behavior.lock]
 enabled = true
 timeout = 300
-action = "command"
-command = "cat /sys/class/power_supply/BAT*/status 2>/dev/null | grep -q Discharging && noctalia msg dpms-off && noctalia msg session lock"
-resume_command = "noctalia msg dpms-on"
+action = "lock"
 
-[idle.behavior.ac-lock]
+[idle.behavior.screen-off]
 enabled = true
-timeout = 600
-action = "command"
-command = "cat /sys/class/power_supply/BAT*/status 2>/dev/null | grep -q Discharging || (noctalia msg dpms-off && noctalia msg session lock)"
-resume_command = "noctalia msg dpms-on"
+timeout = 330
+locked_timeout = 20
+action = "screen_off"
 
 [idle.behavior.battery-suspend]
 enabled = true
 timeout = 1200
 action = "command"
-command = "cat /sys/class/power_supply/BAT*/status 2>/dev/null | grep -q Discharging && systemctl suspend"
+command = "grep -q Discharging /sys/class/power_supply/BAT*/status && systemctl suspend"

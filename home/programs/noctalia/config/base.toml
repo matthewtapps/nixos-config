@@ -261,6 +261,9 @@ play_sound = false
 position = "bottom_center"
 orientation = "horizontal"
 
+[osd.kinds]
+media = false
+
 [lockscreen]
 enabled = true
 blurred_desktop = false

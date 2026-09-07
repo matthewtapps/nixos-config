@@ -26,11 +26,23 @@
     ignoreLid = true;
   };
 
-  # Let Noctalia handle sleep/lock on lid close
   services.logind.settings.Login = {
     HandleLidSwitch = "ignore";
     HandleLidSwitchExternalPower = "ignore";
     HandleLidSwitchDocked = "ignore";
+  };
+
+  systemd.services.disable-lid-wakeup = {
+    description = "Disarm the ACPI lid wakeup source";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "disable-lid-wakeup" ''
+        if grep -q '^LID.*enabled' /proc/acpi/wakeup; then
+          echo LID > /proc/acpi/wakeup
+        fi
+      '';
+    };
   };
 
   services.devmon.enable = true;

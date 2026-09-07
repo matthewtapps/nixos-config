@@ -38,7 +38,10 @@
     # adapter and USB autosuspend stops control transfers stalling on that path.
     "usbcore.quirks=0846:9072:k"
     "usbcore.autosuspend=-1"
+    "resume_offset=234919936"
   ];
+
+  boot.resumeDevice = "/dev/mapper/cryptroot";
 
   boot.initrd.kernelModules = [ "i915" ];
 
