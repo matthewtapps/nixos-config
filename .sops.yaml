@@ -47,3 +47,13 @@ creation_rules:
         - *samar
         - *tehol
         - *matt
+  - path_regex: secrets/users.yaml$
+    key_groups:
+      - age:
+        - *baruk
+        - *karsa
+        - *kruppe
+        - *mappo
+        - *samar
+        - *tehol
+        - *matt

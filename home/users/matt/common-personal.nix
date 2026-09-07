@@ -9,6 +9,28 @@
 
   home.packages = with pkgs; [
     gimp
+    darktable
+    qdirstat
+    geeqie
+    (writeShellScriptBin "geeqie-show-in-thunar" ''exec thunar "$(dirname "$1")"'')
+    # Geeqie's own recursive search follows symlinks and loops on Windows
+    # junctions. fd skips symlinks, so build a collection with it instead.
+    # Usage: geeqie-scan DIR [-E PATTERN ...]
+    (writeShellScriptBin "geeqie-scan" ''
+      set -eu
+      dir=$1
+      shift
+      out=''${XDG_CONFIG_HOME:-$HOME/.config}/geeqie/collections/scan.gqv
+      mkdir -p "$(dirname "$out")"
+      {
+        echo "#Geeqie collection"
+        ${fd}/bin/fd -H -I -a -t f \
+          -e jpg -e jpeg -e png -e gif -e webp -e bmp -e tif -e tiff \
+          "$@" . "$dir" | sed 's/.*/"&"/'
+        echo "#end"
+      } > "$out"
+      exec ${geeqie}/bin/geeqie "$out"
+    '')
     gcs
     spotify
     discord
@@ -17,6 +39,16 @@
     runelite
     bolt-launcher
   ];
+
+  # Geeqie plugin: right-click a search result to open its folder in Thunar.
+  xdg.configFile."geeqie/applications/show-in-thunar.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Show in Thunar
+    Exec=geeqie-show-in-thunar %f
+    Categories=X-Geeqie;Graphics;
+    OnlyShowIn=X-Geeqie;
+  '';
 
   xdg.desktopEntries.gcs = {
     name = "GCS";

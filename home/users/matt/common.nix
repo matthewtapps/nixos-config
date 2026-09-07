@@ -175,7 +175,13 @@
     wl-clipboard
     iproute2
     lm_sensors
-    feh
+    # Upstream marks its desktop files NoDisplay, which hides imv from Thunar's
+    # Open With list and stops Thunar honouring it as the mime default.
+    (imv.overrideAttrs (old: {
+      postInstall = (old.postInstall or "") + ''
+        sed -i '/^NoDisplay=/d' $out/share/applications/*.desktop
+      '';
+    }))
 
     libreoffice
     onlyoffice-desktopeditors
@@ -347,14 +353,14 @@
         # PDFs
         "application/pdf" = "org.pwmt.zathura.desktop";
 
-        # Images - feh
-        "image/jpeg" = "feh.desktop";
-        "image/png" = "feh.desktop";
-        "image/gif" = "feh.desktop";
-        "image/bmp" = "feh.desktop";
-        "image/webp" = "feh.desktop";
-        "image/tiff" = "feh.desktop";
-        "image/svg+xml" = "feh.desktop";
+        # Images - imv-dir opens the whole folder so arrow keys move between files
+        "image/jpeg" = "imv-dir.desktop";
+        "image/png" = "imv-dir.desktop";
+        "image/gif" = "imv-dir.desktop";
+        "image/bmp" = "imv-dir.desktop";
+        "image/webp" = "imv-dir.desktop";
+        "image/tiff" = "imv-dir.desktop";
+        "image/svg+xml" = "imv-dir.desktop";
 
         # Text/Code files - NeoVim in WezTerm
         "text/plain" = "nvim-terminal.desktop";
@@ -420,14 +426,14 @@
         # PDFs
         "application/pdf" = "org.pwmt.zathura.desktop";
 
-        # Images - feh
-        "image/jpeg" = "feh.desktop";
-        "image/png" = "feh.desktop";
-        "image/gif" = "feh.desktop";
-        "image/bmp" = "feh.desktop";
-        "image/webp" = "feh.desktop";
-        "image/tiff" = "feh.desktop";
-        "image/svg+xml" = "feh.desktop";
+        # Images - imv-dir opens the whole folder so arrow keys move between files
+        "image/jpeg" = "imv-dir.desktop";
+        "image/png" = "imv-dir.desktop";
+        "image/gif" = "imv-dir.desktop";
+        "image/bmp" = "imv-dir.desktop";
+        "image/webp" = "imv-dir.desktop";
+        "image/tiff" = "imv-dir.desktop";
+        "image/svg+xml" = "imv-dir.desktop";
 
         # Text/Code files - NeoVim in WezTerm
         "text/plain" = "nvim-terminal.desktop";
