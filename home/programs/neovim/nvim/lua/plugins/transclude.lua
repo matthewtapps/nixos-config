@@ -1,8 +1,7 @@
 return {
 	"matthewtapps/transclude.nvim",
-	-- Local plugin (same pattern as markdown-table-wrap.nvim): source vendored
-	-- under neovim/nvim/localplugins/ so it ships with the flake to every
-	-- machine. Edits there need a rebuild to take effect.
+	-- Local plugin: source vendored under neovim/nvim/localplugins/ so it ships
+	-- with the flake to every machine. Edits there need a rebuild to take effect.
 	dir = vim.fn.stdpath("config") .. "/localplugins/transclude.nvim",
 	ft = { "markdown", "markdown.mdx" },
 	-- Renders Obsidian `![[note]]` / `![[note#Heading]]` / `![[note#^block]]`
