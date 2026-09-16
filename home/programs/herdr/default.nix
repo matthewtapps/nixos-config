@@ -39,6 +39,11 @@ let
     # Sort agent sidebar by priority/activity, not by space.
     agent_panel_sort = "priority"
 
+    # A scrollbar reserves a pane column that an alt-screen TUI takes back, so
+    # every nvim launch resizes the pane by one column and corrupts wrapped rows
+    # (herdrdev/herdr#3329). Re-enable once that lands a fix.
+    pane_scrollbars = false
+
     [worktrees]
     directory = "${worktreeDir}"
 
