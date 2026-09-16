@@ -233,6 +233,30 @@ let
     '';
   };
 
+  # Infra guardrails: tofu/terraform writes are the user's to run, never
+  # Claude's. Matches the verb anywhere in the command, so `cd tf && tofu apply`
+  # and `tofu -chdir=tf apply` are caught too.
+  blockInfraWrites = pkgs.writeShellApplication {
+    name = "block-infra-writes";
+    runtimeInputs = [
+      pkgs.jq
+      pkgs.gnugrep
+    ];
+    text = ''
+      INPUT=$(cat)
+      COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command')
+
+      WRITES='\b(apply|destroy)\b|\bstate[[:space:]]+(rm|mv|push|replace-provider)\b'
+
+      if echo "$COMMAND" | grep -qE "\b(tofu|terraform)\b.*($WRITES)"; then
+        echo "BLOCKED: '$COMMAND' writes infrastructure. The user runs applies themselves; plan, validate and fmt are fine." >&2
+        exit 2
+      fi
+
+      exit 0
+    '';
+  };
+
   ts = "2026-06-15T00:00:00.000Z";
 
   # cache/<marketplace>/<plugin>/<version> -> plugin content, taken from the
@@ -319,7 +343,7 @@ let
         command = mkStatuslineCmd dir;
       };
       # ahvi telemetry/feedback hooks + Herdr's agent-state reporter + the git
-      # guardrails PreToolUse block.
+      # and infra guardrails PreToolUse blocks.
       hooks = ahviHooks // {
         SessionStart = ahviHooks.SessionStart ++ [ (mkHerdrHook dir) ];
         PreToolUse = [
@@ -329,6 +353,10 @@ let
               {
                 type = "command";
                 command = "${blockDangerousGit}/bin/block-dangerous-git";
+              }
+              {
+                type = "command";
+                command = "${blockInfraWrites}/bin/block-infra-writes";
               }
             ];
           }
