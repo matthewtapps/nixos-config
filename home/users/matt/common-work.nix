@@ -20,6 +20,14 @@
     Port = 2200;
   };
 
+  # Anything routed over the work VPN takes the nixos-hosts catalogue identity.
+  programs.ssh.settings.wireguard = {
+    header = "Match exec \"ip route get %h 2>/dev/null | grep -q ' dev wg0 '\"";
+    User = "matthewt";
+    IdentityFile = "~/.ssh/wtk-box";
+    IdentitiesOnly = true;
+  };
+
   home.packages = with pkgs; [
     thunderbird
     aerc
