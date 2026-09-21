@@ -10,6 +10,15 @@ return {
 		-- Keep the rendered view up even while typing; only the line under the
 		-- cursor drops back to raw markdown so you can edit it.
 		anti_conceal = { enabled = true },
+		-- The default excludes insert mode, so the whole buffer reflows on every
+		-- mode change. anti_conceal alone handles unrendering the cursor line.
+		render_modes = true,
+		pipe_table = {
+			-- Only `raw` skips cell padding. The padded modes pad each cell to
+			-- the widest *visible* cell, so a long row buries short ones in
+			-- wrapped blank space that resizes as you scroll.
+			cell = "raw",
+		},
 		-- Custom callouts that mirror the pdf-gen sheet.css blocks. `note` is a
 		-- built-in callout already; `play` (action/maneuver blocks) is ours. The
 		-- pandoc callouts.lua filter turns these `> [!play]` / `> [!note]`
