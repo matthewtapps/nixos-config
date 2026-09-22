@@ -16,10 +16,6 @@
     matugen.url = "github:InioX/matugen?ref=v2.2.0";
     matugen.inputs.nixpkgs.follows = "nixpkgs";
 
-    # hyprland deliberately does not follow nixpkgs: it caches binaries on
-    # hyprland.cachix.org built against the nixpkgs it pins. Following unstable
-    # would miss that cache and force a full source rebuild. Same rationale as
-    # claude-code below.
     hyprland.url = "github:hyprwm/Hyprland";
 
     stylix = {
@@ -27,17 +23,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    claude-cowork.url = "github:johnzfitch/claude-cowork-linux";
 
-    # Independently-bumpable Claude Code (hourly npm tracking, prebuilt via
-    # claude-code.cachix.org). Overlay sets pkgs.claude-code, which the whole
-    # node-wrapper / ahvi / home / packages chain inherits. Deliberately does not
-    # follow nixpkgs: the flake pins Node 22 and caches binaries
-    # against its locked nixpkgs; following unstable would force a source
-    # rebuild. Bump with `nix flake update claude-code`.
     claude-code.url = "github:sadjow/claude-code-nix";
 
     sops-nix.url = "github:Mic92/sops-nix";
@@ -45,10 +32,6 @@
 
     deploy-rs.url = "github:serokell/deploy-rs";
 
-    # The cachix branch is the one published to noctalia.cachix.org. This input
-    # deliberately does not follow nixpkgs: it keeps the nixpkgs upstream pins so
-    # the published binaries match. Following unstable would compile the C++
-    # shell on every host. Same rationale as hyprland and claude-code above.
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
     todone = {
@@ -61,7 +44,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # The ref keeps the working copy out: a deploy carries the last commit on main.
     lsag-quartermaster = {
       url = "git+ssh://git@github.com/matthewtapps/lsag-quartermaster.git?ref=main";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -218,7 +200,6 @@
                   extraSpecialArgs = {
                     inherit inputs host;
                     device = host.device;
-                    claude-desktop = inputs.claude-desktop.packages.${host.system}.claude-desktop-with-fhs;
                   };
                   sharedModules = [ inputs.noctalia.homeModules.default ];
                   users = builtins.mapAttrs (_: file: { imports = [ file ]; }) host.users;

@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 {
@@ -38,6 +39,7 @@
     qbittorrent
     runelite
     bolt-launcher
+    inputs.claude-cowork.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Geeqie plugin: right-click a search result to open its folder in Thunar.
