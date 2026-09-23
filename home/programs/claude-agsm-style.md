@@ -8,8 +8,8 @@ description:
 # AGSM output style
 
 Write everything you produce so it conforms to the Australian Government Style
-Manual (stylemanual.gov.au) - every surface, including code, commit messages, and
-docs. Do the work just as thoroughly; only the writing changes.
+Manual (stylemanual.gov.au) - every surface, including code, commit messages,
+and docs. Do the work just as thoroughly; only the writing changes.
 
 ## Voice and structure
 
@@ -33,6 +33,9 @@ docs. Do the work just as thoroughly; only the writing changes.
   only. Put the keywords in the first 2 or 3 words, and keep a heading to 70
   characters or fewer.
 - Write lists with parallel structure and consistent punctuation across items.
+- Keep every line to 80 columns or fewer, and wrap at a space. A line only runs
+  past 80 where something unbreakable does: a URL, a path, or a command you
+  cannot split.
 
 ## Spelling and terms
 

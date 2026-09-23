@@ -1,28 +1,31 @@
 # Declarative Claude Code setup.
 #
 # Encodes the local ~/.claude state into Nix:
-#   - the wrapped claude binary (node on PATH, ahvi MCP via --mcp-config) and the
-#     claude-powerline renderer
+#   - the wrapped claude binary (node + python3 on PATH, ahvi MCP via
+#     --mcp-config) and the claude-powerline renderer
 #   - settings.json (model, statusline, hooks, env, enabled plugins, marketplaces)
 #   - claude-powerline.json (statusline theme)
 #   - CLAUDE.md (user-level memory, from ./claude-user-memory.md)
-#   - output-styles/agsm.md (the style the outputStyle setting names, from
-#     ./claude-agsm-style.md)
 #   - standards/{slop-rules,comment-rules}.md (the shared authoring standards
-#     CLAUDE.md imports, from ./claude-slop-rules.md + ./claude-comment-rules.md)
+#     CLAUDE.md imports)
 #   - Herdr's Claude Code integration (hooks/herdr-agent-state.sh + its
 #     settings.json entry), which the Herdr installer cannot own because
 #     settings.json is rewritten on every switch
 #   - the plugin tree under ~/.claude/plugins
-#   - plain skills under ~/.claude/skills (Matt Pocock's skills)
 #
-# Claude Code normally clones plugin/marketplace repos from GitHub at runtime.
-# This config pins them with fetchFromGitHub (reproducible, offline) and an
-# activation script materialises them into ~/.claude. The plugin caches and the
-# JSON state files are written as writable copies because Claude writes runtime
-# markers (e.g. .in_use/) into the cache dirs and rewrites settings.json itself;
-# a symlink into the store would break those writes and then clobber on the next
-# home-manager switch.
+# Claude Code normally clones plugin/marketplace repos at runtime. This config
+# pins them (reproducible, offline) and an activation script materialises them
+# into ~/.claude. The plugin caches and the JSON state files are written as
+# writable copies because Claude writes runtime markers (e.g. .in_use/) into the
+# cache dirs and rewrites settings.json itself; a symlink into the store would
+# break those writes and then clobber on the next home-manager switch.
+#
+# The slop-cop plugin carries the settings asserted below, the AGSM output style
+# and the review/ticket skills. It sits in a private GitLab, so only a work host
+# manages it; every other host takes the standards and the AGSM style from the
+# copies vendored beside this file. Hence the 2 sources for one standard: a
+# personal host cannot read the plugin, and slop-cop compares its installed copy
+# byte-for-byte against the plugin's, so a work host must install that copy.
 #
 # Enforcement is overwrite-on-switch: Nix is the source of truth, so the managed
 # plugin set and these files are re-asserted on every switch and any in-app drift
@@ -145,57 +148,99 @@ let
     dir:
     "${ahviBin} statusline -- ${claude-powerline}/bin/claude-powerline --config ${dir}/claude-powerline.json";
 
+  # Only a work host forces this fetch, so a personal host needs neither the
+  # GitLab route nor the work SSH identity to evaluate.
+  slopCopRev = "70793b384ebccd56d9502f995b361a90fb8a21ad";
+  slopCop = builtins.fetchGit {
+    url = "git+ssh://git@gitlab.countersight.co/devops/slop-cop.git";
+    ref = "group/88-0.4.0";
+    rev = slopCopRev;
+    # Without it, the fetch is impure and `nix flake check` refuses it.
+    narHash = "sha256-veszipnwQwFhmr5JM7NK8baadECVL8BQskIeYBYlR3Y=";
+  };
+
   # Pinned marketplace repos (full repo content, cloned into plugins/marketplaces).
-  mp = {
-    claude-powerline = pkgs.fetchFromGitHub {
-      owner = "Owloops";
-      repo = "claude-powerline";
-      rev = "28deff67a4f380ddb1d4590caa24b854c4f7c5dd";
-      sha256 = "sha256-8c68N6Ty/7E6Vt35EBH0IbtEn9rQ2bxtTrKwZqHHmjs=";
+  # `source` mirrors what `claude plugin marketplace add` records for that source
+  # kind, so a github marketplace takes owner/repo and a git one takes the URL.
+  marketplaces = {
+    claude-powerline = {
+      src = pkgs.fetchFromGitHub {
+        owner = "Owloops";
+        repo = "claude-powerline";
+        rev = "28deff67a4f380ddb1d4590caa24b854c4f7c5dd";
+        sha256 = "sha256-8c68N6Ty/7E6Vt35EBH0IbtEn9rQ2bxtTrKwZqHHmjs=";
+      };
+      source = {
+        source = "github";
+        repo = "Owloops/claude-powerline";
+      };
+    };
+    # obra/superpowers is its own marketplace, named superpowers-dev.
+    superpowers-dev = {
+      src = pkgs.fetchFromGitHub {
+        owner = "obra";
+        repo = "superpowers";
+        rev = "5bf4e78011075bcfc0dc295f0724994cd123ee71";
+        sha256 = "08qk0qwwk5w0hwfdjg0gcad6ddl569l4d1awhqjic01j6j38j1xf";
+      };
+      source = {
+        source = "github";
+        repo = "obra/superpowers";
+      };
+    };
+    ponytail = {
+      src = pkgs.fetchFromGitHub {
+        owner = "DietrichGebert";
+        repo = "ponytail";
+        rev = "e3ba2aa6f1e6f0bc4d69eb09c9f0d0a93af56156";
+        sha256 = "01386kw1kg1wpgjmyzc9154b8v4hf8s10iv5bm0lbiwqnigbji1w";
+      };
+      source = {
+        source = "github";
+        repo = "DietrichGebert/ponytail";
+      };
+    };
+  }
+  // lib.optionalAttrs isWorkMachine {
+    slop-cop = {
+      src = slopCop;
+      source = {
+        source = "git";
+        url = "https://gitlab.countersight.co/devops/slop-cop.git";
+      };
     };
   };
 
-  # Matt Pocock's skills (github.com/mattpocock/skills). Not a Claude Code plugin
-  # in this setup: the repo ships a plugin.json but no marketplace.json, so the
-  # chosen skill dirs install as plain skills under ~/.claude/skills/<name> (bare
-  # command names, e.g. /tdd).
-  mattPocockSkills = pkgs.fetchFromGitHub {
-    owner = "mattpocock";
-    repo = "skills";
-    rev = "391a2701dd948f94f56a39f7533f8eea9a859c87";
-    sha256 = "04fdsfmd5xkmlga342923b2gyf19iyw6md46bl6hl553pf7f8lw0";
-  };
-
-  # The skills we install, {cat, name}: the engineering/ and productivity/ sets,
-  # plus personal/edit-article (generic, command-only).
-  # Deliberately not installed: deprecated/*, in-progress/*, personal/obsidian-vault
-  # (hardcoded WSL path), misc/* (Node/Husky/course tooling). misc/git-guardrails
-  # is reimplemented as a nix-managed hook below.
-  # NB: code-review shadows the built-in /code-review harness skill (by choice).
-  mpSkills = [
-    { cat = "engineering"; name = "ask-matt"; }
-    { cat = "engineering"; name = "codebase-design"; }
-    { cat = "engineering"; name = "code-review"; }
-    { cat = "engineering"; name = "diagnosing-bugs"; }
-    { cat = "engineering"; name = "domain-modeling"; }
-    { cat = "engineering"; name = "grill-with-docs"; }
-    { cat = "engineering"; name = "implement"; }
-    { cat = "engineering"; name = "improve-codebase-architecture"; }
-    { cat = "engineering"; name = "prototype"; }
-    { cat = "engineering"; name = "research"; }
-    { cat = "engineering"; name = "resolving-merge-conflicts"; }
-    { cat = "engineering"; name = "setup-matt-pocock-skills"; }
-    { cat = "engineering"; name = "tdd"; }
-    { cat = "engineering"; name = "to-spec"; }
-    { cat = "engineering"; name = "to-tickets"; }
-    { cat = "engineering"; name = "triage"; }
-    { cat = "engineering"; name = "wayfinder"; }
-    { cat = "productivity"; name = "grilling"; }
-    { cat = "productivity"; name = "grill-me"; }
-    { cat = "productivity"; name = "handoff"; }
-    { cat = "productivity"; name = "teach"; }
-    { cat = "productivity"; name = "writing-great-skills"; }
-    { cat = "personal"; name = "edit-article"; }
+  # Skill dirs this config or a pre-0.4.0 slop-cop used to install. Claude Code
+  # loads every dir it finds, so one left behind competes with its plugin copy.
+  staleSkills = [
+    "ask-matt"
+    "code-review"
+    "codebase-design"
+    "diagnosing-bugs"
+    "domain-modeling"
+    "edit-article"
+    "grill-me"
+    "grill-with-docs"
+    "grilling"
+    "handoff"
+    "implement"
+    "improve-codebase-architecture"
+    "ponytail"
+    "prototype"
+    "research"
+    "resolving-merge-conflicts"
+    "review-code-comments"
+    "review-documentation"
+    "review-merge-request"
+    "setup-matt-pocock-skills"
+    "tdd"
+    "teach"
+    "to-spec"
+    "to-tickets"
+    "triage"
+    "wayfinder"
+    "writing-great-skills"
   ];
 
   # git guardrails: a PreToolUse(Bash) hook that blocks destructive git before it
@@ -262,28 +307,45 @@ let
   # cache/<marketplace>/<plugin>/<version> -> plugin content, taken from the
   # `source` each marketplace.json declares for the plugin:
   #   claude-powerline source "./plugin"  -> the repo's plugin/ subdir
+  #   every other one declares "./"       -> the whole repo
+  # `version` and `sha` must match the plugin.json version and the pinned rev, or
+  # Claude Code re-clones the plugin over the materialised cache.
   pluginCaches = [
     {
       mp = "claude-powerline";
       plugin = "claude-powerline";
       version = "1.0.0";
       sha = "28deff67a4f380ddb1d4590caa24b854c4f7c5dd";
-      src = "${mp.claude-powerline}/plugin";
+      src = "${marketplaces.claude-powerline.src}/plugin";
     }
-  ];
-
-  marketplaceRepos = {
-    claude-powerline = "Owloops/claude-powerline";
+    {
+      mp = "superpowers-dev";
+      plugin = "superpowers";
+      version = "6.4.1";
+      sha = "5bf4e78011075bcfc0dc295f0724994cd123ee71";
+      src = "${marketplaces.superpowers-dev.src}";
+    }
+    {
+      mp = "ponytail";
+      plugin = "ponytail";
+      version = "4.10.0";
+      sha = "e3ba2aa6f1e6f0bc4d69eb09c9f0d0a93af56156";
+      src = "${marketplaces.ponytail.src}";
+    }
+  ]
+  ++ lib.optional isWorkMachine {
+    mp = "slop-cop";
+    plugin = "slop-cop";
+    version = "0.4.0";
+    sha = slopCopRev;
+    src = "${slopCop}";
   };
 
-  knownMarketplaces = lib.mapAttrs (name: repo: {
-    source = {
-      source = "github";
-      inherit repo;
-    };
+  knownMarketplaces = lib.mapAttrs (name: m: {
+    inherit (m) source;
     installLocation = "${pluginsDir}/marketplaces/${name}";
     lastUpdated = ts;
-  }) marketplaceRepos;
+  }) marketplaces;
 
   installedPlugins = {
     version = 2;
@@ -326,12 +388,13 @@ let
       # every switch, so anything set in the UI is lost. Pin them here instead.
       verbose = false;
       editorMode = "normal"; # i.e. vim mode off
-      # slop-cop's blanket settings, alongside
+      # slop-cop's 5 blanket settings, alongside
       # CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC in mkEnv. Dropping any of them
-      # makes a bare `slop-cop.sh` report drift and exit non-zero.
-      # "AGSM" is the `name:` field of ./claude-agsm-style.md, installed below as
-      # output-styles/agsm.md; renaming either one leaves the style unresolved.
-      outputStyle = "AGSM";
+      # makes a bare `slop-cop` report drift and exit non-zero.
+      # Claude Code namespaces a plugin output style as <plugin>:<name>, so a work
+      # host names the plugin's copy. Elsewhere "AGSM" is the `name:` field of
+      # ./claude-agsm-style.md, installed below as output-styles/agsm.md.
+      outputStyle = if isWorkMachine then "slop-cop:AGSM" else "AGSM";
       disableArtifact = true;
       includeCoAuthoredBy = false;
       permissions = {
@@ -371,12 +434,7 @@ let
           value = true;
         }) pluginCaches
       );
-      extraKnownMarketplaces = lib.mapAttrs (_: repo: {
-        source = {
-          source = "github";
-          inherit repo;
-        };
-      }) marketplaceRepos;
+      extraKnownMarketplaces = lib.mapAttrs (_: m: { inherit (m) source; }) marketplaces;
       skipAutoPermissionPrompt = true;
     };
 
@@ -398,6 +456,20 @@ let
       dir = "${home}/.claude-alt";
     })
   );
+  # A work host installs the plugin's own copies, because slop-cop reports drift
+  # when the installed standard differs from the one the plugin ships.
+  standards =
+    if isWorkMachine then
+      {
+        slop = "${slopCop}/standards/slop-rules.md";
+        comment = "${slopCop}/standards/comment-rules.md";
+      }
+    else
+      {
+        slop = ./claude-slop-rules.md;
+        comment = ./claude-comment-rules.md;
+      };
+
   installedPluginsJson = pkgs.writeText "installed_plugins.json" (builtins.toJSON installedPlugins);
   knownMarketplacesJson = pkgs.writeText "known_marketplaces.json" (builtins.toJSON knownMarketplaces);
 
@@ -406,8 +478,8 @@ let
 
   marketplaceCmds = lib.concatStringsSep "\n" (
     lib.mapAttrsToList (
-      name: src: ''install_tree ${src} "$root/plugins/marketplaces/${name}"''
-    ) mp
+      name: m: ''install_tree ${m.src} "$root/plugins/marketplaces/${name}"''
+    ) marketplaces
   );
 
   cacheCmds = lib.concatStringsSep "\n" (
@@ -416,13 +488,10 @@ let
     ) pluginCaches
   );
 
-  # Plain Matt Pocock skills: each chosen skill dir -> ~/.claude/skills/<name>.
-  # install_tree rm -rf's only the specific per-skill dest, so hand-authored or
-  # other skills in ~/.claude/skills survive a switch.
-  skillCmds = lib.concatStringsSep "\n" (
-    map (
-      s: ''install_tree ${mattPocockSkills}/skills/${s.cat}/${s.name} "$root/skills/${s.name}"''
-    ) mpSkills
+  # Each removal names one directory, so a skill you install by hand survives a
+  # switch.
+  staleSkillCmds = lib.concatStringsSep "\n" (
+    map (name: ''$DRY_RUN_CMD rm -rf $VERBOSE_ARG "$root/skills/${name}"'') staleSkills
   );
 in
 {
@@ -451,20 +520,28 @@ in
 
     ${marketplaceCmds}
     ${cacheCmds}
-    ${skillCmds}
+    ${staleSkillCmds}
 
     $DRY_RUN_CMD ${install} -m644 ${installedPluginsJson} "$root/plugins/installed_plugins.json"
     $DRY_RUN_CMD ${install} -m644 ${knownMarketplacesJson} "$root/plugins/known_marketplaces.json"
     $DRY_RUN_CMD ${install} -m644 ${defaultSettingsJson} "$root/settings.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$root/claude-powerline.json"
     $DRY_RUN_CMD ${install} -m644 ${./claude-user-memory.md} "$root/CLAUDE.md"
-    $DRY_RUN_CMD ${install} -Dm644 ${./claude-agsm-style.md} "$root/output-styles/agsm.md"
-    # slop-cop blanket assets; dropping either makes a bare `slop-cop.sh` report
+    # slop-cop blanket assets; dropping either makes a bare `slop-cop` report
     # drift. Both are imported by absolute ~/.claude path, so this one copy also
     # serves ~/.claude-alt.
-    $DRY_RUN_CMD ${install} -Dm644 ${./claude-slop-rules.md} "$root/standards/slop-rules.md"
-    $DRY_RUN_CMD ${install} -Dm644 ${./claude-comment-rules.md} "$root/standards/comment-rules.md"
+    $DRY_RUN_CMD ${install} -Dm644 ${standards.slop} "$root/standards/slop-rules.md"
+    $DRY_RUN_CMD ${install} -Dm644 ${standards.comment} "$root/standards/comment-rules.md"
     $DRY_RUN_CMD ${install} -Dm755 ${herdrClaudeHook} "$root/hooks/herdr-agent-state.sh"
+    ${
+      if isWorkMachine then
+        ''
+          # The plugin carries the style a work host names, and slop-cop reports a
+          # copy here as a leftover of the version that installed one.
+          $DRY_RUN_CMD rm -f $VERBOSE_ARG "$root/output-styles/agsm.md"''
+      else
+        ''$DRY_RUN_CMD ${install} -Dm644 ${./claude-agsm-style.md} "$root/output-styles/agsm.md"''
+    }
     ${lib.optionalString isWorkMachine ''
 
       # Work machines only: second ~/.claude-alt profile (personal account via the
@@ -474,13 +551,13 @@ in
       $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "$alt"
       $DRY_RUN_CMD rm -rf "$alt/plugins"
       $DRY_RUN_CMD ln -sfn "$root/plugins" "$alt/plugins"
-      # Share the nix-managed skills tree with the personal profile too.
+      # Share the skills dir with the personal profile too.
       $DRY_RUN_CMD rm -rf "$alt/skills"
       $DRY_RUN_CMD ln -sfn "$root/skills" "$alt/skills"
       $DRY_RUN_CMD ${install} -m644 ${altSettingsJson} "$alt/settings.json"
       $DRY_RUN_CMD ${install} -m644 ${./claude-powerline.json} "$alt/claude-powerline.json"
       $DRY_RUN_CMD ${install} -m644 ${./claude-user-memory.md} "$alt/CLAUDE.md"
-      $DRY_RUN_CMD ${install} -Dm644 ${./claude-agsm-style.md} "$alt/output-styles/agsm.md"
+      $DRY_RUN_CMD rm -f $VERBOSE_ARG "$alt/output-styles/agsm.md"
       $DRY_RUN_CMD ${install} -Dm755 ${herdrClaudeHook} "$alt/hooks/herdr-agent-state.sh"
     ''}
   '';

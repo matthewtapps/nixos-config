@@ -3,7 +3,7 @@ name: slop-rules
 description:
   The general slop taxonomy - what content earns its place in any authored
   text and what ages badly. The shared base behind comment-rules and
-  review-documentation.
+  documentation-review.
 ---
 
 ## Slop standard
@@ -49,6 +49,6 @@ Less is more. Prefer cutting a line over reworking it to add meaning.
 ### Style of the lines that survive
 
 A line that earns its place still has to read well. Write it in the Australian
-Government Style Manual style slop-cop enforces:
-`~/.claude/output-styles/agsm.md`. Do not flag identifiers, symbols, or API
-names for spelling; match them as the surface spells them.
+Government Style Manual style slop-cop enforces: the `slop-cop:AGSM` output
+style, or <https://www.stylemanual.gov.au>. Do not flag identifiers, symbols, or
+API names for spelling; match them as the surface spells them.

@@ -2,7 +2,7 @@
 name: comment-rules
 description:
   What earns a code comment and what counts as slop. The shared standard behind
-  review-code-comments, AGENTS.md, and any write-time check.
+  comment-review, AGENTS.md, and any write-time check.
 ---
 
 ## Code comment standard
