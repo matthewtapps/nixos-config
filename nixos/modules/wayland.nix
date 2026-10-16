@@ -24,6 +24,8 @@
     };
   };
 
+  services.gnome.gnome-keyring.enable = true;
+
   systemd.services.greetd = {
     serviceConfig = {
       Type = "idle";
