@@ -20,9 +20,26 @@
     Port = 2200;
   };
 
+  # Port 22 is GitLab's git sshd, as on gitlab.
+  programs.ssh.settings.portal = {
+    header = "Host portal portal.countersight.co";
+    Port = 2200;
+  };
+
+  # Bare work names like `nuc` only resolve with the suffix: wg0 carries
+  # countersight.co as a routing domain, not a search domain (see wireguard.nix).
+  programs.ssh.settings.countersight = {
+    header = "Match all";
+    CanonicalizeHostname = "yes";
+    CanonicalDomains = "countersight.co";
+    CanonicalizeFallbackLocal = "yes";
+  };
+
   # Anything routed over the work VPN takes the nixos-hosts catalogue identity.
+  # `ip route get` takes only an address, so resolve %h first. `git@` GitLab
+  # is on wg0 too and needs the default keys.
   programs.ssh.settings.wireguard = {
-    header = "Match exec \"ip route get %h 2>/dev/null | grep -q ' dev wg0 '\"";
+    header = "Match !user git exec \"ip route get $(getent ahostsv4 %h | awk 'NR==1{print $1}') 2>/dev/null | grep -q ' dev wg0 '\"";
     User = "matthewt";
     IdentityFile = "~/.ssh/wtk-box";
     IdentitiesOnly = true;
