@@ -1,5 +1,13 @@
 [bar.main]
-end = ["battery", "brightness", "volume", "network", "latency", "tailscale", "taildrop", "bluetooth", "notifications"]
+end = ["external-monitor", "battery", "brightness", "volume", "network", "latency", "tailscale", "taildrop", "bluetooth", "notifications"]
+
+[widget.external-monitor]
+type = "custom_button"
+glyph = "device-desktop"
+tooltip = "Toggle external monitor"
+
+[widget.external-monitor.actions]
+left = "exec external-monitor-toggle"
 
 [system.monitor]
 gpu_poll_seconds = 0

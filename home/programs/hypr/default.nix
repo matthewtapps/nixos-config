@@ -51,5 +51,8 @@ in
     (writeShellScriptBin "record-region-toggle" ''
       ${builtins.readFile ./scripts/record-region-toggle.sh}
     '')
+    (writeShellScriptBin "external-monitor-toggle" ''
+      ${builtins.readFile ./scripts/external-monitor-toggle.sh}
+    '')
   ];
 }

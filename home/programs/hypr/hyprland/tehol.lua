@@ -5,8 +5,12 @@
 local mon1 = "desc:Tianma Microelectronics Ltd. TL145MDXP02"
 local mon2 = "desc:AOC Q27G2G3R3B 137P6HA011487"
 
+-- Set by external-monitor-toggle; Hyprland treats mon2 as absent while it exists.
+local mon2_state = io.open(os.getenv("HOME") .. "/.local/state/external-monitor-off")
+if mon2_state then mon2_state:close() end
+
 hl.monitor({ output = mon1, mode = "3072x1920@60.00Hz", position = "0x0", scale = 1.5 })
-hl.monitor({ output = mon2, mode = "2560x1440@143.91Hz", position = "-2560x0", scale = 1 })
+hl.monitor({ output = mon2, mode = "2560x1440@143.91Hz", position = "-2560x0", scale = 1, disabled = mon2_state ~= nil })
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
