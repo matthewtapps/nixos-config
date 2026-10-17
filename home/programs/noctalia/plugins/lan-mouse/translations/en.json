@@ -14,12 +14,7 @@
     "off": "off on this host"
   },
   "panel": {
-    "title": "Lan Mouse",
-    "this_host": "{host} (this host)",
-    "unplaced": "Unplaced",
-    "drop": "drop here",
-    "enable": "Turn on",
-    "disable": "Turn off"
+    "title": "Lan Mouse"
   },
   "tooltip": {
     "status": "Status",

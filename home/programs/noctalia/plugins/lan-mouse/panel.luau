@@ -2,17 +2,14 @@
 local Layout = require("./layout.luau")
 
 local DRAG_TYPE = "lan-mouse-peer"
-local SLOT_W, SLOT_H = 140, 90
-local CENTRE_W, CENTRE_H = 200, 110
+local SLOT_W, SLOT_H = 116, 70
+local PEER_W, PEER_H = 64, 32
+local CENTRE_W, CENTRE_H = 150, 70
 
 local doc = noctalia.state.get("lanmouse.doc")
 local me = noctalia.state.get("lanmouse.me")
 local online = noctalia.state.get("lanmouse.online") or {}
 local connected = noctalia.state.get("lanmouse.connected") == true
-
-local function tr(key, subst)
-  return noctalia.tr(key, subst)
-end
 
 local function request(payload)
   payload.nonce = noctalia.nowMs()
@@ -29,83 +26,83 @@ local function peers()
   return out
 end
 
+-- ui.box is a leaf shape and drops children; containers must be row or column.
+local function gap(width, height)
+  return ui.column({ width = width, height = height }, {})
+end
+
 -- Draws monitors side by side to a shared scale; vertical offsets are dropped.
-local function monitorStrip(host, maxW, maxH)
-  local monitors = doc and doc.monitors[host] or {}
+local function monitors(host, maxW, maxH, fill)
+  local list = doc and doc.monitors[host] or {}
   local totalW, tallest = 0, 0
-  for _, m in ipairs(monitors) do
+  for _, m in ipairs(list) do
     totalW += m.w
     tallest = math.max(tallest, m.h)
   end
   if totalW == 0 then
-    return ui.box({ width = maxW, height = 4 })
+    return ui.box({ width = maxW, height = math.floor(maxW * 9 / 16), fill = fill, radius = 4 })
   end
   local scale = math.min(maxW / totalW, maxH / tallest)
-  local sorted = table.clone(monitors)
+  local sorted = table.clone(list)
   table.sort(sorted, function(a, b)
     return a.x < b.x
   end)
   local boxes = {}
   for _, m in ipairs(sorted) do
     table.insert(boxes, ui.box({
-      width = math.max(4, math.floor(m.w * scale)),
-      height = math.max(4, math.floor(m.h * scale)),
-      fill = "primary/0.25",
-      radius = 3,
+      width = math.max(6, math.floor(m.w * scale)),
+      height = math.max(6, math.floor(m.h * scale)),
+      fill = fill,
+      radius = 4,
     }))
   end
-  return ui.row({ gap = 2, align = "end" }, boxes)
+  return ui.row({ gap = 3, align = "end" }, boxes)
 end
 
-local function tile(peer)
-  local enabled = Layout.isEnabled(doc, peer)
-  local isOnline = online[peer] == true
-  local body = ui.column({ gap = 4, padding = 6, align = "stretch" }, {
-    ui.row({ gap = 4, align = "center" }, {
-      ui.glyph({ name = "circle-filled", size = 8, color = isOnline and "primary" or "outline" }),
-      ui.label({
-        text = peer,
-        fontSize = 12,
-        color = enabled and "on_surface" or "on_surface_variant",
-        flexGrow = 1,
-      }),
+local function peer(host)
+  local enabled = Layout.isEnabled(doc, host)
+  local isOnline = online[host] == true
+  local fill = not enabled and "on_surface/0.06" or (isOnline and "primary/0.35" or "on_surface/0.15")
+  local text = (enabled and isOnline) and "on_surface" or "on_surface_variant"
+  local body = ui.column({ gap = 1, align = "center" }, {
+    monitors(host, PEER_W, PEER_H, fill),
+    ui.row({ gap = 2, align = "center" }, {
+      ui.label({ text = host, fontSize = 11, color = text }),
       ui.button({
         glyph = "power",
         variant = "ghost",
-        tooltip = enabled and tr("panel.disable") or tr("panel.enable"),
+        glyphSize = 12,
         onClick = function()
-          request({ kind = "enable", host = peer, on = not enabled })
+          request({ kind = "enable", host = host, on = not enabled })
         end,
       }),
     }),
-    monitorStrip(peer, SLOT_W - 16, 36),
   })
   if not enabled then
-    return ui.box({ key = `tile-{peer}`, width = SLOT_W, fill = "on_surface/0.04", radius = 8 }, { body })
+    return body
   end
   return ui.dragSource({
-    key = `tile-{peer}`,
+    key = `peer-{host}`,
     dragType = DRAG_TYPE,
-    payload = peer,
+    payload = host,
     previewAncestor = 0,
     liftFromLayout = true,
-    width = SLOT_W,
-  }, { ui.box({ fill = "on_surface/0.08", radius = 8 }, { body }) })
+  }, { body })
 end
 
 local function occupant(side)
-  for _, peer in ipairs(peers()) do
-    if Layout.isEnabled(doc, peer) and Layout.sideOf(doc, me, peer) == side then
-      return peer
+  for _, host in ipairs(peers()) do
+    if Layout.isEnabled(doc, host) and Layout.sideOf(doc, me, host) == side then
+      return host
     end
   end
   return nil
 end
 
 local function slot(side)
-  local peer = occupant(side)
-  local child = peer and tile(peer)
-    or ui.label({ text = tr("panel.drop"), fontSize = 10, color = "on_surface_variant" })
+  local host = occupant(side)
+  local child = host and peer(host)
+    or ui.box({ width = PEER_W, height = PEER_H, fill = "on_surface/0.05", radius = 4 })
   return ui.dropZone({
     key = `slot-{side}`,
     accepts = { DRAG_TYPE },
@@ -114,21 +111,21 @@ local function slot(side)
     width = SLOT_W,
     height = SLOT_H,
     radius = 8,
-  }, { child })
+  }, { ui.column({ flexGrow = 1, align = "center", justify = "center" }, { child }) })
 end
 
 local function centre()
-  return ui.column({ width = CENTRE_W, height = CENTRE_H, gap = 4, align = "center", justify = "center" }, {
-    monitorStrip(me, CENTRE_W - 20, CENTRE_H - 30),
-    ui.label({ text = tr("panel.this_host", { host = me }), fontSize = 11 }),
+  return ui.column({ width = CENTRE_W, height = CENTRE_H, gap = 2, align = "center", justify = "center" }, {
+    monitors(me, CENTRE_W - 10, CENTRE_H - 20, "primary/0.7"),
+    ui.label({ text = me, fontSize = 12, fontWeight = "semibold" }),
   })
 end
 
-local function unplaced()
-  local tiles = {}
-  for _, peer in ipairs(peers()) do
-    if not Layout.isEnabled(doc, peer) or not Layout.sideOf(doc, me, peer) then
-      table.insert(tiles, tile(peer))
+local function tray()
+  local items = {}
+  for _, host in ipairs(peers()) do
+    if not Layout.isEnabled(doc, host) or not Layout.sideOf(doc, me, host) then
+      table.insert(items, peer(host))
     end
   end
   return ui.dropZone({
@@ -138,43 +135,31 @@ local function unplaced()
     onDrop = "onPeerDrop",
     minHeight = SLOT_H,
     radius = 8,
-  }, {
-    ui.column({ gap = 4, padding = 6, align = "stretch" }, {
-      ui.label({ text = tr("panel.unplaced"), fontSize = 11, color = "on_surface_variant" }),
-      ui.row({ gap = 6 }, tiles),
-    }),
-  })
-end
-
-local function header(selfOn)
-  local status = not connected and tr("status.offline") or (selfOn and tr("status.ok") or tr("status.off"))
-  return ui.row({ gap = 6, align = "center" }, {
-    ui.glyph({ name = "mouse", color = connected and "primary" or "error" }),
-    ui.label({ text = tr("panel.title"), fontSize = 13, fontWeight = "semibold" }),
-    ui.label({ text = status, fontSize = 11, color = "on_surface_variant" }),
-    ui.spacer({ flexGrow = 1 }),
-    ui.toggle({ checked = selfOn, onChange = "onToggleSelf" }),
-  })
+  }, { ui.row({ gap = 10, padding = 4, justify = "center" }, items) })
 end
 
 local function render()
-  if not doc or not me or not connected then
-    panel.render(ui.column({ flexGrow = 1, padding = 12, gap = 8 }, {
-      header(false),
-      ui.label({ text = tr("status.offline"), color = "on_surface_variant" }),
-    }))
+  local ready = doc ~= nil and me ~= nil and connected
+  local selfOn = ready and Layout.isEnabled(doc, me)
+  local header = ui.row({ gap = 6, align = "center" }, {
+    ui.glyph({ name = "mouse", color = ready and "primary" or "error" }),
+    ui.label({ text = noctalia.tr("panel.title"), fontSize = 13, fontWeight = "semibold" }),
+    ui.spacer({ flexGrow = 1 }),
+    ui.toggle({ checked = selfOn, onChange = "onToggleSelf" }),
+  })
+  if not ready then
+    panel.render(ui.column({ flexGrow = 1, padding = 12 }, { header }))
     return
   end
-  local selfOn = Layout.isEnabled(doc, me)
-  local grid = ui.column({ gap = 8, align = "center" }, {
-    ui.row({ gap = 8 }, { ui.box({ width = SLOT_W }), slot("top"), ui.box({ width = SLOT_W }) }),
-    ui.row({ gap = 8, align = "center" }, { slot("left"), centre(), slot("right") }),
-    ui.row({ gap = 8 }, { ui.box({ width = SLOT_W }), slot("bottom"), ui.box({ width = SLOT_W }) }),
+  local grid = ui.column({ gap = 4, align = "center" }, {
+    ui.row({ gap = 4 }, { gap(SLOT_W, SLOT_H), slot("top"), gap(SLOT_W, SLOT_H) }),
+    ui.row({ gap = 4, align = "center" }, { slot("left"), centre(), slot("right") }),
+    ui.row({ gap = 4 }, { gap(SLOT_W, SLOT_H), slot("bottom"), gap(SLOT_W, SLOT_H) }),
   })
-  panel.render(ui.column({ flexGrow = 1, padding = 12, gap = 10, align = "stretch" }, {
-    header(selfOn),
+  panel.render(ui.column({ flexGrow = 1, padding = 10, gap = 6, align = "stretch" }, {
+    header,
     grid,
-    unplaced(),
+    tray(),
   }))
 end
 
