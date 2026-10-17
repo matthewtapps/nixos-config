@@ -13,11 +13,6 @@
     foundryvtt.url = "github:reckenrode/nix-foundryvtt";
     foundryvtt.inputs.nixpkgs.follows = "nixpkgs";
 
-    matugen.url = "github:InioX/matugen?ref=v2.2.0";
-    matugen.inputs.nixpkgs.follows = "nixpkgs";
-
-    hyprland.url = "github:hyprwm/Hyprland";
-
     stylix = {
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -81,19 +76,6 @@
                 hash = "sha256-TSvBUARw9Qva2yZp7YeKr4jw5hi69wog/rsE5TRh5G4=";
               })
             ];
-          });
-        })
-        # GitLab regenerated the wireshark v4.6.5 archive tarball, so the hash
-        # locked in nixpkgs does not match what GitLab serves. This pins the
-        # current upstream hash.
-        (final: prev: {
-          wireshark = prev.wireshark.overrideAttrs (old: {
-            src = prev.fetchFromGitLab {
-              repo = "wireshark";
-              owner = "wireshark";
-              tag = "v${old.version}";
-              hash = "sha256-Zvrwxjp4LK2J3QnxmPxKKrU01YHQvPyp54UWzeGNCjA=";
-            };
           });
         })
       ];

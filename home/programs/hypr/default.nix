@@ -1,11 +1,10 @@
 {
   device,
   pkgs,
-  inputs,
   ...
 }:
 let
-  hyprlandPkg = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+  hyprlandPkg = pkgs.hyprland;
 in
 {
   home.file."./.config/hypr/bg3.jpg" = {

@@ -10,16 +10,12 @@
       # them here again only duplicates the entries in the generated nix.conf.
       substituters = [
         "https://nix-community.cachix.org"
-        "https://hyprland.cachix.org"
-        "https://neovim.cachix.org"
         "https://claude-code.cachix.org"
         "https://noctalia.cachix.org"
         "http://192.168.0.194:5000"
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        "neovim.cachix.org-1:iyQ3Blw1uJODzY8+LXkDBnCpulPGrqJ+mOQGpok6Iyw="
         "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
         "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
         "karsa:iL+1/w7TWoG4Xs4uFNTyTyprMtS1T4FAAfxwAr487Og="

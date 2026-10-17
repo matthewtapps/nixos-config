@@ -195,7 +195,6 @@
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     brightnessctl
     dart-sass
-    inputs.matugen.packages.${pkgs.stdenv.hostPlatform.system}.default
     fd
     dconf
     hyprshot
