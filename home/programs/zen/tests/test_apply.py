@@ -137,3 +137,20 @@ def test_apply_refuses_unparseable_repo_json(world):
     with pytest.raises(ValueError):
         zp.apply(profile, repo, [zp.Action(find(diffs, "test.pref"), "promote", "shared")])
     assert repo.load("settings/shared.json", {}) == before
+
+
+def test_promote_toolbar_shared_ignores_profile_file(world):
+    profile, repo = world
+    repo.save("toolbar-personal.json", {"placements": {"nav-bar": ["own"]}})
+    diffs, _ = zp.diff_profile(profile, repo)
+    zp.apply(profile, repo, [zp.Action(find(diffs, "nav-bar"), "promote", "shared")])
+    assert repo.load("toolbar.json", {})["placements"]["nav-bar"] == ["back-button", "urlbar-container"]
+    assert repo.load("toolbar-personal.json", {}) == {"placements": {"nav-bar": ["own"]}}
+
+
+def test_default_target():
+    mk = lambda k: zp.Diff("setting", k, "changed", 1, 2, k, "restart")
+    assert zp.default_target(mk("zen.theme.accent-color")) == "profile"
+    assert zp.default_target(mk("font.name.serif.x-western")) == "profile"
+    assert zp.default_target(mk("general.autoScroll")) == "shared"
+    assert zp.default_target(zp.Diff("shortcut", "font.name.x", "changed", 1, 2, "", "none")) == "shared"

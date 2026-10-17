@@ -62,3 +62,21 @@ def test_apply_with_corrupt_repo_json_shows_message(world):
     assert "Nothing applied" in seen["text"]
     assert seen["marks"]
     assert "test.pref" not in repo.load("settings/shared.json", {})
+
+
+def test_queued_revert_keeps_mark(world):
+    profile, repo = world
+    os.symlink(f"127.0.0.2:+{os.getpid()}", profile.file("lock"))
+    app = zr.ReconcileApp(repo, [profile])
+    run(app, "r", "a", "y", "escape", select="test.pref")
+    assert ("setting", "test.pref") in app.marks
+    assert "test.pref" in open(profile.file("prefs.js")).read()
+
+
+def test_unreadable_profile_shows_note(world):
+    profile, repo = world
+    with open(profile.file("places.sqlite"), "wb") as f:
+        f.write(b"garbage" * 500)
+    app = zr.ReconcileApp(repo, [profile])
+    run(app)
+    assert any("could not read profile" in n for n in app.notes)

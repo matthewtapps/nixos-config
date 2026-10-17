@@ -88,8 +88,8 @@ class ReconcileApp(App):
     def reload(self):
         try:
             self.diffs, self.notes = zp.diff_profile(self.profile, self.repo)
-        except ValueError as e:
-            self.diffs, self.notes = [], [str(e)]
+        except Exception as e:
+            self.diffs, self.notes = [], [f"could not read profile: {e}"]
         self.refresh_table()
 
     def visible(self):
@@ -136,7 +136,7 @@ class ReconcileApp(App):
         if verb == "skip":
             self.marks.pop(key, None)
         else:
-            self.marks[key] = (verb, self.marks.get(key, (None, "shared"))[1])
+            self.marks[key] = (verb, self.marks.get(key, (None, zp.default_target(d)))[1])
         self.update_mark(d)
         table = self.table
         table.move_cursor(row=min(table.cursor_row + 1, len(self.visible()) - 1))
@@ -175,7 +175,7 @@ class ReconcileApp(App):
             except OSError as e:
                 self.push_screen(Message(f"Apply failed: {e}"))
                 return
-            self.marks = {}
+            self.marks = {(d.kind, d.ident): self.marks[(d.kind, d.ident)] for d in res.queued}
             self.reload()
             self.push_screen(Message(zp.summary(res)))
 

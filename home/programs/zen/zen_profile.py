@@ -499,6 +499,11 @@ def diff_profile(profile, repo):
     return [d for d in diffs if not is_ignored(d)], notes
 
 
+def default_target(d):
+    per_profile = d.kind == "setting" and (d.ident == "zen.theme.accent-color" or d.ident.startswith("font.name."))
+    return "profile" if per_profile else "shared"
+
+
 @dataclass
 class Action:
     diff: Diff
@@ -673,10 +678,9 @@ def apply(profile, repo, actions):
                 else:
                     _promote_pin(config, d)
             elif d.kind == "toolbar":
-                rel = repo.toolbar_file(profile.key)
-                data = repo.load(rel, {})
-                if a.target == "profile" and rel == "toolbar.json":
-                    rel = f"toolbar-{profile.key}.json"
+                own = f"toolbar-{profile.key}.json"
+                rel = own if a.target == "profile" else "toolbar.json"
+                data = repo.load(repo.toolbar_file(profile.key) if a.target == "profile" else rel, {})
                 data.setdefault("placements", {})[d.ident] = d.live
                 res.written.add(repo.save(rel, data))
             elif d.kind == "setting":
@@ -750,5 +754,5 @@ def summary(res):
     if res.switch:
         lines.append(f"Revert on the next switch: {len(res.switch)}")
     if res.queued:
-        lines.append(f"Queued, close Zen to apply: {len(res.queued)}")
+        lines.append(f"Queued (still marked), close Zen and apply again: {len(res.queued)}")
     return "\n".join(lines) or "Nothing to do."
