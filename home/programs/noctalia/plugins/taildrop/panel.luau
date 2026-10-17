@@ -1,5 +1,11 @@
 --!nonstrict
 
+-- The multiline input reshapes its whole text on the UI thread every keystroke,
+-- so past this size the shell lags and the buffer is shown read-only instead.
+local LARGE_BYTES = 4096
+local PREVIEW_LINES = 40
+local PREVIEW_CHARS = 3000
+
 local view = "editor"
 local buffer = ""
 local editorRev = 0
@@ -132,6 +138,57 @@ local function editorView()
   })
 end
 
+local function lineCount(text)
+  return select(2, text:gsub("\n", "")) + 1
+end
+
+local function previewCut()
+  local cut = #buffer
+  local stop = 0
+  for _ = 1, PREVIEW_LINES do
+    stop = buffer:find("\n", stop + 1, true)
+    if not stop then
+      break
+    end
+  end
+  if stop then
+    cut = stop - 1
+  end
+  local charCut = utf8.offset(buffer, PREVIEW_CHARS + 1)
+  if charCut and charCut - 1 < cut then
+    cut = charCut - 1
+  end
+  return cut
+end
+
+local function largeView()
+  local cut = previewCut()
+  local shown = buffer:sub(1, cut)
+  local more = lineCount(buffer) - lineCount(shown)
+  local body = { ui.label({ text = shown, fontSize = 11 }) }
+  if cut < #buffer then
+    table.insert(body, ui.label({
+      text = noctalia.trp("large.more", math.max(more, 1), { count = math.max(more, 1) }),
+      fontSize = 11,
+      color = "on_surface_variant",
+    }))
+  end
+
+  return ui.column({ flexGrow = 1, gap = 8, align = "stretch" }, {
+    header(),
+    ui.label({
+      text = tr("large.size", { kb = math.ceil(#buffer / 1024), lines = lineCount(buffer) }),
+      fontSize = 11,
+      color = "on_surface_variant",
+    }),
+    ui.scroll({ flexGrow = 1 }, { ui.column({ gap = 4, align = "stretch" }, body) }),
+    ui.row({ gap = 8, justify = "end" }, {
+      ui.button({ glyph = "copy", text = tr("large.copy"), variant = "ghost", onClick = "onCopyAll" }),
+      ui.button({ glyph = "trash", text = tr("large.clear"), variant = "ghost", onClick = "onClear" }),
+    }),
+  })
+end
+
 local function targetRow(target)
   local subtitle = pending and noctalia.trp("targets.files", #pending) or tr("targets.text")
   return ui.row({
@@ -254,6 +311,8 @@ render = function()
     tree = pathView()
   elseif view == "history" then
     tree = historyView()
+  elseif #buffer > LARGE_BYTES then
+    tree = largeView()
   else
     tree = editorView()
   end
@@ -300,6 +359,18 @@ function onPasteClipboard()
     return
   end
   buffer = buffer ~= "" and `{buffer}\n{text}` or text
+  dirty = true
+  editorRev += 1
+  flush()
+  render()
+end
+
+function onCopyAll()
+  noctalia.copyToClipboard(buffer, "text/plain;charset=utf-8")
+end
+
+function onClear()
+  buffer = ""
   dirty = true
   editorRev += 1
   flush()
