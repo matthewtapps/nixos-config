@@ -8,4 +8,14 @@ _:
     ../../programs/mangohud.nix
     ../../programs/freecad.nix
   ];
+
+  services.librespot = {
+    enable = true;
+    settings = {
+      name = "karsa";
+      backend = "pulseaudio";
+      bitrate = 320;
+      device-type = "computer";
+    };
+  };
 }

@@ -42,6 +42,8 @@
     firewall.enable = false;
   };
 
+  users.users.matt.linger = true;
+
   nix.settings.trusted-users = [
     "matt"
     "root"
