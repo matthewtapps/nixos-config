@@ -34,9 +34,19 @@ def test_export():
         {"name": "Other Bookmarks", "bookmarks": [{"name": "C", "url": "https://c.example/"}]},
     ]
     assert data["spaces"] == [{"id": SPACE_ID, "name": "Main", "icon": None, "position": 1000}]
-    assert [p["id"] for p in data["pins"]] == [
-        "11111111-1111-4111-8111-111111111111", FOLDER_ID, "22222222-2222-4222-8222-222222222222"]
-    assert data["pins"][2]["title"] == "Docs" and data["pins"][2]["folderParentId"] == FOLDER_ID
+    assert data["pins"] == [
+        {"id": "11111111-1111-4111-8111-111111111111", "title": "Page",
+         "editedTitle": False, "url": "https://mail.example/",
+         "position": 100, "isEssential": True, "workspace": SPACE_ID,
+         "container": None, "folderParentId": None},
+        {"id": FOLDER_ID, "title": "Work", "isGroup": True, "position": 199,
+         "isFolderCollapsed": True, "folderIcon": None,
+         "workspace": SPACE_ID, "folderParentId": None},
+        {"id": "22222222-2222-4222-8222-222222222222", "title": "Docs",
+         "editedTitle": True, "url": "https://docs.example/",
+         "position": 300, "isEssential": False, "workspace": SPACE_ID,
+         "container": None, "folderParentId": FOLDER_ID},
+    ]
 
 
 def test_bad_session():

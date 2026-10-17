@@ -192,9 +192,16 @@ def read_baseline(path):
 def zen_running(profile_dir):
     try:
         target = os.readlink(os.path.join(profile_dir, "lock"))
-        os.kill(int(target.rpartition("+")[2]), 0)
+        pid = int(target.rpartition("+")[2])
     except (OSError, ValueError):
         return False
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        # Alive under another user; treat as running.
+        pass
     return True
 
 

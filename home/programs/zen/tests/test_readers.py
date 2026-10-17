@@ -29,6 +29,16 @@ def test_zen_running(tmp_path):
     assert not zp.zen_running(str(tmp_path))
 
 
+def test_zen_running_fails_closed_on_permission_error(tmp_path, monkeypatch):
+    os.symlink(f"127.0.0.2:+{os.getpid()}", tmp_path / "lock")
+
+    def deny(pid, sig):
+        raise PermissionError
+
+    monkeypatch.setattr(os, "kill", deny)
+    assert zp.zen_running(str(tmp_path))
+
+
 def test_discover_and_repo(world):
     profile, repo = world
     assert profile.name == "Personal" and profile.key == "personal"
