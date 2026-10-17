@@ -8,6 +8,7 @@
 {
   imports = [
     ../../programs/gitlab/default.nix
+    ../../programs/zen/work.nix
   ];
 
   programs.mrRebase = {

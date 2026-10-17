@@ -1,0 +1,90 @@
+{
+  "currentVersion": 28,
+  "dirtyAreaCache": [
+    "unified-extensions-area",
+    "nav-bar",
+    "zen-sidebar-top-buttons",
+    "TabsToolbar",
+    "zen-sidebar-icons-wrapper",
+    "toolbar-menubar",
+    "PersonalToolbar",
+    "vertical-tabs",
+    "zen-sidebar-bottom-buttons",
+    "zen-sidebar-foot-buttons"
+  ],
+  "newElementCount": 42,
+  "placements": {
+    "PersonalToolbar": [
+      "personal-bookmarks"
+    ],
+    "TabsToolbar": [
+      "tabbrowser-tabs",
+      "smartwindow-group-tabs-button",
+      "ai-window-toggle",
+      "customizableui-special-spring42",
+      "zen-media-controls-toolbar"
+    ],
+    "nav-bar": [
+      "fxa-toolbar-menu-button",
+      "back-button",
+      "forward-button",
+      "vertical-spacer",
+      "stop-reload-button",
+      "urlbar-container",
+      "wrapper-sidebar-button",
+      "_446900e4-71c2-419f-a6a7-df9c091e268b_-browser-action",
+      "_d7742d87-e61d-4b78-b8a1-b469842139fa_-browser-action",
+      "unified-extensions-button",
+      "reset-pbm-toolbar-button"
+    ],
+    "toolbar-menubar": [
+      "menubar-items"
+    ],
+    "unified-extensions-area": [
+      "moz-addon-prod_7tv_app-browser-action",
+      "_4f1fb113-d7d8-40ae-a5ba-9300eaea0f51_-browser-action",
+      "_af37054b-3ace-46a2-ac59-709e4412bec6_-browser-action",
+      "ublock0_raymondhill_net-browser-action",
+      "_react-devtools-browser-action",
+      "addon_darkreader_org-browser-action",
+      "leechblockng_proginosko_com-browser-action",
+      "extension_redux_devtools-browser-action"
+    ],
+    "vertical-tabs": [],
+    "widget-overflow-fixed-list": [],
+    "zen-sidebar-bottom-buttons": [
+      "preferences-button",
+      "zen-workspaces-button",
+      "downloads-button"
+    ],
+    "zen-sidebar-foot-buttons": [
+      "zen-library-button",
+      "zen-workspaces-button",
+      "zen-create-new-button"
+    ],
+    "zen-sidebar-icons-wrapper": [
+      "zen-workspaces-button",
+      "new-tab-button",
+      "zen-sidepanel-button"
+    ],
+    "zen-sidebar-top-buttons": [
+      "PanelUI-button"
+    ]
+  },
+  "seen": [
+    "_4f1fb113-d7d8-40ae-a5ba-9300eaea0f51_-browser-action",
+    "_af37054b-3ace-46a2-ac59-709e4412bec6_-browser-action",
+    "ublock0_raymondhill_net-browser-action",
+    "_446900e4-71c2-419f-a6a7-df9c091e268b_-browser-action",
+    "_react-devtools-browser-action",
+    "developer-button",
+    "addon_darkreader_org-browser-action",
+    "_d7742d87-e61d-4b78-b8a1-b469842139fa_-browser-action",
+    "leechblockng_proginosko_com-browser-action",
+    "extension_redux_devtools-browser-action",
+    "screenshot-button",
+    "moz-addon-prod_7tv_app-browser-action",
+    "smartwindow-group-tabs-button",
+    "ai-window-toggle"
+  ]
+}

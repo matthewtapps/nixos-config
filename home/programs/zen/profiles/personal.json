@@ -1,0 +1,185 @@
+{
+  "bookmarks": [
+    {
+      "bookmarks": [
+        {
+          "name": "",
+          "url": "https://secure.employmenthero.com/"
+        },
+        {
+          "name": "",
+          "url": "https://news.ycombinator.com/"
+        },
+        {
+          "name": "",
+          "url": "https://www.theguardian.com/au"
+        },
+        {
+          "name": "",
+          "url": "https://ap-southeast-2.console.aws.amazon.com/console"
+        },
+        {
+          "name": "",
+          "url": "https://keep.google.com/"
+        },
+        {
+          "name": "",
+          "url": "https://www.youtube.com/feed/subscriptions"
+        },
+        {
+          "name": "",
+          "url": "https://drive.google.com/"
+        },
+        {
+          "name": "",
+          "url": "https://mail.google.com/mail"
+        },
+        {
+          "name": "",
+          "url": "https://www.google.com/maps"
+        },
+        {
+          "name": "",
+          "url": "https://app.ynab.com/"
+        },
+        {
+          "name": "",
+          "url": "https://play.google.com/console/"
+        },
+        {
+          "name": "",
+          "url": "https://calendar.google.com/calendar/u/0/r"
+        },
+        {
+          "name": "",
+          "url": "https://lichess.org/"
+        },
+        {
+          "name": "",
+          "url": "https://go.xero.com/"
+        },
+        {
+          "name": "",
+          "url": "https://www.linkedin.com/feed/"
+        },
+        {
+          "bookmarks": [
+            {
+              "name": "ST",
+              "url": "https://github.com/matthewtapps/syllabus-tracker"
+            },
+            {
+              "name": "ST Workflow Runs",
+              "url": "https://github.com/matthewtapps/syllabus-tracker/actions"
+            }
+          ],
+          "name": "ST"
+        },
+        {
+          "bookmarks": [
+            {
+              "bookmarks": [
+                {
+                  "name": "Spell Templates for TTRPGs like DnD or Pathfinder by Patrick | Download free STL model | Printables.com",
+                  "url": "https://www.printables.com/model/478379-spell-templates-for-ttrpgs-like-dnd-or-pathfinder/comments"
+                }
+              ],
+              "name": "DnD"
+            },
+            {
+              "bookmarks": [
+                {
+                  "name": "Gridfinity Carousel by Nich Fugal | Download free STL model | Printables.com",
+                  "url": "https://www.printables.com/model/698402-gridfinity-carousel"
+                },
+                {
+                  "name": "Modular Tape Storage by RyukyuD | Download free STL model | Printables.com",
+                  "url": "https://www.printables.com/model/282832-modular-tape-storage"
+                },
+                {
+                  "name": "Modular Organizer Drawers by Andre Campos | Download free STL model | Printables.com",
+                  "url": "https://www.printables.com/model/54131-modular-organizer-drawers/comments"
+                }
+              ],
+              "name": "Storage"
+            },
+            {
+              "name": "Super Scooper - No Supports by Triple G Workshop | Download free STL model | Printables.com",
+              "url": "https://www.printables.com/model/437036-super-scooper-no-supports/comments"
+            },
+            {
+              "name": "Gloomhaven / Frosthaven Collection by Drew Baker | Printables.com",
+              "url": "https://www.printables.com/@DrewBaker_751787/collections/585285"
+            }
+          ],
+          "name": "Prints"
+        }
+      ],
+      "name": "Bookmarks Toolbar",
+      "toolbar": true
+    },
+    {
+      "bookmarks": [
+        {
+          "name": "app.quickcoach.fit/pt/willz-matt",
+          "url": "https://app.quickcoach.fit/pt/willz-matt"
+        }
+      ],
+      "name": "Other Bookmarks"
+    }
+  ],
+  "pins": [
+    {
+      "container": null,
+      "editedTitle": false,
+      "folderParentId": null,
+      "id": "210f59d6-38e6-41eb-b724-aea8c464f430",
+      "isEssential": true,
+      "position": 100,
+      "title": "Home - Google Drive",
+      "url": "https://drive.google.com/drive/u/0/home",
+      "workspace": "fd5401f0-7d54-444e-bd4c-0c3784091a9d"
+    },
+    {
+      "container": null,
+      "editedTitle": false,
+      "folderParentId": null,
+      "id": "cc6f7db0-52f3-4ad7-840a-556d43d9d999",
+      "isEssential": true,
+      "position": 200,
+      "title": "Inbox (4,162) - matt.tapps@gmail.com - Gmail",
+      "url": "https://mail.google.com/mail/u/0/#inbox",
+      "workspace": "fd5401f0-7d54-444e-bd4c-0c3784091a9d"
+    },
+    {
+      "container": null,
+      "editedTitle": false,
+      "folderParentId": null,
+      "id": "af634dea-3cff-47ed-84d9-269fe99ca678",
+      "isEssential": true,
+      "position": 300,
+      "title": "Google Calendar - Week of March 2, 2026",
+      "url": "https://calendar.google.com/calendar/u/0/r",
+      "workspace": "fd5401f0-7d54-444e-bd4c-0c3784091a9d"
+    },
+    {
+      "container": null,
+      "editedTitle": false,
+      "folderParentId": null,
+      "id": "7fd07de4-aa3a-59fc-8065-434c15473fd0",
+      "isEssential": true,
+      "position": 400,
+      "title": "Machines - Tailscale",
+      "url": "https://console.tailscale.com/admin/machines",
+      "workspace": "fd5401f0-7d54-444e-bd4c-0c3784091a9d"
+    }
+  ],
+  "spaces": [
+    {
+      "icon": null,
+      "id": "fd5401f0-7d54-444e-bd4c-0c3784091a9d",
+      "name": "Personal",
+      "position": 1000
+    }
+  ]
+}

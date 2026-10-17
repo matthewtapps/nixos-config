@@ -125,6 +125,28 @@
         "type": "github"
       }
     },
+    "firefox-addons": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dir": "pkgs/firefox-addons",
+        "lastModified": 1792123413,
+        "narHash": "sha256-US+K5frqRChi1ZLBFzWO9cohq1YbTOrV43KKX8HbpYU=",
+        "owner": "rycee",
+        "repo": "nur-expressions",
+        "rev": "61c893f4d881d8a15edaa67e295d3df7fd1d9b4d",
+        "type": "gitlab"
+      },
+      "original": {
+        "dir": "pkgs/firefox-addons",
+        "owner": "rycee",
+        "repo": "nur-expressions",
+        "type": "gitlab"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -463,6 +485,7 @@
         "claude-code": "claude-code",
         "claude-cowork": "claude-cowork",
         "deploy-rs": "deploy-rs",
+        "firefox-addons": "firefox-addons",
         "foundryvtt": "foundryvtt",
         "herdr": "herdr",
         "home-manager": "home-manager",

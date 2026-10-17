@@ -192,7 +192,6 @@
     signal-desktop
     spotify-player
     thunar
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     brightnessctl
     dart-sass
     fd
@@ -515,5 +514,6 @@
     ../../programs/taildrop.nix
     ../../programs/notes.nix
     ../../programs/stylix.nix
+    ../../programs/zen
   ];
 }

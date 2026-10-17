@@ -10,6 +10,11 @@
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     zen-browser.inputs.nixpkgs.follows = "nixpkgs";
 
+    firefox-addons = {
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     foundryvtt.url = "github:reckenrode/nix-foundryvtt";
     foundryvtt.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -58,6 +63,8 @@
       overlays = [
         # Swap pkgs.claude-code to the independently-tracked flake (see input).
         inputs.claude-code.overlays.default
+        # The flake's own packages use a nixpkgs that rejects unfree 1Password.
+        inputs.firefox-addons.overlays.default
         (final: prev: {
           zen-browser = inputs.zen-browser.packages.${final.stdenv.hostPlatform.system}.default;
         })

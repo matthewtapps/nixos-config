@@ -1,0 +1,103 @@
+{
+  "bookmarks": [
+    {
+      "bookmarks": [
+        {
+          "name": "",
+          "url": "https://mail.google.com/mail/u/0/#inbox"
+        },
+        {
+          "name": "",
+          "url": "https://admin.google.com/"
+        },
+        {
+          "name": "",
+          "url": "https://calendar.google.com/"
+        },
+        {
+          "name": "",
+          "url": "https://drive.google.com/drive/home"
+        },
+        {
+          "name": "",
+          "url": "https://skillbuilder.aws/"
+        },
+        {
+          "name": "",
+          "url": "https://ui.honeycomb.io/matthewtapps/environments/test/datasets/matthewtapps.com/home?tab=traces"
+        },
+        {
+          "name": "",
+          "url": "https://www.linkedin.com/feed/"
+        }
+      ],
+      "name": "Bookmarks Toolbar",
+      "toolbar": true
+    }
+  ],
+  "pins": [
+    {
+      "container": null,
+      "editedTitle": false,
+      "folderParentId": null,
+      "id": "7af434f1-5d8a-4ee4-9b0b-5a29acef3055",
+      "isEssential": true,
+      "position": 100,
+      "title": "Inbox (299) - mail@matthewtapps.com - matthewtapps Mail",
+      "url": "https://mail.google.com/mail/u/0/#inbox",
+      "workspace": "e2e87df0-5c13-4615-bad6-7adfbf6a793b"
+    },
+    {
+      "container": null,
+      "editedTitle": false,
+      "folderParentId": null,
+      "id": "5051b036-b735-4807-afc3-36a9e1aa007e",
+      "isEssential": true,
+      "position": 200,
+      "title": "Home - Google Drive",
+      "url": "https://drive.google.com/drive/home",
+      "workspace": "e2e87df0-5c13-4615-bad6-7adfbf6a793b"
+    },
+    {
+      "container": null,
+      "editedTitle": false,
+      "folderParentId": null,
+      "id": "c9d64f46-fa28-4f65-8e3d-238419acb80d",
+      "isEssential": true,
+      "position": 300,
+      "title": "Matthew Tapps - Admin Console",
+      "url": "https://admin.google.com/",
+      "workspace": "e2e87df0-5c13-4615-bad6-7adfbf6a793b"
+    },
+    {
+      "container": null,
+      "editedTitle": false,
+      "folderParentId": null,
+      "id": "d6052aa8-0c8f-4571-8908-482de0570205",
+      "isEssential": true,
+      "position": 400,
+      "title": "rollup-processor-demo Queries | Honeycomb.io",
+      "url": "https://ui.honeycomb.io/matthewtapps/environments/syllabus-tracker-dev/datasets/rollup-processor-demo/result/RXd2CPoeXP",
+      "workspace": "e2e87df0-5c13-4615-bad6-7adfbf6a793b"
+    },
+    {
+      "container": null,
+      "editedTitle": false,
+      "folderParentId": null,
+      "id": "a56e2d73-6ac8-414d-9ea7-92ab220423ab",
+      "isEssential": true,
+      "position": 500,
+      "title": "matthewtapps - Calendar - Week of July 6, 2025",
+      "url": "https://calendar.google.com/calendar/u/0/r?pli=1",
+      "workspace": "e2e87df0-5c13-4615-bad6-7adfbf6a793b"
+    }
+  ],
+  "spaces": [
+    {
+      "icon": null,
+      "id": "e2e87df0-5c13-4615-bad6-7adfbf6a793b",
+      "name": "Space",
+      "position": 1000
+    }
+  ]
+}
