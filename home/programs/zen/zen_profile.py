@@ -292,6 +292,7 @@ REVERT_TEXT = {
     "restart": "reverts on the next Zen start",
     "switch": "reverts on the next switch",
     "edit": "edits Zen's files; needs this profile's Zen closed",
+    "none": "nothing to revert; bookmarks are not managed",
 }
 
 
@@ -457,7 +458,13 @@ def diff_profile(profile, repo):
     config = repo.load(f"profiles/{profile.key}.json", {})
     diffs, notes = [], []
     if os.path.exists(profile.file("places.sqlite")):
-        diffs += diff_bookmarks(read_bookmarks(profile.file("places.sqlite")), config.get("bookmarks", []))
+        live_tree = read_bookmarks(profile.file("places.sqlite"))
+        if "bookmarks" in config:
+            diffs += diff_bookmarks(live_tree, config["bookmarks"])
+        else:
+            diffs.append(Diff("bookmark", "adopt", "added", live_tree, None,
+                              f"{count_bookmarks(live_tree)} bookmarks, not managed; promote to adopt them all",
+                              "none"))
     else:
         notes.append("bookmarks: profile not opened yet")
     if os.path.exists(profile.file("zen-sessions.jsonlz4")):
@@ -615,6 +622,23 @@ def _revert_session(data, pin_ids, space_ids):
     return data
 
 
+def _unset_override(repo, profile, kind, ident, res):
+    rel = f"settings/{profile.key}.json" if kind == "setting" else f"shortcuts/{profile.key}.json"
+    if not os.path.exists(repo.path(rel)):
+        return
+    data = repo.load(rel, {})
+    if kind == "setting":
+        if ident not in data:
+            return
+        del data[ident]
+    else:
+        kept = [e for e in data if e.get("id") != ident]
+        if len(kept) == len(data):
+            return
+        data = kept
+    res.written.add(repo.save(rel, data))
+
+
 def apply(profile, repo, actions):
     res = Result()
     profile_rel = f"profiles/{profile.key}.json"
@@ -632,9 +656,12 @@ def apply(profile, repo, actions):
                 if config is None:
                     config = repo.load(profile_rel, {})
                 if d.kind == "bookmark":
-                    if live_tree is None:
-                        live_tree = read_bookmarks(profile.file("places.sqlite"))
-                    _promote_bookmark(config, live_tree, d)
+                    if d.ident == "adopt":
+                        config["bookmarks"] = d.live
+                    else:
+                        if live_tree is None:
+                            live_tree = read_bookmarks(profile.file("places.sqlite"))
+                        _promote_bookmark(config, live_tree, d)
                 else:
                     _promote_pin(config, d)
             elif d.kind == "toolbar":
@@ -649,16 +676,22 @@ def apply(profile, repo, actions):
                 data = repo.load(rel, {})
                 data[d.ident] = d.live
                 res.written.add(repo.save(rel, data))
+                if a.target == "shared":
+                    _unset_override(repo, profile, "setting", d.ident, res)
             elif d.kind == "shortcut":
                 rel = "shortcuts/shared.json" if a.target == "shared" else f"shortcuts/{profile.key}.json"
                 live = read_shortcuts(profile.file("zen-keyboard-shortcuts.json"))[d.ident]
                 data = [e for e in repo.load(rel, []) if e.get("id") != d.ident] + [_flake_shortcut(live)]
                 res.written.add(repo.save(rel, data))
+                if a.target == "shared":
+                    _unset_override(repo, profile, "shortcut", d.ident, res)
                 with open(profile.file(BASELINE)) as f:
                     base = json.load(f)
                 base["shortcuts"] = [live if e.get("id") == d.ident else e for e in base["shortcuts"]]
                 with open(profile.file(BASELINE), "w") as f:
                     json.dump(base, f)
+        elif d.revert == "none":
+            continue
         elif d.revert == "restart":
             res.restart.append(d)
         elif d.revert == "switch":

@@ -91,3 +91,36 @@ def test_reverts_queue_while_zen_runs(world):
     assert [d.ident for d in res.queued] == ["test.pref"]
     assert "test.pref" in zp.read_prefs(profile.file("prefs.js"))
     assert "close Zen" in zp.summary(res)
+
+
+def test_adopt_unmanaged_bookmarks(world):
+    profile, repo = world
+    os.remove(repo.path("profiles/personal.json"))
+    diffs, _ = zp.diff_profile(profile, repo)
+    rows = [d for d in diffs if d.kind == "bookmark"]
+    assert [d.ident for d in rows] == ["adopt"]
+    zp.apply(profile, repo, [zp.Action(rows[0], "promote")])
+    data = repo.load("profiles/personal.json", {})
+    assert data["bookmarks"] == zp.read_bookmarks(profile.file("places.sqlite"))
+    assert "pins" not in data and "spaces" not in data
+
+
+def test_revert_adopt_is_noop(world):
+    profile, repo = world
+    os.remove(repo.path("profiles/personal.json"))
+    diffs, _ = zp.diff_profile(profile, repo)
+    row = next(d for d in diffs if d.ident == "adopt")
+    res = zp.apply(profile, repo, [zp.Action(row, "revert")])
+    assert res.restart == res.switch == res.queued == res.reverted == []
+    assert res.written == set()
+    assert not os.path.exists(repo.path("profiles/personal.json"))
+
+
+def test_promote_shared_clears_profile_override(world):
+    profile, repo = world
+    repo.save("settings/personal.json", {"test.pref": False})
+    diffs, _ = zp.diff_profile(profile, repo)
+    res = zp.apply(profile, repo, [zp.Action(find(diffs, "test.pref"), "promote", "shared")])
+    assert repo.load("settings/shared.json", {})["test.pref"] is True
+    assert "test.pref" not in repo.load("settings/personal.json", {})
+    assert "settings/personal.json" in res.written
