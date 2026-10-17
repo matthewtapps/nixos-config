@@ -1,0 +1,28 @@
+{
+  "settings": {
+    "hosts": {
+      "label": "Hosts",
+      "description": "Tailnet hosts that share input through Lan Mouse."
+    },
+    "layoutd_port": { "label": "Layout sync port" },
+    "lan_mouse_bin": { "label": "Lan Mouse binary" }
+  },
+  "status": {
+    "offline": "layout sync unreachable",
+    "cli_error": "Lan Mouse not responding",
+    "ok": "synced",
+    "off": "off on this host"
+  },
+  "panel": {
+    "title": "Lan Mouse",
+    "this_host": "{host} (this host)",
+    "unplaced": "Unplaced",
+    "drop": "drop here",
+    "enable": "Turn on",
+    "disable": "Turn off"
+  },
+  "tooltip": {
+    "status": "Status",
+    "peers": "Placed peers"
+  }
+}

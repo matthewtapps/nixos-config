@@ -1,5 +1,7 @@
 { pkgs, ... }:
 {
+  imports = [ ./lan-mouse.nix ];
+
   services = {
     greetd = {
       enable = true;

@@ -74,6 +74,11 @@ in
     recursive = true;
   };
 
+  home.file.".local/share/noctalia/plugins/lan-mouse" = {
+    source = ./plugins/lan-mouse;
+    recursive = true;
+  };
+
   home.file.".local/share/noctalia/plugins/tailscale" = {
     source = tailscalePlugin;
     recursive = true;

@@ -105,6 +105,8 @@ hl.bind("SUPER + V", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"), { d
 hl.bind("SUPER + D", hl.dsp.exec_cmd("noctalia msg panel-toggle matt/taildrop:panel"), { description = "shared text buffer" })
 hl.bind("SUPER + SHIFT + D", hl.dsp.exec_cmd("taildrop-send --clipboard"), { description = "send clipboard via Taildrop" })
 hl.bind("ALT + TAB", hl.dsp.exec_cmd("noctalia msg window-switcher"), { description = "window switcher" })
+local lanMouse = require("lua.lan_mouse")
+hl.bind(mainMod .. " + u", function() lanMouse.push() end, { description = "switch to lan mouse peer" })
 
 -- Keybind cheatsheet (hold f/j + `/`, or + shift+`/` = "?"). kanata emits
 -- ctrl+alt(+shift)+slash from the herdr layer; both open the floating sheet.
