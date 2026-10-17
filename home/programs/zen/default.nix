@@ -60,10 +60,24 @@ in
   );
 
   home.packages = [
-    (pkgs.writers.writePython3Bin "zen-export" {
-      libraries = [ pkgs.python3Packages.lz4 ];
-      flakeIgnore = [ "E501" ];
-    } (builtins.readFile ./zen-export.py))
+    (
+      let
+        py = pkgs.python3.withPackages (p: [
+          p.lz4
+          p.textual
+        ]);
+      in
+      pkgs.runCommand "zen-tools" { } ''
+        mkdir -p $out/bin $out/lib/zen-tools
+        cp ${./zen_profile.py} $out/lib/zen-tools/zen_profile.py
+        cp ${./zen-export.py} $out/lib/zen-tools/zen-export.py
+        cp ${./zen-reconcile.py} $out/lib/zen-tools/zen-reconcile.py
+        for t in zen-export zen-reconcile; do
+          printf '#!/bin/sh\nexec %s %s "$@"\n' ${py}/bin/python3 $out/lib/zen-tools/$t.py > $out/bin/$t
+          chmod +x $out/bin/$t
+        done
+      ''
+    )
   ];
 
   programs.zen-browser = {
