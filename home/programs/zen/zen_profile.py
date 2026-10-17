@@ -489,3 +489,225 @@ def diff_profile(profile, repo):
         return ignored(ignore, d.kind, d.ident)
 
     return [d for d in diffs if not is_ignored(d)], notes
+
+
+@dataclass
+class Action:
+    diff: Diff
+    verb: str
+    target: str = "shared"
+
+
+@dataclass
+class Result:
+    written: set = field(default_factory=set)
+    reverted: list = field(default_factory=list)
+    queued: list = field(default_factory=list)
+    restart: list = field(default_factory=list)
+    switch: list = field(default_factory=list)
+
+
+def _folder(tree, path, create):
+    level = tree
+    for name in path:
+        if name == TOOLBAR_FOLDER:
+            node = next((e for e in level if e.get("toolbar")), None)
+            if node is None and create:
+                node = {"name": "Bookmarks Toolbar", "toolbar": True, "bookmarks": []}
+                level.insert(0, node)
+        else:
+            node = next((e for e in level if "bookmarks" in e and not e.get("toolbar") and e.get("name") == name), None)
+            if node is None and create:
+                node = {"name": name, "bookmarks": []}
+                level.append(node)
+        if node is None:
+            return None
+        level = node["bookmarks"]
+    return level
+
+
+def _insert_bookmark(config, live, path, url, name):
+    folder = _folder(config, path, True)
+    siblings = [u for p, u, _ in flatten_bookmarks(live) if p == path]
+    before = set(siblings[:siblings.index(url)]) if url in siblings else set()
+    pos = 0
+    for i, e in enumerate(folder):
+        if e.get("url") in before:
+            pos = i + 1
+    folder.insert(pos, {"name": name, "url": url})
+
+
+def _remove_bookmark(config, path, url):
+    folder = _folder(config, path, False)
+    if folder is not None:
+        folder[:] = [e for e in folder if e.get("url") != url]
+
+
+def _promote_bookmark(config, live, d):
+    tree = config.setdefault("bookmarks", [])
+    if d.change == "added":
+        _insert_bookmark(tree, live, d.live["path"], d.live["url"], d.live["name"])
+    elif d.change == "removed":
+        _remove_bookmark(tree, d.config["path"], d.config["url"])
+    elif d.change == "renamed":
+        for e in _folder(tree, d.live["path"], False) or []:
+            if e.get("url") == d.live["url"]:
+                e["name"] = d.live["name"]
+    elif d.change == "moved":
+        _remove_bookmark(tree, d.config["path"], d.ident)
+        _insert_bookmark(tree, live, d.live["path"], d.ident, d.live["name"])
+    elif d.change == "reordered":
+        folder = _folder(tree, d.extra["path"], False) or []
+        slots = [i for i, e in enumerate(folder) if "url" in e]
+        rank = {u: i for i, u in enumerate(d.live)}
+        items = sorted((folder[i] for i in slots), key=lambda e: rank.get(e["url"], len(rank)))
+        for i, e in zip(slots, items):
+            folder[i] = e
+
+
+def _promote_pin(config, d):
+    pins = config.setdefault("pins", [])
+    spaces = config.setdefault("spaces", [])
+    if d.kind == "space":
+        spaces[:] = [s for s in spaces if s["id"] != d.ident]
+        if d.change != "removed":
+            spaces.append(d.live)
+        return
+    if d.change == "reordered":
+        # ponytail: copies live positions as-is; ties with config-only pins keep file order.
+        for p in pins:
+            p["position"] = d.extra["positions"].get(p["id"], p["position"])
+    else:
+        pins[:] = [p for p in pins if p["id"] != d.ident]
+        if d.change != "removed":
+            pins.append(d.live)
+    pins.sort(key=lambda p: p.get("position", 1000))
+
+
+def _flake_shortcut(entry):
+    mods = entry.get("modifiers") or {}
+    return {"id": entry["id"], "key": entry.get("key"), "keycode": entry.get("keycode"),
+            "modifiers": {m: bool(mods.get(m)) for m in MODIFIERS}, "disabled": bool(entry.get("disabled"))}
+
+
+def _revert_session(data, pin_ids, space_ids):
+    raw_folders = {f["id"] for f in data.get("folders", []) if norm_id(f["id"]) in pin_ids}
+    placeholders = {t for f in data.get("folders", []) if f["id"] in raw_folders for t in f.get("emptyTabIds", [])}
+    data["folders"] = [f for f in data.get("folders", []) if f["id"] not in raw_folders]
+    tabs = []
+    for t in data.get("tabs", []):
+        sid = t.get("zenSyncId")
+        if sid in placeholders:
+            continue
+        if (t.get("pinned") or t.get("zenEssential")) and sid and norm_id(sid) in pin_ids:
+            continue
+        if t.get("groupId") in raw_folders:
+            t["groupId"] = None
+        tabs.append(t)
+    data["tabs"] = tabs
+    raw_spaces = {s["uuid"] for s in data.get("spaces", []) if norm_id(s["uuid"]) in space_ids}
+    if raw_spaces:
+        data["spaces"] = [s for s in data["spaces"] if s["uuid"] not in raw_spaces]
+        fallback = data["spaces"][0]["uuid"] if data["spaces"] else None
+        for t in data["tabs"]:
+            if t.get("zenWorkspace") in raw_spaces:
+                t["zenWorkspace"] = fallback
+    return data
+
+
+def apply(profile, repo, actions):
+    res = Result()
+    profile_rel = f"profiles/{profile.key}.json"
+    config = None
+    live_tree = None
+    for a in actions:
+        d = a.diff
+        if a.verb == "ignore":
+            ignore = repo.load("settings/ignore.json", {})
+            if d.ident not in ignore.setdefault(d.kind, []):
+                ignore[d.kind].append(d.ident)
+            res.written.add(repo.save("settings/ignore.json", ignore))
+        elif a.verb == "promote":
+            if d.kind in ("bookmark", "pin", "space"):
+                if config is None:
+                    config = repo.load(profile_rel, {})
+                if d.kind == "bookmark":
+                    if live_tree is None:
+                        live_tree = read_bookmarks(profile.file("places.sqlite"))
+                    _promote_bookmark(config, live_tree, d)
+                else:
+                    _promote_pin(config, d)
+            elif d.kind == "toolbar":
+                rel = repo.toolbar_file(profile.key)
+                data = repo.load(rel, {})
+                if a.target == "profile" and rel == "toolbar.json":
+                    rel = f"toolbar-{profile.key}.json"
+                data.setdefault("placements", {})[d.ident] = d.live
+                res.written.add(repo.save(rel, data))
+            elif d.kind == "setting":
+                rel = "settings/shared.json" if a.target == "shared" else f"settings/{profile.key}.json"
+                data = repo.load(rel, {})
+                data[d.ident] = d.live
+                res.written.add(repo.save(rel, data))
+            elif d.kind == "shortcut":
+                rel = "shortcuts/shared.json" if a.target == "shared" else f"shortcuts/{profile.key}.json"
+                live = read_shortcuts(profile.file("zen-keyboard-shortcuts.json"))[d.ident]
+                data = [e for e in repo.load(rel, []) if e.get("id") != d.ident] + [_flake_shortcut(live)]
+                res.written.add(repo.save(rel, data))
+                with open(profile.file(BASELINE)) as f:
+                    base = json.load(f)
+                base["shortcuts"] = [live if e.get("id") == d.ident else e for e in base["shortcuts"]]
+                with open(profile.file(BASELINE), "w") as f:
+                    json.dump(base, f)
+        elif d.revert == "restart":
+            res.restart.append(d)
+        elif d.revert == "switch":
+            res.switch.append(d)
+        else:
+            res.queued.append(d)
+    if config is not None:
+        res.written.add(repo.save(profile_rel, config))
+    if res.queued and not zen_running(profile.dir):
+        _apply_edits(profile, res.queued)
+        res.reverted, res.queued = res.queued, []
+    return res
+
+
+def _apply_edits(profile, diffs):
+    prefs = {d.ident for d in diffs if d.kind == "setting"}
+    if prefs:
+        remove_prefs(profile.file("prefs.js"), prefs)
+    pin_ids = {d.ident for d in diffs if d.kind == "pin"}
+    space_ids = {d.ident for d in diffs if d.kind == "space"}
+    if pin_ids or space_ids:
+        path = profile.file("zen-sessions.jsonlz4")
+        save_session(path, _revert_session(load_session(path), pin_ids, space_ids))
+    shortcuts = {d.ident for d in diffs if d.kind == "shortcut"}
+    if shortcuts:
+        path = profile.file("zen-keyboard-shortcuts.json")
+        base = read_baseline(profile.file(BASELINE))
+        with open(path) as f:
+            data = json.load(f)
+        backup(path)
+        for e in data["shortcuts"]:
+            if e.get("id") in shortcuts:
+                for k in ("key", "keycode", "modifiers", "disabled"):
+                    e[k] = base[e["id"]].get(k)
+        with open(path, "w") as f:
+            json.dump(data, f)
+
+
+def summary(res):
+    lines = []
+    if res.written:
+        lines += ["Repo files written:"] + [f"  home/programs/zen/{r}" for r in sorted(res.written)]
+        lines += ["Next: git add, git diff, commit, then nixswitch."]
+    if res.reverted:
+        lines.append(f"Reverted now: {len(res.reverted)}")
+    if res.restart:
+        lines.append(f"Revert on the next Zen start: {len(res.restart)}")
+    if res.switch:
+        lines.append(f"Revert on the next switch: {len(res.switch)}")
+    if res.queued:
+        lines.append(f"Queued, close Zen to apply: {len(res.queued)}")
+    return "\n".join(lines) or "Nothing to do."
