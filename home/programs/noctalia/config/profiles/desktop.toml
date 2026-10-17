@@ -1,5 +1,5 @@
 [bar.main]
-end = ["volume", "network", "latency", "tailscale", "taildrop", "lan-mouse", "bluetooth", "notifications"]
+end = ["volume", "network", "latency", "tailscale", "taildrop", "bluetooth", "notifications"]
 
 [system.monitor]
 gpu_poll_seconds = 5.0

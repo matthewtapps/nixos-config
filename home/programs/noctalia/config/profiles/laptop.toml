@@ -1,5 +1,5 @@
 [bar.main]
-end = ["external-monitor", "battery", "brightness", "volume", "network", "latency", "tailscale", "taildrop", "lan-mouse", "bluetooth", "notifications"]
+end = ["external-monitor", "battery", "brightness", "volume", "network", "latency", "tailscale", "taildrop", "bluetooth", "notifications"]
 
 [widget.external-monitor]
 type = "custom_button"

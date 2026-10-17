@@ -158,9 +158,6 @@ type = "matt/latency-monitor:bar"
 [widget.taildrop]
 type = "matt/taildrop:bar"
 
-[widget.lan-mouse]
-type = "matt/lan-mouse:bar"
-
 [widget.tailscale]
 type = "davemhammer/tailscale:status"
 show_counts = false
@@ -300,7 +297,7 @@ enabled = false
 enabled = false
 
 [plugins]
-enabled = ["matt/latency-monitor", "matt/taildrop", "matt/lan-mouse", "davemhammer/tailscale"]
+enabled = ["matt/latency-monitor", "matt/taildrop", "davemhammer/tailscale"]
 auto_update = false
 
 # The vendored plugins carry their own panel defaults in plugin.toml; this one
@@ -308,7 +305,3 @@ auto_update = false
 [plugin_settings."davemhammer/tailscale"]
 manager_placement = "attached"
 manager_position = "auto"
-
-# Matches the fingerprint map in home/programs/lan-mouse.nix.
-[plugin_settings."matt/lan-mouse"]
-hosts = ["karsa", "kruppe", "samar", "mappo", "tehol"]

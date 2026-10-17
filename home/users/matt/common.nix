@@ -512,7 +512,6 @@
     ../../programs/hypr/default.nix
     ../../programs/noctalia/default.nix
     ../../programs/taildrop.nix
-    ../../programs/lan-mouse.nix
     ../../programs/notes.nix
     ../../programs/stylix.nix
     ../../programs/zen
