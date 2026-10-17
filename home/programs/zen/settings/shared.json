@@ -26,7 +26,6 @@
   "privacy.fingerprintingProtection": true,
   "privacy.query_stripping.enabled": true,
   "privacy.query_stripping.enabled.pbmode": true,
-  "security.webauthn.enable_conditional_mediation": false,
   "sidebar.visibility": "hide-launcher",
   "signon.autofillForms": false,
   "signon.firefoxRelay.feature": "disabled",

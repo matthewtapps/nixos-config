@@ -151,6 +151,8 @@ in
         "browser.uiCustomization.state" = builtins.toJSON (builtins.fromJSON (builtins.readFile toolbar));
         "browser.profiles.enabled" = true;
         "browser.profiles.created" = true;
+        # Hides passkeys in the login dropdown; Bitwarden and 1Password still work.
+        "security.webauthn.enable_conditional_mediation" = false;
         "toolkit.profiles.storeID" = storeId;
         "browser.download.dir" = "${config.home.homeDirectory}/downloads";
         "zen.theme.accent-color" = lib.mkDefault "#a0d490";
