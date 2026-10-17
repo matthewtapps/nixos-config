@@ -380,7 +380,8 @@ def diff_pins(live_spaces, live_pins, config):
             continue
         c = cp[i]
         fields = [f for f in PIN_FIELDS if p.get(f) != c.get(f)]
-        if (p.get("editedTitle") or c.get("editedTitle")) and p.get("title") != c.get("title"):
+        titled = any(x.get(k) for x in (p, c) for k in ("editedTitle", "isGroup"))
+        if titled and p.get("title") != c.get("title"):
             fields.append("title")
         if fields:
             diffs.append(Diff("pin", i, "changed", p, c, f"{_pin_label(p)} ({', '.join(fields)})", "switch",
@@ -464,14 +465,27 @@ def diff_profile(profile, repo):
         diffs += diff_pins(spaces, pins, config)
     else:
         notes.append("pins: profile not opened yet")
-    prefs = read_prefs(profile.file("prefs.js"))
-    diffs += diff_toolbar(prefs, repo.load(repo.toolbar_file(profile.key), {}))
-    diffs += diff_settings(prefs, read_prefs(profile.file("user.js")))
-    live_sc, base_sc = profile.file("zen-keyboard-shortcuts.json"), profile.file(BASELINE)
-    if os.path.exists(live_sc) and os.path.exists(base_sc):
-        diffs += diff_shortcuts(read_shortcuts(live_sc), read_baseline(base_sc))
+    if os.path.exists(profile.file("prefs.js")):
+        prefs = read_prefs(profile.file("prefs.js"))
+        toolbar = repo.load(repo.toolbar_file(profile.key), {})
+        try:
+            diffs += diff_toolbar(prefs, toolbar)
+        except json.JSONDecodeError:
+            notes.append("toolbar: unreadable layout in prefs.js")
+        diffs += diff_settings(prefs, read_prefs(profile.file("user.js")))
     else:
+        notes.append("toolbar and settings: profile not opened yet")
+    live_sc, base_sc = profile.file("zen-keyboard-shortcuts.json"), profile.file(BASELINE)
+    if not os.path.exists(live_sc):
+        notes.append("shortcuts: profile not opened yet")
+    elif not os.path.exists(base_sc):
         notes.append("shortcuts: no baseline yet; switch once with Zen closed")
-    keep = [d for d in diffs
-            if (d.kind == "setting" and d.change == "changed") or not ignored(ignore, d.kind, d.ident)]
-    return keep, notes
+    else:
+        diffs += diff_shortcuts(read_shortcuts(live_sc), read_baseline(base_sc))
+
+    def is_ignored(d):
+        if d.kind == "setting" and d.change == "changed":
+            return d.ident in ignore.get("setting", [])
+        return ignored(ignore, d.kind, d.ident)
+
+    return [d for d in diffs if not is_ignored(d)], notes

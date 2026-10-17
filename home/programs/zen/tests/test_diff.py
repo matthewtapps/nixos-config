@@ -1,7 +1,7 @@
-import zen_profile as zp
-from conftest import DOCS, FOLDER_ID, MAIL
+import os
 
-T = zp.TOOLBAR_FOLDER
+import zen_profile as zp
+from conftest import DOCS, FOLDER_ID, MAIL, pref_line
 
 
 def rows(diffs):
@@ -75,3 +75,52 @@ def test_diff_profile_applies_ignores_but_not_to_declared(world):
     assert "general.autoScroll" in idents
     assert DOCS not in idents
     assert notes == []
+
+
+def test_folder_title_change_counts_without_edited_flag():
+    base = {"id": "f", "title": "Work", "isGroup": True, "position": 100, "folderIcon": None,
+            "workspace": None, "folderParentId": None}
+    live = dict(base, title="Work 2")
+    got = zp.diff_pins([], [live], {"pins": [base], "spaces": []})
+    assert [(d.kind, d.ident, d.change) for d in got] == [("pin", "f", "changed")]
+    assert "title" in got[0].extra["fields"]
+
+
+def test_missing_live_files_add_notes_and_skip_their_diffs(world):
+    profile, repo = world
+    for name in ("prefs.js", "zen-keyboard-shortcuts.json", "zen-sessions.jsonlz4"):
+        os.remove(profile.file(name))
+    diffs, notes = zp.diff_profile(profile, repo)
+    assert notes == [
+        "pins: profile not opened yet",
+        "toolbar and settings: profile not opened yet",
+        "shortcuts: profile not opened yet",
+    ]
+    assert not {d.kind for d in diffs} & {"pin", "toolbar", "setting", "shortcut", "space"}
+
+
+def test_missing_baseline_adds_switch_note(world):
+    profile, repo = world
+    os.remove(profile.file(zp.BASELINE))
+    diffs, notes = zp.diff_profile(profile, repo)
+    assert notes == ["shortcuts: no baseline yet; switch once with Zen closed"]
+    assert not any(d.kind == "shortcut" for d in diffs)
+
+
+def test_malformed_toolbar_pref_skips_toolbar_with_note(world):
+    profile, repo = world
+    with open(profile.file("prefs.js"), "a") as f:
+        f.write(pref_line(zp.TOOLBAR_PREF, "{not json"))
+    diffs, notes = zp.diff_profile(profile, repo)
+    assert notes == ["toolbar: unreadable layout in prefs.js"]
+    assert not any(d.kind == "toolbar" for d in diffs)
+
+
+def test_exact_ignore_hides_declared_changed_setting(world):
+    profile, repo = world
+    repo.save("settings/ignore.json", {"setting": ["general.autoScroll"]})
+    diffs, _ = zp.diff_profile(profile, repo)
+    assert "general.autoScroll" not in {d.ident for d in diffs}
+    repo.save("settings/ignore.json", {"setting": ["general.*"]})
+    diffs, _ = zp.diff_profile(profile, repo)
+    assert "general.autoScroll" in {d.ident for d in diffs}
