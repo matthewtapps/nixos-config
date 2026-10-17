@@ -138,8 +138,9 @@ in
             }
           }
         '';
-      keyboardShortcuts =
-        readJSON ./shortcuts/shared.json [ ] ++ readJSON (./shortcuts + "/${path}.json") [ ];
+      keyboardShortcuts = builtins.attrValues (
+        byId (readJSON ./shortcuts/shared.json [ ]) // byId (readJSON (./shortcuts + "/${path}.json") [ ])
+      );
       mods = [
         "a6335949-4465-4b71-926c-4a52d34bc9c0" # Better Find Bar
         "c6813222-6571-4ba6-8faf-58f3343324f6" # Disable Rounded Corners
