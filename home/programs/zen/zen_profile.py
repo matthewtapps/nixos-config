@@ -1,5 +1,6 @@
 import configparser
 from dataclasses import dataclass, field
+import glob
 import json
 import os
 import re
@@ -639,7 +640,14 @@ def _unset_override(repo, profile, kind, ident, res):
     res.written.add(repo.save(rel, data))
 
 
+def check_repo(repo):
+    for pat in ("profiles/*.json", "settings/*.json", "shortcuts/*.json", "toolbar*.json"):
+        for p in sorted(glob.glob(repo.path(pat))):
+            repo.load(os.path.relpath(p, repo.zen), None)
+
+
 def apply(profile, repo, actions):
+    check_repo(repo)
     res = Result()
     profile_rel = f"profiles/{profile.key}.json"
     config = None

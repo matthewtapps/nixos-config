@@ -167,7 +167,14 @@ class ReconcileApp(App):
         def done(ok):
             if not ok:
                 return
-            res = zp.apply(self.profile, self.repo, actions)
+            try:
+                res = zp.apply(self.profile, self.repo, actions)
+            except ValueError as e:
+                self.push_screen(Message(f"Nothing applied: {e}"))
+                return
+            except OSError as e:
+                self.push_screen(Message(f"Apply failed: {e}"))
+                return
             self.marks = {}
             self.reload()
             self.push_screen(Message(zp.summary(res)))

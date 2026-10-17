@@ -1,6 +1,8 @@
 import json
 import os
 
+import pytest
+
 import zen_profile as zp
 from conftest import DOCS, FOLDER_ID
 
@@ -124,3 +126,14 @@ def test_promote_shared_clears_profile_override(world):
     assert repo.load("settings/shared.json", {})["test.pref"] is True
     assert "test.pref" not in repo.load("settings/personal.json", {})
     assert "settings/personal.json" in res.written
+
+
+def test_apply_refuses_unparseable_repo_json(world):
+    profile, repo = world
+    diffs, _ = zp.diff_profile(profile, repo)
+    with open(repo.path("settings/ignore.json"), "w") as f:
+        f.write("{bad")
+    before = repo.load("settings/shared.json", {})
+    with pytest.raises(ValueError):
+        zp.apply(profile, repo, [zp.Action(find(diffs, "test.pref"), "promote", "shared")])
+    assert repo.load("settings/shared.json", {}) == before

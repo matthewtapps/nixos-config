@@ -41,3 +41,24 @@ def test_apply_declined_writes_nothing(world):
     app = zr.ReconcileApp(repo, [profile])
     run(app, "p", "a", "n", select="test.pref")
     assert "test.pref" not in repo.load("settings/shared.json", {})
+
+
+def test_apply_with_corrupt_repo_json_shows_message(world):
+    profile, repo = world
+    app = zr.ReconcileApp(repo, [profile])
+    seen = {}
+
+    async def go():
+        async with app.run_test() as pilot:
+            app.table.move_cursor(row=[d.ident for d in app.visible()].index("test.pref"))
+            await pilot.pause()
+            with open(repo.path("settings/ignore.json"), "w") as f:
+                f.write("{bad")
+            await pilot.press("p", "a", "y")
+            await pilot.pause()
+            seen["text"] = str(app.screen.query_one("#dialog").renderable)
+            seen["marks"] = dict(app.marks)
+    asyncio.run(go())
+    assert "Nothing applied" in seen["text"]
+    assert seen["marks"]
+    assert "test.pref" not in repo.load("settings/shared.json", {})
