@@ -8,13 +8,21 @@ let
   base16 = inputs.stylix.inputs.base16.lib { inherit pkgs lib; };
   storeId = "a7e3c9f1";
   addons = pkgs.firefox-addons;
-  # Not packaged in rycee firefox-addons.
+  # Not packaged in rycee firefox-addons; bump version, url and sha256 by hand.
   no-youtube-shorts = addons.buildFirefoxXpiAddon {
     pname = "no-youtube-shorts";
     version = "3.1.4";
     addonId = "{4590d8b8-3569-46e3-a571-cabfbaeab2c1}";
     url = "https://addons.mozilla.org/firefox/downloads/file/4590220/no_youtube_shorts-3.1.4.xpi";
     sha256 = "c598c7ffe2779a1f1865d0335652f7096991fe24f3c460abf90a11e8c65ad8fd";
+    meta = { };
+  };
+  imagus-reborn = addons.buildFirefoxXpiAddon {
+    pname = "imagus-reborn";
+    version = "2026.9.27";
+    addonId = "{7653b5cb-d76d-442f-a98f-f3c83a118cf4}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/5063818/imagus_reborn-2026.9.27.xpi";
+    sha256 = "a04e515b170a877ef5536715789296ff80fab0382270f82d9ddada9b9db2bb68";
     meta = { };
   };
 in
@@ -35,7 +43,7 @@ in
       darkreader
       vimium
       no-youtube-shorts
-      imagus
+      imagus-reborn
       reddit-enhancement-suite
       add-custom-search-engine
       react-devtools
