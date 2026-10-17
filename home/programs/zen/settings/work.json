@@ -1,0 +1,5 @@
+{
+  "browser.download.always_ask_before_handling_new_types": true,
+  "browser.download.deletePrivate": true,
+  "privacy.clearOnShutdown_v2.formdata": true
+}

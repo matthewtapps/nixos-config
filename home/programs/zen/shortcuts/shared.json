@@ -1,0 +1,31 @@
+[
+  {
+    "id": "zen-compact-mode-toggle",
+    "key": "c",
+    "modifiers": { "accel": true, "alt": true }
+  },
+  {
+    "id": "zen-workspace-forward",
+    "key": "e",
+    "keycode": "",
+    "modifiers": { "accel": true, "alt": true }
+  },
+  {
+    "id": "zen-workspace-backward",
+    "key": "q",
+    "keycode": "",
+    "modifiers": { "accel": true, "alt": true }
+  },
+  {
+    "id": "zen-toggle-sidebar",
+    "key": "b",
+    "modifiers": { "alt": true }
+  },
+  {
+    "id": "key_savePage",
+    "key": "s",
+    "modifiers": { "accel": true }
+  },
+  { "id": "key_toggleReaderMode", "disabled": false },
+  { "id": "key_exitFullScreen", "disabled": false }
+]

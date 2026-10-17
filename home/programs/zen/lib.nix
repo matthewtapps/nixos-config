@@ -88,12 +88,15 @@ in
       id,
       path,
       extensions,
-      file ? null,
-      toolbar ? ./toolbar.json,
     }:
     let
-      data = builtins.fromJSON (builtins.readFile file);
+      readJSON = f: default: if builtins.pathExists f then builtins.fromJSON (builtins.readFile f) else default;
+      data = readJSON (./profiles + "/${path}.json") { };
       byId = list: builtins.listToAttrs (map (x: { name = x.id; value = x; }) list);
+      ownToolbar = ./. + "/toolbar-${path}.json";
+      toolbar = if builtins.pathExists ownToolbar then ownToolbar else ./toolbar.json;
+      jsonSettings =
+        readJSON ./settings/shared.json { } // readJSON (./settings + "/${path}.json") { };
     in
     {
       inherit id path;
@@ -115,16 +118,8 @@ in
         };
       };
       presets.betterfox.enable = true;
-    }
-    // lib.optionalAttrs (file != null) {
-      bookmarks = {
-        force = true;
-        settings = data.bookmarks;
-      };
-      spaces = byId data.spaces;
-      pins = byId data.pins;
-    }
-    // {
+      spaces = byId (data.spaces or [ ]);
+      pins = byId (data.pins or [ ]);
       # Zen hides an outline on the page container; the box-shadow survives.
       userChrome =
         let
@@ -144,49 +139,7 @@ in
           }
         '';
       keyboardShortcuts =
-        let
-          ctrlAlt = {
-            accel = true;
-            alt = true;
-          };
-        in
-        [
-          {
-            id = "zen-compact-mode-toggle";
-            key = "c";
-            modifiers = ctrlAlt;
-          }
-          {
-            id = "zen-workspace-forward";
-            key = "e";
-            keycode = "";
-            modifiers = ctrlAlt;
-          }
-          {
-            id = "zen-workspace-backward";
-            key = "q";
-            keycode = "";
-            modifiers = ctrlAlt;
-          }
-          {
-            id = "zen-toggle-sidebar";
-            key = "b";
-            modifiers.alt = true;
-          }
-          {
-            id = "key_savePage";
-            key = "s";
-            modifiers.accel = true;
-          }
-          {
-            id = "key_toggleReaderMode";
-            disabled = false;
-          }
-          {
-            id = "key_exitFullScreen";
-            disabled = false;
-          }
-        ];
+        readJSON ./shortcuts/shared.json [ ] ++ readJSON (./shortcuts + "/${path}.json") [ ];
       mods = [
         "a6335949-4465-4b71-926c-4a52d34bc9c0" # Better Find Bar
         "c6813222-6571-4ba6-8faf-58f3343324f6" # Disable Rounded Corners
@@ -195,75 +148,25 @@ in
         # Profile-scoped extensions start disabled without this.
         "extensions.autoDisableScopes" = 0;
         # user.js re-applies this on every start; toolbar edits in Zen are lost.
-        "browser.uiCustomization.state" = builtins.toJSON (
-          builtins.fromJSON (builtins.readFile toolbar)
-        );
+        "browser.uiCustomization.state" = builtins.toJSON (builtins.fromJSON (builtins.readFile toolbar));
         "browser.profiles.enabled" = true;
         "browser.profiles.created" = true;
         "toolkit.profiles.storeID" = storeId;
-
         "browser.download.dir" = "${config.home.homeDirectory}/downloads";
-        "browser.download.folderList" = 2;
-        "browser.download.useDownloadDir" = false;
-        "general.autoScroll" = true;
-        "general.smoothScroll" = false;
-        "ui.key.menuAccessKeyFocuses" = false;
-        "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
-        "accessibility.typeaheadfind.flashBar" = 0;
-        "media.navigator.video.default_width" = 1920;
-        "media.navigator.video.default_height" = 1080;
-        "browser.tabs.inTitlebar" = 1;
-        "network.trr.mode" = 5;
-        "privacy.donottrackheader.enabled" = true;
-        "privacy.fingerprintingProtection" = true;
-        "privacy.query_stripping.enabled" = true;
-        "privacy.query_stripping.enabled.pbmode" = true;
-        "theme.better_find_bar.textbox_width" = "800";
-        "theme.better_find_bar.transparent_background" = true;
-
-        # Betterfox overrides: keep its location block, undo what changes feel.
-        "permissions.default.desktop-notification" = 0;
-        "browser.search.suggest.enabled" = true;
-        "browser.formfill.enable" = true;
-        "browser.cache.disk.enable" = true;
-        "browser.sessionstore.interval" = 15000;
-
-        "browser.newtabpage.enabled" = false;
-        "browser.startup.homepage" = "chrome://browser/content/blanktab.html";
-        "browser.startup.page" = 1;
-        "browser.tabs.hoverPreview.showThumbnails" = false;
-        "browser.toolbars.bookmarks.showOtherBookmarks" = false;
-        "browser.toolbars.bookmarks.visibility" = "newtab";
-        "browser.urlbar.quicksuggest.dataCollection.enabled" = false;
-        "layout.css.prefers-color-scheme.content-override" = 0;
-        "sidebar.visibility" = "hide-launcher";
-        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-        "zen.glance.enabled" = false;
-        "zen.pinned-tab-manager.restore-pinned-tabs-to-pinned-url" = true;
-        "zen.site-data-panel.show-callout" = false;
-        "zen.tab-unloader.enabled" = false;
-        "zen.tabs.close-on-back-with-no-history" = false;
-        "zen.tabs.dim-pending" = false;
-        "zen.tabs.select-recently-used-on-close" = false;
         "zen.theme.accent-color" = lib.mkDefault "#a0d490";
-        "zen.theme.color-prefs.colorful" = true;
-        "zen.theme.color-prefs.use-workspace-colors" = false;
-        "zen.urlbar.behavior" = "normal";
-        "zen.urlbar.replace-newtab" = false;
-        "zen.view.compact.enable-at-startup" = true;
-        "zen.view.compact.should-enable-at-startup" = true;
-        "zen.view.show-bottom-border" = true;
-        "zen.view.show-newtab-button-top" = false;
-        "zen.view.sidebar-expanded.on-hover" = false;
-        "zen.view.split-view.change-on-hover" = false;
-        "zen.view.use-single-toolbar" = false;
-        "zen.view.window.scheme" = 0;
-        "zen.welcome-screen.seen" = true;
       }
-      // lib.optionalAttrs (file != null) {
+      // lib.optionalAttrs (data ? bookmarks) {
         # Zen re-imports declared bookmarks on each start; Sync would push
         # that reset to every other device.
         "services.sync.engine.bookmarks" = false;
+      }
+      # zen-reconcile writes these; 90 beats Stylix and Betterfox definitions.
+      // lib.mapAttrs (_: lib.mkOverride 90) jsonSettings;
+    }
+    // lib.optionalAttrs (data ? bookmarks) {
+      bookmarks = {
+        force = true;
+        settings = data.bookmarks;
       };
     };
 }

@@ -65,7 +65,6 @@ in
         zen.mkProfile {
           id = 0;
           path = "personal";
-          file = ./profiles/personal.json;
           extensions = zen.extensions.shared ++ zen.extensions.personal;
         }
         // {
@@ -76,7 +75,6 @@ in
         (zen.mkProfile {
           id = 1;
           path = "professional";
-          file = ./profiles/professional.json;
           extensions = zen.extensions.shared ++ zen.extensions.personal;
         })
         (zen.themed "tokyo-night-dark")
