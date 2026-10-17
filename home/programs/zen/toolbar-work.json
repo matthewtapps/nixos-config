@@ -1,0 +1,68 @@
+{
+  "currentVersion": 28,
+  "dirtyAreaCache": [
+    "nav-bar",
+    "vertical-tabs",
+    "zen-sidebar-foot-buttons",
+    "PersonalToolbar",
+    "unified-extensions-area",
+    "toolbar-menubar",
+    "TabsToolbar",
+    "zen-sidebar-top-buttons"
+  ],
+  "newElementCount": 4,
+  "placements": {
+    "PersonalToolbar": [
+      "personal-bookmarks"
+    ],
+    "TabsToolbar": [
+      "tabbrowser-tabs",
+      "smartwindow-group-tabs-button",
+      "ai-window-toggle",
+      "customizableui-special-spring4",
+      "zen-media-controls-toolbar"
+    ],
+    "nav-bar": [
+      "back-button",
+      "forward-button",
+      "stop-reload-button",
+      "vertical-spacer",
+      "urlbar-container",
+      "unified-extensions-button",
+      "ublock0_raymondhill_net-browser-action",
+      "_d634138d-c276-4fc8-924b-40a0ea21d284_-browser-action",
+      "_d7742d87-e61d-4b78-b8a1-b469842139fa_-browser-action",
+      "_react-devtools-browser-action",
+      "reset-pbm-toolbar-button",
+      "addon_darkreader_org-browser-action"
+    ],
+    "toolbar-menubar": [
+      "menubar-items"
+    ],
+    "unified-extensions-area": [],
+    "vertical-tabs": [],
+    "widget-overflow-fixed-list": [],
+    "zen-sidebar-foot-buttons": [
+      "zen-library-button",
+      "zen-workspaces-button",
+      "zen-create-new-button"
+    ],
+    "zen-sidebar-top-buttons": [
+      "fxa-toolbar-menu-button",
+      "zen-toggle-compact-mode",
+      "preferences-button"
+    ]
+  },
+  "seen": [
+    "developer-button",
+    "screenshot-button",
+    "_d634138d-c276-4fc8-924b-40a0ea21d284_-browser-action",
+    "addon_darkreader_org-browser-action",
+    "ublock0_raymondhill_net-browser-action",
+    "_d7742d87-e61d-4b78-b8a1-b469842139fa_-browser-action",
+    "_react-devtools-browser-action",
+    "reset-pbm-toolbar-button",
+    "smartwindow-group-tabs-button",
+    "ai-window-toggle"
+  ]
+}

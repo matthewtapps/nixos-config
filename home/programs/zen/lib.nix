@@ -81,6 +81,7 @@ in
       path,
       extensions,
       file ? null,
+      toolbar ? ./toolbar.json,
     }:
     let
       data = builtins.fromJSON (builtins.readFile file);
@@ -187,7 +188,7 @@ in
         "extensions.autoDisableScopes" = 0;
         # user.js re-applies this on every start; toolbar edits in Zen are lost.
         "browser.uiCustomization.state" = builtins.toJSON (
-          builtins.fromJSON (builtins.readFile ./toolbar.json)
+          builtins.fromJSON (builtins.readFile toolbar)
         );
         "browser.profiles.enabled" = true;
         "browser.profiles.created" = true;
