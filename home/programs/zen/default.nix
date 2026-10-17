@@ -36,6 +36,24 @@ in
     ''
   );
 
+  # zen-reconcile diffs live shortcuts against this. Zen's file marks no
+  # user edits, so the baseline is the state right after declared ones apply.
+  home.activation.zen-shortcuts-baseline = lib.hm.dag.entryAfter (map (n: "zen-browser-${n}") (
+    builtins.attrNames config.programs.zen-browser.profiles
+  )) (
+    lib.concatMapStrings (p: ''
+      dir=${lib.escapeShellArg "${config.programs.zen-browser.configPath}/${p.path}"}
+      if [ -f "$dir/zen-keyboard-shortcuts.json" ] && [ -f "$dir/prefs.js" ]; then
+        ver=$(${pkgs.gnused}/bin/sed -n 's/^user_pref("zen.keyboard.shortcuts.version", \([0-9]*\));$/\1/p' "$dir/prefs.js")
+        have=$([ -f "$dir/zen-shortcuts-baseline.json" ] && ${lib.getExe pkgs.jq} -r '.version' "$dir/zen-shortcuts-baseline.json")
+        if [ -n "$ver" ] && [ "$ver" != "$have" ]; then
+          ${lib.getExe pkgs.jq} --argjson v "$ver" '{version: $v, shortcuts: .shortcuts}' \
+            "$dir/zen-keyboard-shortcuts.json" > "$dir/zen-shortcuts-baseline.json"
+        fi
+      fi
+    '') (builtins.attrValues config.programs.zen-browser.profiles)
+  );
+
   home.packages = [
     (pkgs.writers.writePython3Bin "zen-export" {
       libraries = [ pkgs.python3Packages.lz4 ];
