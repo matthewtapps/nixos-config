@@ -1,5 +1,5 @@
 --!nonstrict
-local Layout = require("./layout")
+local Layout = require("./layout.luau")
 
 local DRAG_TYPE = "lan-mouse-peer"
 local SLOT_W, SLOT_H = 140, 90

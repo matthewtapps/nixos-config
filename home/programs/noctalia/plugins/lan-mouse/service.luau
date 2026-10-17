@@ -1,5 +1,5 @@
 --!nonstrict
-local Layout = require("./layout")
+local Layout = require("./layout.luau")
 
 local TICK_MS = 5000
 

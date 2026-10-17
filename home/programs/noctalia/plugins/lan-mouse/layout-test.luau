@@ -72,11 +72,11 @@ local clash = Layout.normalise({
 local clashView = Layout.view(clash, "karsa", KNOWN)
 assert(clashView.tehol == "right" and clashView.mappo == nil)
 
--- monitors: scale, rotation, disabled outputs, stable order.
+-- monitors: scale, rotation, stable order. Tehol's live eDP-1 reports
+-- disabled = true, so the flag must not drop it.
 local monitors = Layout.logicalMonitors({
-  { name = "eDP-1", x = 0, y = 0, width = 3072, height = 1920, scale = 1.5, transform = 0 },
+  { name = "eDP-1", x = 0, y = 0, width = 3072, height = 1920, scale = 1.5, transform = 0, disabled = true },
   { name = "DP-2", x = -2560, y = 0, width = 2560, height = 1440, scale = 1, transform = 1 },
-  { name = "HDMI-A-1", x = 0, y = 0, width = 1920, height = 1080, scale = 1, transform = 0, disabled = true },
 })
 assert(#monitors == 2)
 assert(monitors[1].name == "DP-2" and monitors[1].w == 1440 and monitors[1].h == 2560)

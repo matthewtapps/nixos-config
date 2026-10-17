@@ -151,15 +151,13 @@ end
 function Layout.logicalMonitors(raw)
   local out = {}
   for _, m in ipairs(type(raw) == "table" and raw or {}) do
-    if not m.disabled then
-      local scale = (m.scale or 0) > 0 and m.scale or 1
-      local w = math.floor(m.width / scale + 0.5)
-      local h = math.floor(m.height / scale + 0.5)
-      if (m.transform or 0) % 2 == 1 then
-        w, h = h, w
-      end
-      table.insert(out, { name = m.name, x = m.x, y = m.y, w = w, h = h })
+    local scale = (m.scale or 0) > 0 and m.scale or 1
+    local w = math.floor(m.width / scale + 0.5)
+    local h = math.floor(m.height / scale + 0.5)
+    if (m.transform or 0) % 2 == 1 then
+      w, h = h, w
     end
+    table.insert(out, { name = m.name, x = m.x, y = m.y, w = w, h = h })
   end
   table.sort(out, function(a, b)
     return a.name < b.name
