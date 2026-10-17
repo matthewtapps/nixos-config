@@ -47,9 +47,13 @@ in
         ver=$(${pkgs.gnused}/bin/sed -n 's/^user_pref("zen.keyboard.shortcuts.version", \([0-9]*\));$/\1/p' "$dir/prefs.js")
         have=$(${lib.getExe pkgs.jq} -r '.version' "$dir/zen-shortcuts-baseline.json" 2>/dev/null || true)
         if [ -n "$ver" ] && [ "$ver" != "$have" ]; then
-          ${lib.getExe pkgs.jq} --argjson v "$ver" '{version: $v, shortcuts: .shortcuts}' \
-            "$dir/zen-keyboard-shortcuts.json" > "$dir/zen-shortcuts-baseline.json.tmp"
-          mv "$dir/zen-shortcuts-baseline.json.tmp" "$dir/zen-shortcuts-baseline.json"
+          if ${lib.getExe pkgs.jq} --argjson v "$ver" '{version: $v, shortcuts: .shortcuts}' \
+            "$dir/zen-keyboard-shortcuts.json" > "$dir/zen-shortcuts-baseline.json.tmp"; then
+            mv "$dir/zen-shortcuts-baseline.json.tmp" "$dir/zen-shortcuts-baseline.json"
+          else
+            rm -f "$dir/zen-shortcuts-baseline.json.tmp"
+            echo "zen-shortcuts-baseline: could not read $dir/zen-keyboard-shortcuts.json, skipped"
+          fi
         fi
       fi
     '') (builtins.attrValues config.programs.zen-browser.profiles)
