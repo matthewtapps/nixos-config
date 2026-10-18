@@ -265,6 +265,12 @@ hl.window_rule({
     opacity = "1 override",
 })
 
+-- hyprshot -z freezes the screen with a hyprpicker layer
+hl.layer_rule({
+    match = { namespace = "^hyprpicker$" },
+    no_anim = true,
+})
+
 -- -----------------------------------------------------
 -- ▄▀█ █▄░█ █ █▀▄▀█ ▄▀█ ▀█▀ █ █▀█ █▄░█
 -- █▀█ █░▀█ █ █░▀░█ █▀█ ░█░ █ █▄█ █░▀█
