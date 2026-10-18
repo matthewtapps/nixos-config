@@ -78,7 +78,9 @@ class ReconcileApp(App):
         yield Footer()
 
     def on_mount(self):
-        self.cols = self.table.add_columns("", "kind", "change", "item", "revert")
+        # update_cell never widens a column, so an auto-sized empty one stays at 0.
+        self.cols = [self.table.add_column("mark", width=4)] + list(
+            self.table.add_columns("kind", "change", "item", "revert"))
         self.reload()
 
     @property

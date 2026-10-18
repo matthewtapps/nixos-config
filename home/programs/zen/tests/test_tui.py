@@ -80,3 +80,17 @@ def test_unreadable_profile_shows_note(world):
     app = zr.ReconcileApp(repo, [profile])
     run(app)
     assert any("could not read profile" in n for n in app.notes)
+
+
+def test_mark_is_visible(world):
+    profile, repo = world
+    app = zr.ReconcileApp(repo, [profile])
+
+    async def go():
+        async with app.run_test() as pilot:
+            await pilot.press("p")
+            await pilot.pause()
+            col = next(iter(app.table.columns.values()))
+            assert col.width >= 1
+            assert app.table.get_row_at(0)[0] == "P"
+    asyncio.run(go())
