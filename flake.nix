@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # Element Desktop must match the Element Web that chat.countersight.co
+    # serves, or one writes account state the other breaks on. Bump together.
+    nixpkgs-element.url = "github:nixos/nixpkgs/78e9c786dc08cd4f3420c2395cd977206a9b1da2";
+
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
 

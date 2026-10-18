@@ -52,6 +52,7 @@
     teams-for-linux
     github-copilot-cli
     dbgate
+    inputs.nixpkgs-element.legacyPackages.${pkgs.stdenv.hostPlatform.system}.element-desktop
     inputs.todone.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.claude-cowork.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
