@@ -180,6 +180,12 @@
       "id": "fd5401f0-7d54-444e-bd4c-0c3784091a9d",
       "name": "Personal",
       "position": 1000
+    },
+    {
+      "icon": null,
+      "id": "f2fda1da-d819-49a0-82b1-5327b06ca74a",
+      "name": "Space",
+      "position": 1000
     }
   ]
 }
