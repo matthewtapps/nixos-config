@@ -52,18 +52,12 @@
     teams-for-linux
     github-copilot-cli
     dbgate
-    (pkgs.symlinkJoin {
-      name = "element-desktop";
-      paths = [
-        # Electron does not know Hyprland, so it skips gnome-keyring unless told.
-        (inputs.nixpkgs-element.legacyPackages.${pkgs.stdenv.hostPlatform.system}.element-desktop.override {
-          commandLineArgs = "--password-store=gnome-libsecret";
-        })
-      ];
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-      # Zen passes its LD_LIBRARY_PATH to the SSO callback launch; those libs
-      # need a newer glibc than the pinned Electron has, so it crashes.
-      postBuild = "wrapProgram $out/bin/element-desktop --unset LD_LIBRARY_PATH";
+    (inputs.nixpkgs-element.legacyPackages.${pkgs.stdenv.hostPlatform.system}.element-desktop.override {
+      # The pinned Electron's glibc is too old for the system Mesa and for the
+      # LD_LIBRARY_PATH Zen passes to the SSO callback launch.
+      electron_42 = pkgs.electron_42;
+      # Electron does not know Hyprland, so it skips gnome-keyring unless told.
+      commandLineArgs = "--password-store=gnome-libsecret";
     })
     inputs.todone.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.claude-cowork.packages.${pkgs.stdenv.hostPlatform.system}.default
