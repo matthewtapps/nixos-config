@@ -57,9 +57,10 @@ class ReconcileApp(App):
         Binding("q", "quit", "Quit"),
     ]
 
-    def __init__(self, repo, profiles):
+    def __init__(self, repo, profiles, active=None):
         super().__init__()
         self.repo = repo
+        self.active = active or repo
         self.profiles = profiles
         self.index = 0
         self.kind = None
@@ -89,7 +90,7 @@ class ReconcileApp(App):
 
     def reload(self):
         try:
-            self.diffs, self.notes = zp.diff_profile(self.profile, self.repo)
+            self.diffs, self.notes = zp.reconcile(self.profile, self.active, self.repo)
         except Exception as e:
             self.diffs, self.notes = [], [f"could not read profile: {e}"]
         self.refresh_table()
@@ -105,12 +106,16 @@ class ReconcileApp(App):
         table = self.table
         table.clear()
         for d in self.visible():
-            table.add_row(self.mark_text(d), d.kind, d.change, d.label[:90], d.revert, key=f"{d.kind}\0{d.ident}")
+            table.add_row(self.mark_text(d), d.kind, self.row_change(d), d.label[:90], d.revert,
+                          key=f"{d.kind}\0{d.ident}")
         state = "Zen open" if zp.zen_running(self.profile.dir) else "Zen closed"
         notes = ("  |  " + "; ".join(self.notes)) if self.notes else ""
         self.status.update(
             f"{self.profile.name} ({state})  filter: {self.kind or 'all'}  {len(self.visible())} differences{notes}")
         self.show_detail()
+
+    def row_change(self, d):
+        return d.change + (" (pending switch)" if d.extra.get("pending") else "")
 
     def current(self):
         rows = self.visible()
@@ -133,6 +138,8 @@ class ReconcileApp(App):
     def action_mark(self, verb):
         d = self.current()
         if d is None:
+            return
+        if self.repo is None and verb in ("promote", "ignore"):
             return
         key = (d.kind, d.ident)
         if verb == "skip":
@@ -186,7 +193,9 @@ class ReconcileApp(App):
 
 def main(argv):
     ap = argparse.ArgumentParser(prog="zen-reconcile")
-    ap.add_argument("--repo", default=os.path.expanduser("~/nixos-config"))
+    ap.add_argument("--repo", help="writable checkout; promote and ignore are off without one")
+    ap.add_argument("--active", default=os.path.expanduser("~/.config/zen-reconcile/active"),
+                    help="the activated generation's zen JSON")
     ap.add_argument("--zen-dir", default=os.path.expanduser("~/.config/zen"))
     ap.add_argument("--profile")
     args = ap.parse_args(argv)
@@ -195,7 +204,11 @@ def main(argv):
         profiles = [p for p in profiles if p.name.lower() == args.profile.lower()]
     if not profiles:
         sys.exit(f"no Zen profiles found in {args.zen_dir}")
-    ReconcileApp(zp.Repo(args.repo), profiles).run()
+    checkout = zp.Repo(args.repo) if args.repo and os.path.isdir(zp.Repo(args.repo).zen) else None
+    active = zp.Repo.at(args.active) if os.path.isdir(args.active) else checkout
+    if active is None:
+        sys.exit(f"no activated config at {args.active} and no checkout")
+    ReconcileApp(checkout, profiles, active=active).run()
 
 
 if __name__ == "__main__":

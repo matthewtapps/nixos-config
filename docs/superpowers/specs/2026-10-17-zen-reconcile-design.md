@@ -28,12 +28,16 @@ home/programs/zen/
 ```
 
 Nix packages both commands with `python3.withPackages [ lz4 textual ]`, like
-`zen-export` today. The repo path defaults to `~/nixos-config`; `--repo`
-overrides it.
+`zen-export` today, and passes `--repo` and `--active` to `zen-reconcile`.
 
 ### Source of truth
 
-- Config: the repo JSON files, meaning what the next switch applies.
+- Config: the activated generation's zen JSON, linked at
+  `~/.config/zen-reconcile/active`. Differences are live against that.
+- Writes: promote and ignore edit the checkout (`--repo`, passed from Nix as
+  `~/nixos-config`). A row the checkout already resolves shows as "pending
+  switch" until the next switch. Without a checkout the tool is read-only:
+  reverts still work.
 - Settings declared outside the JSON (Betterfox, Stylix, the flake, the Nix
   settings in `lib.nix`): read from the profile's generated `user.js`.
   Promoting one writes an override into the JSON; presets are never edited.

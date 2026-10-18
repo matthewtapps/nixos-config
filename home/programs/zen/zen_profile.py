@@ -237,6 +237,12 @@ class Repo:
     def __init__(self, root):
         self.zen = os.path.join(root, "home", "programs", "zen")
 
+    @classmethod
+    def at(cls, zen_dir):
+        repo = cls.__new__(cls)
+        repo.zen = zen_dir
+        return repo
+
     def path(self, rel):
         return os.path.join(self.zen, rel)
 
@@ -454,7 +460,7 @@ def diff_shortcuts(live, baseline):
     return diffs
 
 
-def diff_profile(profile, repo):
+def diff_profile(profile, repo, overlay=False):
     ignore = repo.load("settings/ignore.json", {})
     config = repo.load(f"profiles/{profile.key}.json", {})
     diffs, notes = [], []
@@ -480,7 +486,11 @@ def diff_profile(profile, repo):
             diffs += diff_toolbar(prefs, toolbar)
         except json.JSONDecodeError:
             notes.append("toolbar: unreadable layout in prefs.js")
-        diffs += diff_settings(prefs, read_prefs(profile.file("user.js")))
+        declared = read_prefs(profile.file("user.js"))
+        if overlay:
+            declared.update(repo.load("settings/shared.json", {}))
+            declared.update(repo.load(f"settings/{profile.key}.json", {}))
+        diffs += diff_settings(prefs, declared)
     else:
         notes.append("toolbar and settings: profile not opened yet")
     live_sc, base_sc = profile.file("zen-keyboard-shortcuts.json"), profile.file(BASELINE)
@@ -497,6 +507,20 @@ def diff_profile(profile, repo):
         return ignored(ignore, d.kind, d.ident)
 
     return [d for d in diffs if not is_ignored(d)], notes
+
+
+def reconcile(profile, active, checkout):
+    diffs, notes = diff_profile(profile, active)
+    if checkout is None:
+        notes.append("read-only: no checkout; promote and ignore are off")
+        pending = set()
+    else:
+        # user.js only reflects the activated generation, so overlay checkout settings.
+        ahead = {(d.kind, d.ident) for d in diff_profile(profile, checkout, overlay=True)[0]}
+        pending = {(d.kind, d.ident) for d in diffs} - ahead
+    for d in diffs:
+        d.extra["pending"] = (d.kind, d.ident) in pending
+    return diffs, notes
 
 
 def default_target(d):
@@ -652,7 +676,11 @@ def check_repo(repo):
 
 
 def apply(profile, repo, actions):
-    check_repo(repo)
+    if repo is None:
+        if any(a.verb != "revert" for a in actions):
+            raise ValueError("read-only: no checkout to write to")
+    else:
+        check_repo(repo)
     res = Result()
     profile_rel = f"profiles/{profile.key}.json"
     config = None

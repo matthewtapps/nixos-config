@@ -7,6 +7,9 @@
 }:
 let
   zen = import ./lib.nix { inherit pkgs config inputs; };
+  zenRepo = "${config.home.homeDirectory}/nixos-config";
+  activeRel = ".config/zen-reconcile/active";
+  activeDir = "${config.home.homeDirectory}/${activeRel}";
 in
 {
   imports = [ inputs.zen-browser.homeModules.beta ];
@@ -59,6 +62,13 @@ in
     '') (builtins.attrValues config.programs.zen-browser.profiles)
   );
 
+  # zen-reconcile diffs against this copy, so checkout edits that are not
+  # switched yet do not count as live drift.
+  home.file.${activeRel}.source = lib.fileset.toSource {
+    root = ./.;
+    fileset = lib.fileset.fileFilter (f: f.hasExt "json") ./.;
+  };
+
   home.packages = [
     (
       let
@@ -72,10 +82,10 @@ in
         cp ${./zen_profile.py} $out/lib/zen-tools/zen_profile.py
         cp ${./zen-export.py} $out/lib/zen-tools/zen-export.py
         cp ${./zen-reconcile.py} $out/lib/zen-tools/zen-reconcile.py
-        for t in zen-export zen-reconcile; do
-          printf '#!/bin/sh\nexec %s %s "$@"\n' ${py}/bin/python3 $out/lib/zen-tools/$t.py > $out/bin/$t
-          chmod +x $out/bin/$t
-        done
+        printf '#!/bin/sh\nexec %s %s "$@"\n' ${py}/bin/python3 $out/lib/zen-tools/zen-export.py > $out/bin/zen-export
+        printf '#!/bin/sh\nexec %s %s --repo %s --active %s "$@"\n' ${py}/bin/python3 \
+          $out/lib/zen-tools/zen-reconcile.py ${lib.escapeShellArg zenRepo} ${lib.escapeShellArg activeDir} > $out/bin/zen-reconcile
+        chmod +x $out/bin/zen-export $out/bin/zen-reconcile
       ''
     )
   ];
