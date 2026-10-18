@@ -57,6 +57,8 @@ in
       toolkit-for-ynab
     ];
     work = [ addons.onepassword-password-manager ];
+    # Its rules live in the extension's own storage; set them in its options page.
+    personalOnly = [ addons.simple-modify-header ];
   };
 
   # Stylix's Zen CSS in another base16 scheme, marking a non-default profile.

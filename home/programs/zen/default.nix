@@ -104,7 +104,7 @@ in
       DisablePocket = true;
       DontCheckDefaultBrowser = true;
       ExtensionSettings = lib.genAttrs (map (e: e.addonId) (
-        zen.extensions.shared ++ zen.extensions.personal ++ zen.extensions.work
+        zen.extensions.shared ++ zen.extensions.personal ++ zen.extensions.work ++ zen.extensions.personalOnly
       )) (_: { private_browsing = true; });
     };
     profiles = {
@@ -112,7 +112,7 @@ in
         zen.mkProfile {
           id = 0;
           path = "personal";
-          extensions = zen.extensions.shared ++ zen.extensions.personal;
+          extensions = zen.extensions.shared ++ zen.extensions.personal ++ zen.extensions.personalOnly;
         }
         // {
           isDefault = lib.mkDefault true;
