@@ -5,6 +5,33 @@
   inputs,
   ...
 }:
+let
+  elementPkgs = inputs.nixpkgs-element.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  # Matches the Element Web config chat.countersight.co serves.
+  elementWeb = elementPkgs.element-web.override {
+    conf = {
+      default_server_config."m.homeserver" = {
+        base_url = "https://chat.countersight.co";
+        server_name = "chat.countersight.co";
+      };
+      disable_custom_urls = true;
+      disable_guests = true;
+      element_call.use_exclusively = true;
+      features.feature_group_calls = true;
+      # Resolved from webapp/bundles/<hash>/init.js; Desktop serves only webapp/.
+      # co.countersight.klipy_api_key is set by hand in
+      # ~/.config/Element/config.json, which Desktop lays over this config.
+      modules = [ "../../modules/gif-picker.js" ];
+    };
+  };
+  # Copied, not linked: Desktop's asar packing rejects links out of the tree.
+  element-web = pkgs.runCommand "element-web-countersight" { } ''
+    cp -rL ${elementWeb} $out
+    chmod u+w $out
+    mkdir $out/modules
+    cp ${./element-gif-picker.js} $out/modules/gif-picker.js
+  '';
+in
 {
   imports = [
     ../../programs/gitlab/default.nix
@@ -52,7 +79,8 @@
     teams-for-linux
     github-copilot-cli
     dbgate
-    (inputs.nixpkgs-element.legacyPackages.${pkgs.stdenv.hostPlatform.system}.element-desktop.override {
+    (elementPkgs.element-desktop.override {
+      inherit element-web;
       # The pinned Electron's glibc is too old for the system Mesa and for the
       # LD_LIBRARY_PATH Zen passes to the SSO callback launch.
       electron_42 = pkgs.electron_42;
