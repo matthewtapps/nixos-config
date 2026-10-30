@@ -79,7 +79,7 @@
       omnisharp-roslyn
       tailwindcss-language-server
       phpactor
-      rubyPackages_3_3.ruby-lsp
+      ruby-lsp
       sqls
       glsl_analyzer
 
