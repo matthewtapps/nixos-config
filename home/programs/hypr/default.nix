@@ -26,6 +26,22 @@ in
     recursive = true;
   };
 
+  # X11 and Wine Wayland never repeat modifiers; MapleStory needs held Ctrl/Alt
+  # to repeat like Windows. Enabled through kb_options in the host configs.
+  xdg.configFile."xkb/rules/evdev".text = ''
+    ! include %S/evdev
+    ! option = symbols
+      custom:repeatmods = +repeatmods(all)
+  '';
+  xdg.configFile."xkb/symbols/repeatmods".text = ''
+    partial modifier_keys
+    xkb_symbols "all" {
+        key <LCTL> { repeat = True };
+        key <LFSH> { repeat = True };
+        key <LALT> { repeat = True };
+    };
+  '';
+
   # lua-language-server picks up Hyprland's generated `hl` API stubs. Home
   # Manager only writes this itself when it manages the package, which it
   # doesn't here (the NixOS module owns Hyprland).

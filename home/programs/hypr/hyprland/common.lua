@@ -259,6 +259,21 @@ hl.window_rule({
     center = true,
 })
 
+-- MapleStory binds Alt (jump) with arrows and numbers, which collide with
+-- mainMod; swap to SUPER while it has focus. Any bind here restores mainMod.
+hl.define_submap("game", "reset", function()
+    for i = 1, 9 do
+        hl.bind("SUPER + " .. i, hl.dsp.focus({ workspace = i }), { description = "focus workspace " .. i .. " (in game)" })
+    end
+    hl.bind("SUPER + ESCAPE", hl.dsp.submap("reset"), { description = "restore binds (in game)" })
+end)
+hl.on("window.active", function(w)
+    local game = w ~= nil and w.class == "maplestory.exe"
+    if game ~= (hl.get_current_submap() == "game") then
+        hl.dispatch(hl.dsp.submap(game and "game" or "reset"))
+    end
+end)
+
 -- YouTube in Zen Browser - full opacity
 hl.window_rule({
     match = { title = ".*(YouTube).*(Zen).*" },
