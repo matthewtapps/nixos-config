@@ -11,7 +11,7 @@
   hardware = {
     nvidia = {
       modesetting.enable = true;
-      open = true;
+      open = false;
       powerManagement.enable = false;
       powerManagement.finegrained = false;
       nvidiaSettings = true;
@@ -43,6 +43,8 @@
   boot.kernelParams = [
     "nvidia-drm.modeset=1"
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+    # GSP firmware hangs (Xid 119) wedge the GPU until reboot on karsa.
+    "nvidia.NVreg_EnableGpuFirmware=0"
   ];
 
   services.xserver.videoDrivers = [ "nvidia" ];
