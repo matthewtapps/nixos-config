@@ -345,11 +345,11 @@
         "tracker": "tracker"
       },
       "locked": {
-        "lastModified": 1787455555,
-        "narHash": "sha256-AjbEneMEhTHvF741SwrG/9SAJo0aKLhBAcirqUvCLAs=",
+        "lastModified": 1794094865,
+        "narHash": "sha256-Oza9e6aXPbpE2GPky0SE1pDUkZ59mMu+2SmSagn+RhQ=",
         "ref": "main",
-        "rev": "1e49d3440c44bf9fdbf44dd69a7ea7e0aafa2547",
-        "revCount": 85,
+        "rev": "df1a6c8cb8c38208a6bc7df9c24801e9f9999af9",
+        "revCount": 86,
         "type": "git",
         "url": "ssh://git@github.com/matthewtapps/lsag-quartermaster.git"
       },
