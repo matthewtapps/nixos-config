@@ -96,6 +96,7 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager), { description = "file m
 hl.bind(mainMod .. " + SHIFT + SPACE", hl.dsp.window.float({ action = "toggle" }), { description = "toggle window floating" })
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(menu), { description = "app launcher" })
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo(), { description = "pseudo-tile window (dwindle)" })
+hl.bind(mainMod .. " + V", hl.dsp.layout("togglesplit"), { description = "toggle split direction (dwindle)" })
 hl.bind("SUPER + L", hl.dsp.exec_cmd("noctalia msg session lock"), { description = "lock screen" })
 hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("hyprshot -z -m region"), { description = "screenshot a region" })
 hl.bind("SUPER + SHIFT + A", hl.dsp.exec_cmd("record-region-toggle"), { description = "screen-record a region (toggle)" })
@@ -231,6 +232,38 @@ hl.window_rule({
     match = { class = "GLFW-Application" },
     float = true,
     size = { 600, 1000 },
+})
+
+-- Sound desk: the strip tiles under the window it opens beside, 214 px high.
+-- Tiled windows ignore size rules, and an exact resize of a bottom window
+-- sizes the one above it, so this sets the split ratio instead.
+local DESK_H = 214
+local GAP = 20 -- general.gaps_in
+hl.on("window.open", function(w)
+    if w.class ~= "sound-desk" or w.title ~= "Sound desk" or w.floating then return end
+    local sel = "address:" .. w.address
+    hl.dispatch(hl.dsp.focus({ window = sel }))
+    w = hl.get_window(sel)
+    if w.size.y > w.size.x then
+        hl.dispatch(hl.dsp.layout("togglesplit"))
+        w = hl.get_window(sel)
+    end
+    for _, o in ipairs(hl.get_windows({ workspace = w.workspace.name })) do
+        if not o.floating and o.at.x == w.at.x and o.at.y == w.at.y + w.size.y + 2 * GAP then
+            hl.dispatch(hl.dsp.layout("swapsplit"))
+            w = hl.get_window(sel)
+            break
+        end
+    end
+    -- The split opens at 50/50, and the ratio sizes the top window out of 2.
+    local node = 2 * w.size.y + 2 * GAP
+    hl.dispatch(hl.dsp.layout(string.format("splitratio %.4f exact", 2 * (1 - (DESK_H + GAP) / node))))
+end)
+hl.window_rule({
+    match = { class = "sound-desk", title = "Library" },
+    float = true,
+    size = { 1000, 640 },
+    center = true,
 })
 
 -- TUI Combat Tracker
