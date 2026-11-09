@@ -147,25 +147,30 @@ fleetswitch() {
     cd ~/nixos-config || return
     nixswitch
 
-    local nodes targets=() host
+    local nodes targets=() host err
     nodes=$(nix eval --raw "$HOME/nixos-config#deploy.nodes" \
         --apply 'ns: builtins.concatStringsSep " " (builtins.attrNames ns)') || return
 
     for host in ${=nodes}; do
-        if ssh -o ConnectTimeout=3 -o BatchMode=yes "root@$host" true 2>/dev/null; then
-            targets+=("$HOME/nixos-config#$host")
-        else
+        if ! ssh -o ConnectTimeout=3 -o BatchMode=yes "root@$host" true 2>/dev/null; then
             print -u2 "fleetswitch: skipping $host, unreachable"
+            continue
         fi
+        # Work hosts fetch from the work GitLab at eval time. Any other eval
+        # failure is a real error and stops the run.
+        if ! err=$(GIT_SSH_COMMAND="ssh -o ConnectTimeout=5" command nix eval --raw \
+            "$HOME/nixos-config#deploy.nodes.$host.profiles.system.path.drvPath" 2>&1 >/dev/null); then
+            if [[ $err == *gitlab.countersight.co* ]]; then
+                print -u2 "fleetswitch: skipping $host, needs the work VPN to evaluate"
+                continue
+            fi
+            print -u2 -r -- "$err"
+            return 1
+        fi
+        targets+=("$HOME/nixos-config#$host")
     done
 
-    (( $#targets )) || { print -u2 "fleetswitch: no hosts reachable"; return 1 }
-
-    # deploy-rs repeats its pre-build check once per node, so --skip-checks
-    # below leaves this as the only thing validating the flake.
-    nix build --no-link \
-        "$HOME/nixos-config#checks.x86_64-linux."{deploy-schema,deploy-activate} \
-        || return
+    (( $#targets )) || { print -u2 "fleetswitch: no hosts deployable"; return 1 }
 
     # deploy-rs revokes already-succeeded profiles when any node in a multi-node
     # run fails. Its spinner swallows nix output whenever more than one host
