@@ -156,6 +156,10 @@ in
         "browser.profiles.created" = true;
         # Hides passkeys in the login dropdown; Bitwarden and 1Password still work.
         "security.webauthn.enable_conditional_mediation" = false;
+        # The PasswordManagerEnabled policy still leaves the "Manage Passwords" footer.
+        "signon.rememberSignons" = false;
+        "signon.showAutoCompleteFooter" = false;
+        "signon.showAutoCompleteImport" = "";
         "toolkit.profiles.storeID" = storeId;
         "browser.download.dir" = "${config.home.homeDirectory}/downloads";
         "zen.theme.accent-color" = lib.mkDefault "#a0d490";
