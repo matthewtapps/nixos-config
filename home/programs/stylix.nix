@@ -51,7 +51,7 @@
       gnome.enable = true;
       hyprland.enable = true;
       kitty.enable = true;
-      rofi.enable = true;
+      rofi.enable = false;
       ghostty.enable = true;
       starship.enable = true;
       # wezterm.enable = true;  # kept for easy rollback
