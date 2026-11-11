@@ -159,14 +159,12 @@
     # Interactive setup + functions. `@DEVICE@` is baked in for nixswitch.
     initContent = lib.mkMerge [
       (builtins.replaceStrings [ "@DEVICE@" ] [ device ] (builtins.readFile ./config.zsh))
-      # starship init, run with the immutable store bin resolving first so the
-      # prompt hooks bake the /nix/store path, which never dangles. See
-      # programs.starship.enableZshIntegration above.
       (lib.mkOrder 1000 ''
         if [[ $TERM != "dumb" ]]; then
           eval "$(PATH="${config.programs.starship.package}/bin:$PATH" starship init zsh)"
         fi
       '')
+      (lib.mkAfter "compdef _sudo sudo")
     ];
   };
 }

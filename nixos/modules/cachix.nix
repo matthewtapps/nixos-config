@@ -4,6 +4,10 @@
     cachix
   ];
 
+  networking.localCommands = ''
+    ip route replace unreachable 192.168.0.0/24 metric 9999
+  '';
+
   nix = {
     settings = {
       # cache.nixos.org + its key are provided by the NixOS defaults; listing

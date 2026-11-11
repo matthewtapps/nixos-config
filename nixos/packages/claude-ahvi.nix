@@ -47,10 +47,6 @@ let
       }
     );
 
-  # Wrap the real binary to load the ahvi feedback MCP server. `--mcp-config` is
-  # additive to any user-scope servers, so it won't clobber `claude mcp add`
-  # entries. `configSubdir` (relative to $HOME) selects an alternate config dir
-  # at runtime, used by the personal `cclaude` harness (~/.claude-alt).
   mkWrapper =
     {
       name ? "claude",
@@ -59,7 +55,7 @@ let
     }:
     pkgs.writeShellScriptBin name ''
       ${lib.optionalString (configSubdir != null) ''export CLAUDE_CONFIG_DIR="$HOME/${configSubdir}"''}
-      exec ${claude-code}/bin/claude --mcp-config ${mkMcpJson apiUrl} "$@"
+      exec ${claude-code}/bin/claude --mcp-config=${mkMcpJson apiUrl} "$@"
     '';
 in
 {
