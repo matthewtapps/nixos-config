@@ -6,6 +6,9 @@
 
   networking.localCommands = ''
     ip route replace unreachable 192.168.0.0/24 metric 9999
+    # An accepted tailnet route in table 52 would otherwise shadow the LAN.
+    ip rule del to 192.168.0.0/24 lookup main priority 5200 2>/dev/null || true
+    ip rule add to 192.168.0.0/24 lookup main priority 5200
   '';
 
   nix = {
