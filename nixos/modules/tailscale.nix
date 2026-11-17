@@ -13,9 +13,12 @@
     useRoutingFeatures = "client";
     authKeyFile = config.sops.secrets.tailscale-authkey.path;
 
-    # `up` runs only at enrollment, so --ssh is applied there. Access still needs
-    # an ssh rule in the tailnet ACL to grant it.
-    extraUpFlags = [ "--ssh" ];
+    # `up` runs only at enrollment, and the tailnet ACL still gates --ssh. It
+    # rejects a run that omits the operator tailscaled-set already applied.
+    extraUpFlags = [
+      "--ssh"
+      "--operator=matt"
+    ];
 
     # Taildrop refuses to send or receive as a non-root user without this.
     extraSetFlags = [ "--operator=matt" ];
