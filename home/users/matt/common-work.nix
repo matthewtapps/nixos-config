@@ -160,10 +160,10 @@ in
   ];
 
   xdg.configFile."teams-for-linux/config.json".text = builtins.toJSON {
-    disableGpu = false;
+    performance.disableGpu = false;
     wayland = {
       xwaylandOptimizations = true;
     };
-    notificationMethod = "electron";
+    notifications.method = "electron";
   };
 }
