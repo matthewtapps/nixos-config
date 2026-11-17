@@ -6,7 +6,7 @@
 local mon1 = "desc:AOC Q27G2G3R3B 137P6HA011487"
 
 -- hl.monitor({ output = mon1, mode = "2560x1440@144.00Hz", position = "0x0", scale = 1 })
-hl.monitor({ output = mon1, mode = "2560x1440@165.00Hz", position = "0x0", scale = 1 })
+hl.monitor({ output = mon1, mode = "2560x1440@165.00Hz", position = "0x0", scale = 1, bitdepth = 10 })
 
 -- hl.env("LIBVA_DRIVER_NAME", "nvidia")
 -- hl.env("GBM_BACKEND", "nvidia-drm")

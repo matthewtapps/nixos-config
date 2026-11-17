@@ -10,7 +10,7 @@ local mon2_state = io.open(os.getenv("HOME") .. "/.local/state/external-monitor-
 if mon2_state then mon2_state:close() end
 
 hl.monitor({ output = mon1, mode = "3072x1920@60.00Hz", position = "0x0", scale = 1.5 })
-hl.monitor({ output = mon2, mode = "2560x1440@143.91Hz", position = "-2560x0", scale = 1, disabled = mon2_state ~= nil })
+hl.monitor({ output = mon2, mode = "2560x1440@143.91Hz", position = "-2560x0", scale = 1, bitdepth = 10, disabled = mon2_state ~= nil })
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
