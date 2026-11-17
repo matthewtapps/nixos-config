@@ -219,6 +219,13 @@
             { nixpkgs.hostPlatform = "x86_64-linux"; }
           ];
         };
+        kexec = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./nixos/installer/kexec.nix
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
+          ];
+        };
       };
 
       deploy = {
@@ -246,6 +253,7 @@
 
       packages = nixpkgs.lib.genAttrs [ "x86_64-linux" ] (_: {
         installer-iso = self.nixosConfigurations.installer.config.system.build.isoImage;
+        kexec = self.nixosConfigurations.kexec.config.system.build.kexecBundle;
       });
 
       checks = builtins.mapAttrs (_: lib: lib.deployChecks self.deploy) inputs.deploy-rs.lib;
