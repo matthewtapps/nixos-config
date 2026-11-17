@@ -4,3 +4,14 @@
 [widget.network]
 vpn_status = "both"
 show_vpn_label = true
+
+[bar.main]
+end = ["external-monitor", "battery", "brightness", "volume", "network", "latency", "tailscale", "tailnet", "taildrop", "bluetooth", "notifications"]
+
+[widget.tailnet]
+type = "custom_button"
+glyph = "arrows-exchange"
+tooltip = "Switch tailnet"
+
+[widget.tailnet.actions]
+left = "exec tailnet-switch"
