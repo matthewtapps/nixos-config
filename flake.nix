@@ -175,6 +175,17 @@
             inputs.sops-nix.nixosModules.sops
           ];
         }
+        {
+          name = "crokus";
+          system = "x86_64-linux";
+          device = "crokus";
+          users = { };
+          modules = [
+            ./nixos/hosts/crokus.nix
+            inputs.disko.nixosModules.disko
+            inputs.sops-nix.nixosModules.sops
+          ];
+        }
       ];
     in
     {

@@ -5,6 +5,7 @@ keys:
   - &karsa age174jkrmnauzpprvf4yz5qqmed7w64fkuf8wprnkssavt90vvpxpvs4dtmyr
   - &tehol age19whva0zqzvd9ka23clkvtjtv9csy2gu99y7w8m7crkyr46t2hdyqznr9ap
   - &samar age1ae9luv3zazx9dwp4hu9d5m4l8dxl3vkwgurhq3x80fpv6aeskscsp2249q
+  - &crokus age1nt977afh7mlcaa7px4q6eg53jw42lv6tafgrpw4044rrpzcm43xqw9jqey
   - &matt age195usngw73768975fq0h6uxkj8dsn9e6a8ufkwcuj88lxa2damv6qy4ktf8
 creation_rules:
   - path_regex: secrets/kruppe.yaml$
@@ -46,6 +47,7 @@ creation_rules:
         - *mappo
         - *samar
         - *tehol
+        - *crokus
         - *matt
   - path_regex: secrets/users.yaml$
     key_groups:
@@ -56,4 +58,5 @@ creation_rules:
         - *mappo
         - *samar
         - *tehol
+        - *crokus
         - *matt
