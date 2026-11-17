@@ -149,9 +149,9 @@ in
     dbgate
     (elementPkgs.element-desktop.override {
       inherit element-web;
-      # The pinned Electron's glibc is too old for the system Mesa and for the
-      # LD_LIBRARY_PATH Zen passes to the SSO callback launch.
-      electron_42 = pkgs.electron_42;
+      # The pinned Electron is EOL, and its glibc is too old for the system
+      # Mesa and for the LD_LIBRARY_PATH Zen passes to the SSO callback launch.
+      electron_42 = pkgs.electron_44;
       # Electron does not know Hyprland, so it skips gnome-keyring unless told.
       commandLineArgs = "--password-store=gnome-libsecret";
     })
