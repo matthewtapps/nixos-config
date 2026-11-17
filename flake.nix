@@ -267,6 +267,10 @@
         kexec = self.nixosConfigurations.kexec.config.system.build.kexecBundle;
       });
 
+      devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
+        packages = [ inputs.deploy-rs.packages.x86_64-linux.default ];
+      };
+
       checks = builtins.mapAttrs (_: lib: lib.deployChecks self.deploy) inputs.deploy-rs.lib;
 
       templates = {
