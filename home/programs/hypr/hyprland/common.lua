@@ -14,6 +14,12 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("noctalia")
 end)
 
+hl.on("workspace.created", function(ws)
+    if ws.name == "9" and ws.is_empty then
+        hl.exec_cmd("ghostty -e spotify_player")
+    end
+end)
+
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------

@@ -24,7 +24,7 @@ hl.workspace_rule({ workspace = "5", monitor = mon2 })
 hl.workspace_rule({ workspace = "6", monitor = mon2 })
 hl.workspace_rule({ workspace = "7", monitor = mon2 })
 hl.workspace_rule({ workspace = "8", monitor = mon2 })
-hl.workspace_rule({ workspace = "9", monitor = mon2, on_created_empty = "ghostty -e spotify_player" })
+hl.workspace_rule({ workspace = "9", monitor = mon2 })
 
 ---------------
 ---- INPUT ----
